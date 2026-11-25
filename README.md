@@ -4,7 +4,19 @@
 
 **A Claude skill for building and auditing Malaysian public-sector websites against MYDS and SPLaSK 2.0**
 
-[![Release](https://img.shields.io/github/v/release/DexComm69/malaysia-gov-web-guidance?label=release)](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Python](https://img.shields.io/badge/python-3.8%2B-3776AB) ![Claude skill](https://img.shields.io/badge/Claude-skill%20%7C%20plugin-d97757) ![Languages](https://img.shields.io/badge/docs-English%20%7C%20Bahasa%20Melayu-2e7d32)
+<p>
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=github&label=release&color=2ea043"></a>
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=github&color=e3b341"></a>
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=git&logoColor=white&color=0969da"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=8250df"></a>
+</p>
+<p>
+  <img alt="SPLaSK 2.0" src="https://img.shields.io/badge/SPLaSK-2.0-c8102e?style=for-the-badge">
+  <img alt="MYDS" src="https://img.shields.io/badge/MYDS-1.0-2563eb?style=for-the-badge">
+  <img alt="Claude skill and plugin" src="https://img.shields.io/badge/Claude-Skill%20%26%20Plugin-D97757?style=for-the-badge&logo=claude&logoColor=white">
+  <img alt="Python 3.8+" src="https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="Docs in BM and English" src="https://img.shields.io/badge/Docs-BM%20%7C%20EN-010066?style=for-the-badge">
+</p>
 
 English · [Bahasa Melayu](#bahasa-melayu)
 
@@ -41,23 +53,57 @@ Neither standard is well represented in general-purpose AI models. Without guida
 
 ## Features
 
-**Guidance**
-- Searchable guides in English and Bahasa Melayu: about 115 MYDS documentation pages, read live from design.digital.gov.my, plus 9 hand-written guides on SPLaSK and government web patterns.
-- SPLaSK rules taken from JDN's *Manual Tagging SPLaSK V2.0* and the SPLaSK user manuals: tag placement, timestamps, freshness windows, SEO limits, crawler access and site profiles.
-- Patterns for plain **PHP / HTML / Blade** as well as **React / Next.js**, since the official MYDS components are React-only.
-- Government service patterns: masthead, BM/EN language switch, public forms with PDPA notice and reference numbers, status lookups, and audits.
+<table>
+  <tr>
+    <td align="center" width="20%"><h3>25</h3>SPLaSK 2.0 criteria</td>
+    <td align="center" width="20%"><h3>~115</h3>MYDS pages, read live</td>
+    <td align="center" width="20%"><h3>9</h3>hand-written guides</td>
+    <td align="center" width="20%"><h3>16 / 16</h3>trigger tests passed</td>
+    <td align="center" width="20%"><h3>BM · EN</h3>bilingual throughout</td>
+  </tr>
+</table>
 
-**Tooling** (Python 3.8+, standard library only)
-- `scan`: a SPLaSK 2.0 pre-check of a live site or HTML file. It reads the server HTML the way the crawler does, without running JavaScript.
-- `check-classes`: finds CSS classes that the published MYDS stylesheet doesn't define. Works with PHP, Blade and JavaScript-built markup.
-- `tokens`: lists every MYDS theme token with its light and dark value.
-- `search`, `retrieve` and `prefetch` over the guides, with retries and an offline cache.
+<table>
+  <tr>
+    <td valign="top" width="33%">
 
-**Behaviour**
-- Raises conflicts with the user instead of deciding them, for example agency branding versus MYDS colours.
-- Never invents facts the rules depend on, such as URLs or dates; it leaves marked TODOs instead.
-- Asks which language a report should be written in.
-- Ends each answer with a *Panduan Web Kerajaan* section listing the rules applied and any compliance items still open.
+<img src="assets/icons/guidance.svg" width="32" height="32" alt="">
+
+### Guidance
+
+- **Official SPLaSK 2.0 rules** from JDN's tagging manual and user manuals: placement, timestamps, freshness windows, SEO limits, crawler access.
+- **MYDS documentation**, searchable in English and Malay and fetched live from design.digital.gov.my.
+- **Ready-made patterns:** masthead, BM/EN switch, public forms with PDPA notice, status lookups, audits.
+- **Works with any stack:** plain PHP / HTML / Blade, or React / Next.js.
+
+</td>
+    <td valign="top" width="33%">
+
+<img src="assets/icons/tooling.svg" width="32" height="32" alt="">
+
+### Tooling
+
+- **`scan`:** a SPLaSK 2.0 pre-check of a live site, reading the server HTML the way the crawler does.
+- **`check-classes`:** catches CSS classes that MYDS doesn't define, in PHP, Blade or JS-built markup.
+- **`tokens`:** every MYDS colour token with its light and dark value.
+- **`search` / `retrieve` / `prefetch`**, with retries and an offline cache.
+- Python 3.8+, standard library only.
+
+</td>
+    <td valign="top" width="33%">
+
+<img src="assets/icons/behaviour.svg" width="32" height="32" alt="">
+
+### Behaviour
+
+- **Asks before deciding** conflicts, such as agency branding versus MYDS colours.
+- **Never invents facts** the rules depend on, like URLs or dates; it leaves TODOs instead.
+- **Asks the report language** (BM, English or both) before writing one.
+- **Shows its work:** every answer ends with a *Panduan Web Kerajaan* section listing the rules applied and any open items.
+
+</td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -161,7 +207,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
 ```mermaid
 flowchart TB
-    subgraph shipped ["✅ Released"]
+    subgraph shipped ["Released"]
         direction LR
         v10["<b>v1.0</b><br/>MYDS + SPLaSK<br/>guides, EN / BM"]
         v11["<b>v1.1</b><br/>Audit checklist,<br/>service forms"]
@@ -171,20 +217,20 @@ flowchart TB
         v10 --> v11 --> v12 --> v13 --> v14
     end
 
-    subgraph next ["🚧 Next"]
+    subgraph next ["Next"]
         direction LR
-        cal["🎯 Calibrate scan against<br/>an official SPLaSK assessment"]
-        ci["🧪 Automated regression<br/>tests in CI"]
+        cal["Calibrate scan against<br/>an official SPLaSK assessment"]
+        ci["Automated regression<br/>tests in CI"]
         cal ~~~ ci
     end
 
-    subgraph later ["🗺️ Later"]
+    subgraph later ["Later"]
         direction LR
-        scanplus["🔗 scan: broken links,<br/>data.gov.my titles,<br/>GAMMA app names"]
-        upd["🔄 update-index for<br/>new MYDS pages"]
-        cms["🧩 WordPress &<br/>Joomla guides"]
-        idm["🔐 MyDigital ID<br/>sign-in"]
-        bm["📖 BM interface<br/>glossary"]
+        scanplus["scan: broken links,<br/>data.gov.my titles,<br/>GAMMA app names"]
+        upd["update-index for<br/>new MYDS pages"]
+        cms["WordPress &<br/>Joomla guides"]
+        idm["MyDigital ID<br/>sign-in"]
+        bm["BM interface<br/>glossary"]
         scanplus ~~~ upd ~~~ cms ~~~ idm ~~~ bm
     end
 
@@ -201,7 +247,7 @@ flowchart TB
     style later fill:transparent,stroke:#4f46e5,stroke-width:1px,stroke-dasharray:4 3
 ```
 
-<sub>✅ released · 🚧 next up · 🗺️ planned. Full history in [CHANGELOG.md](CHANGELOG.md). Suggestions are welcome as [issues](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).</sub>
+<sub><b>Green</b>: released · <b>Amber</b>: next up · <b>Blue, dashed</b>: planned. Full history in [CHANGELOG.md](CHANGELOG.md). Suggestions are welcome as [issues](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).</sub>
 
 ## Contributing
 
