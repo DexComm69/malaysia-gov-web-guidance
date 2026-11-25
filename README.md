@@ -32,7 +32,9 @@ When you ask Claude to build or review something for a Malaysian government site
   - the official masthead text ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website");
   - correctly spelled, server-rendered `splwpk-*` tags with real timestamps.
 - **Work without React.** MYDS components are React-only, so the skill includes guides for plain **PHP / HTML / Blade** projects. This matters because many agencies run PHP on XAMPP or Laravel.
-- **Check your templates** for CSS classes that the published MYDS stylesheet doesn't define.
+- **Check your templates** for CSS classes that the published MYDS stylesheet doesn't define. Works with PHP, Blade and JavaScript-built HTML.
+- **Review existing sites:** a step-by-step audit checklist with a browser check script and a report format.
+- **Build public service forms** the government way: an error summary, a PDPA notice, a reference number on the acknowledgement, and e-Rating.
 - **Ask before deciding.** If MYDS conflicts with your agency's branding or your project's conventions (for example MYDS blue vs your council's colours), it stops and asks you.
 - **Ask which language** (BM, English or both) before writing a report or audit.
 - **Show its work.** Answers end with a *Panduan Web Kerajaan* section listing the rules applied and any compliance items still open.
@@ -75,11 +77,13 @@ The skill turns on automatically for government work. You can also name it: *"us
 ```text
 skills/malaysia-gov-web-guidance/
 ├── SKILL.md                     instructions Claude follows
-├── scripts/mgwg.py              search / list / retrieve / check-classes (stdlib Python)
+├── scripts/mgwg.py              search / list / retrieve / prefetch / tokens / check-classes (stdlib Python)
 ├── guides/gov/                  hand-written guides, English + Bahasa Melayu
 │   ├── splask-overview.md         what SPLaSK is, who it covers, the 6 vs 7 dimensions
 │   ├── splask-tagging.md          splwpk-* attributes, timestamps, pitfalls
 │   ├── splask-criteria-checklist.md  the 24 criteria mapped to build tasks
+│   ├── service-form-pattern.md    public forms: validation, PDPA notice, reference number, e-Rating
+│   ├── audit-checklist.md         how to review a site: scope, browser checks, report format
 │   ├── masthead-html.md           official masthead in plain HTML/PHP, exact BM/EN wording
 │   └── myds-plain-html-php.md     MYDS without React: stylesheet, tokens, grid, fonts
 └── references/
@@ -93,6 +97,8 @@ The script can also be used on its own:
 python scripts/mgwg.py search "footer privacy policy sitemap"
 python scripts/mgwg.py retrieve splask-tagging,design-12-8-4-grid --lang en
 python scripts/mgwg.py check-classes templates/*.php --css assets/app.css
+python scripts/mgwg.py tokens --filter otl          # MYDS token names with light/dark values
+python scripts/mgwg.py prefetch all                 # cache every MYDS page for slow or offline use
 ```
 
 ## Accuracy and known limits
@@ -100,6 +106,7 @@ python scripts/mgwg.py check-classes templates/*.php --css assets/app.css
 - **The SPLaSK tag list is evidence-based, not official.** It comes from the live HTML of government portals (including JDN's own), because JDN's *Manual Tagging SPLaSK 2.0* could not be obtained. If you have the manual, please [open an issue](https://github.com/DexComm69/malaysia-gov-web-guidance/issues) so the list can be checked.
 - **The sources disagree on SPLaSK's dimensions.** malaysia.gov.my lists 7 (including Web Design); JDN's 2024 notice lists 6. The skill uses 6 and points out the difference.
 - MYDS's own "SPLaSK Compliance" page, and most of its plain HTML/CSS components, are still *Work In Progress* at the source.
+- **Known conflict:** MYDS's input border colour (1.27:1) is below WCAG's 3:1 for form controls. The skill raises this instead of deciding it.
 - Content was reviewed on 25 November 2026. MYDS pages are always read live, but the hand-written guides can go out of date. Check `references/sources.md`.
 
 ## Contributing

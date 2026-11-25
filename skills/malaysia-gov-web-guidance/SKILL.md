@@ -25,7 +25,7 @@ python "<this-skill-dir>/scripts/mgwg.py" search "<what you are building>"
 Queries can be in English or Malay ("borang maklum balas", "log masuk", "footer with privacy policy"). Run 1–3 searches covering the distinct parts of the task, for example the page pattern, its components and the compliance rules. To browse: `python ".../mgwg.py" list` (or `list --category gov`).
 
 Categories:
-- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page.
+- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page. **For any review, audit or "semak" request, start with `audit-checklist`.** It has the scope rules, a browser check script, the rules for internal staff systems and the report format. **For any form the public submits** (permohonan, aduan, pendaftaran), retrieve `service-form-pattern`.
 - `myds-foundation`: grid, colour, typography, icons, motion, radius, shadow, spacing.
 - `myds-component-design`: a component's design spec (anatomy, states, do's and don'ts).
 - `myds-component-react` / `myds-react-hook`: a component's React API.
@@ -42,7 +42,7 @@ python ".../mgwg.py" retrieve <id> --lang ms               # official Malay word
 
 Retrieve the 3–6 guides that matter most for the task, not every hit. Each guide costs context, and extra ones rarely change the result. Fetch another one later if a specific question comes up. Use `--lang ms` or `both` when the user is writing Malay UI text or formal documents (URS/SRS).
 
-If a live fetch fails (offline, or a site change), say so, give the user the page URL, and continue with the hand-written guides. Don't fill the gap from memory as if it were MYDS.
+Fetches retry 3 times, and fall back to an older cached copy (marked `STALE`) if the site can't be reached. If a fetch still fails, the script prints the page's section outline. Tell the user, give them the page URL, and continue with the hand-written guides. Don't fill the gap from memory as if it were MYDS. On a slow or filtered network, or before working offline, run `python ".../mgwg.py" prefetch all` (or a category or a list of ids) once to fill the cache. The cache lives in the system temp folder under `mgwg-cache`; `prefetch` prints the exact path. To list token names with their values, run `python ".../mgwg.py" tokens [--filter otl]`.
 
 **Match the guides to the project's stack.** MYDS components are React. If the project is plain PHP/HTML/Blade (no React), retrieve `myds-plain-html-php` and `masthead-html`, and use each component's `design-*` page for its anatomy rather than copying React code.
 

@@ -6,6 +6,9 @@ and the hand-written SPLaSK / MYDS guides bundled with this skill.
   python mgwg.py list [--category <name>]       list guides (id, status, title)
   python mgwg.py retrieve <id>[,<id>...] [--lang en|ms|both]
                                                 print guides; MYDS pages are fetched live (cached 7 days)
+  python mgwg.py prefetch all|<category>|<id,...> [--lang en|ms|both]
+                                                warm the cache for slow or offline use
+  python mgwg.py tokens [--filter otl]          list MYDS theme tokens with light/dark hex values
   python mgwg.py check-classes <file>... [--css my.css] [--myds-css path]
                                                 find classes the MYDS 1.0.0 stylesheet doesn't define
 
@@ -43,6 +46,16 @@ SYN = {
     'blade': 'laravel html-css', 'wcag': 'accessibility', 'a11y': 'accessibility', 'seo': 'seo splask',
     'gov.my': 'masthead official', 'official': 'masthead', 'logo': 'footer-logo logo', 'jata': 'footer-logo masthead logo',
     'sla': 'downtime splask', 'uptime': 'downtime splask', 'timestamp': 'tagging splask updated', 'splwpk': 'tagging splask',
+    # forms: MYDS has no "form" page, the parts are separate components
+    'form': 'input text-input select checkbox radio date-field date-picker text-area label file-upload',
+    'forms': 'input text-input select checkbox radio date-field date-picker text-area label file-upload',
+    'field': 'input text-input label', 'fields': 'input text-input label', 'validation': 'input text-input error',
+    'error': 'text-input input alert-dialog callout', 'medan': 'input text-input label', 'pengesahan': 'input error',
+    'permohonan': 'form input registration', 'request': 'form input', 'application': 'form input registration',
+    # reviews
+    'audit': 'audit checklist review', 'review': 'audit checklist', 'semak': 'audit checklist review',
+    'semakan': 'audit checklist review', 'pematuhan': 'compliance audit checklist splask', 'compliance': 'audit checklist splask',
+    'check': 'audit checklist', 'dashboard': 'data-table table grid internal', 'admin': 'internal dashboard',
 }
 STOP = set('a an the and or of to for in on with how do i is are my our we use using make build add create page dan atau untuk di ke yang dengan ini itu'.split())
 
@@ -183,15 +196,86 @@ def page_text(html):
     return '\n'.join(out)
 
 
-def fetch(url):
+def cache_path(url):
+    return os.path.join(CACHE, re.sub(r'[^a-z0-9]+', '_', url.lower()) + '.txt')
+
+
+def fetch(url, attempts=3):
+    """Return (html, note). Uses a fresh cache, else the network with retries, else a stale cache.
+    Slow or filtered agency networks are common, so a single failed request must not lose the page."""
     os.makedirs(CACHE, exist_ok=True)
-    fn = os.path.join(CACHE, re.sub(r'[^a-z0-9]+', '_', url.lower()) + '.txt')
+    fn = cache_path(url)
     if os.path.exists(fn) and time.time() - os.path.getmtime(fn) < CACHE_DAYS * 86400:
-        return open(fn, encoding='utf8').read(), True
-    req = urllib.request.Request(url, headers={'User-Agent': UA})
-    data = urllib.request.urlopen(req, timeout=60).read().decode('utf8', 'replace')
-    open(fn, 'w', encoding='utf8').write(data)
-    return data, False
+        return open(fn, encoding='utf8').read(), 'cached'
+    err = None
+    for n in range(attempts):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            data = urllib.request.urlopen(req, timeout=30).read().decode('utf8', 'replace')
+            open(fn, 'w', encoding='utf8').write(data)
+            return data, 'live'
+        except Exception as e:  # network errors vary by platform; retry them all
+            err = e
+            if n < attempts - 1:
+                time.sleep(2 * (n + 1))
+    if os.path.exists(fn):
+        age = int((time.time() - os.path.getmtime(fn)) / 86400)
+        return open(fn, encoding='utf8').read(), f'STALE cache, {age} days old: the live fetch failed'
+    raise err
+
+
+def prefetch(sel, lang):
+    """Warm the cache (e.g. before going offline, or on a slow network) so later retrieves are instant."""
+    pages = [d for d in load() if d['_kind'] == 'myds']
+    if sel != 'all':
+        want = set(x.strip() for x in sel.split(','))
+        pages = [d for d in pages if d['id'] in want or d['category'] in want]
+    langs = ['en', 'ms'] if lang == 'both' else [lang]
+    ok = bad = 0
+    for d in pages:
+        for lg in langs:
+            try:
+                _, note = fetch(d['url_' + lg]); ok += 1
+                print(f'ok    {d["id"]} [{lg}] {note}')
+            except Exception as e:
+                bad += 1; print(f'FAIL  {d["id"]} [{lg}] {e.__class__.__name__}')
+    print(f'\n{ok} cached, {bad} failed. Cache: {CACHE} (kept {CACHE_DAYS} days; stale copies are used if a later fetch fails).')
+    try:
+        fetch(MYDS_CSS_URL); print('ok    MYDS stylesheet (for check-classes)')
+    except Exception as e:
+        print(f'FAIL  MYDS stylesheet {e.__class__.__name__}')
+
+
+def tokens(flt, myds_css):
+    """List MYDS theme tokens (bg-/txt-/otl-/fr-) with resolved light and dark hex values."""
+    if not myds_css:
+        try:
+            fetch(MYDS_CSS_URL); myds_css = cache_path(MYDS_CSS_URL)
+        except Exception as e:
+            sys.exit(f"Could not download {MYDS_CSS_URL} ({e}). Pass --myds-css <path>.")
+    css = open(myds_css, encoding='utf8', errors='replace').read()
+    prim = dict(re.findall(r'--(_[a-z]+(?:-\d+)?):\s*(\d+ \d+ \d+)', css))
+    def block(sel):
+        out = {}
+        for m in re.finditer(re.escape(sel) + r'\s*\{([^}]*)\}', css):
+            out.update(re.findall(r'--((?:bg|txt|otl|fr)-[a-z0-9-]+):\s*([^;}]+)', m.group(1)))
+        return out
+    def hexof(v):
+        m = re.match(r'var\(--(_[a-z]+(?:-\d+)?)\)\s*(/\s*[\d.]+)?', v.strip())
+        if not m or m.group(1) not in prim: return v.strip()
+        h = '#' + ''.join(f'{int(x):02X}' for x in prim[m.group(1)].split())
+        return h + (f' (alpha {m.group(2)[1:].strip()})' if m.group(2) else '') + f'  [{m.group(1)}]'
+    light, dark = block(':root'), block('.dark')
+    rows = [k for k in light if flt in k]
+    print(f'{"token":28} {"light":34} dark')
+    for k in rows:
+        print(f'--{k:26} {hexof(light[k]):34} {hexof(dark.get(k, "")) if k in dark else "-"}')
+    print(f'\n{len(rows)} tokens. Use as rgb(var(--<token>)), e.g. color: rgb(var(--txt-black-900)).')
+
+
+def outline(d):
+    secs = d.get('sections') or []
+    return ('Section outline from the index (not the page text): ' + '; '.join(secs)) if secs else 'No outline available.'
 
 
 def retrieve(ids, lang):
@@ -216,11 +300,14 @@ def retrieve(ids, lang):
             for lg in langs:
                 url = d['url_' + lg]
                 try:
-                    html, cached = fetch(url)
-                    print(f"## {'English' if lg == 'en' else 'Bahasa Melayu'} (live from {url}{', cached' if cached else ''})\n")
+                    html, note = fetch(url)
+                    print(f"## {'English' if lg == 'en' else 'Bahasa Melayu'} (from {url}, {note})\n")
                     print(page_text(html))
                 except Exception as e:
-                    print(f"!! Could not fetch {url} ({e.__class__.__name__}: {e}). Open it in a browser, or retry when online.")
+                    print(f"!! Could not fetch {url} after 3 attempts ({e.__class__.__name__}: {e}).\n"
+                          f"   {outline(d)}\n"
+                          f"   Tell the user, give them the URL, and do not fill in MYDS rules from memory. "
+                          f"Try again later, or run `prefetch` when the connection is better.")
                 print()
         print('\n' + '=' * 70 + '\n')
 
@@ -236,21 +323,83 @@ def css_selectors(paths):
     return names
 
 
+CLASS_TOKEN = re.compile(r'^-?[A-Za-z_][A-Za-z0-9_\-:/.\[\]%#!]*$')
+STR_LIT = re.compile(r"'([^'\\]*)'|\"([^\"\\]*)\"|`([^`\\$]*)`")
+
+
+def strip_template(s):
+    """Split a class attribute value into static text and embedded expressions.
+    Handles PHP <?...?>, Blade {{ }}, JS ${...} (nested) and HTML built by string concatenation
+    (class="tile' + (est ? ' est' : '') + '"). Returns (static_text, expressions)."""
+    exprs = []
+    def grab(m):
+        exprs.append(m.group(0)); return ' '
+    s = re.sub(r'<\?.*?\?>|\{\{.*?\}\}|\{!!.*?!!\}', grab, s, flags=re.S)
+    out, i = [], 0
+    while i < len(s):                      # ${ ... } with nesting
+        if s.startswith('${', i):
+            depth, j = 1, i + 2
+            while j < len(s) and depth:
+                depth += {'{': 1, '}': -1}.get(s[j], 0); j += 1
+            exprs.append(s[i:j]); out.append(' '); i = j
+        else:
+            out.append(s[i]); i += 1
+    return ''.join(out), exprs
+
+
+def concat_strings(s, q):
+    """HTML built by JS string concatenation, e.g. class="tile' + (est ? ' est' : '') + '".
+    Splitting on the JS quote alternates string / code / string ...; keep only the string parts."""
+    parts = s.split(q)
+    return ' '.join(parts[0::2])
+
+
+def looks_like_class(t):
+    if not CLASS_TOKEN.match(t) or not re.search(r'[A-Za-z]', t):
+        return False
+    if re.search(r'(?<![0-9])\.|\.(?![0-9])', t):      # dots only inside numbers (px-4.5), not c.id
+        return False
+    if '[' in t and not re.search(r'-\[', t):          # brackets only for arbitrary values (w-[10px])
+        return False
+    return True
+
+
+def class_tokens(val, outer_quote):
+    static, exprs = strip_template(val)
+    inner = "'" if outer_quote == '"' else '"'
+    if inner in static and '+' in static:
+        static = concat_strings(static, inner)
+    toks = static.split()
+    for e in exprs:                        # classes inside ${...} or PHP/Blade: only quoted literals count
+        for m in STR_LIT.finditer(e):
+            before = e[:m.start()].rstrip()
+            after = e[m.end():].lstrip()
+            if before.endswith('[') or after.startswith(']'):
+                continue                   # array key: $errors['nama']
+            if re.search(r'[A-Za-z0-9_]\s*\($', before) or (before.endswith(',') and re.search(r'[A-Za-z_]\w*\s*\([^()]*$', before)):
+                continue                   # function argument: __('label'), e('x', 'y')
+            toks += ''.join(m.groups(default='')).split()
+    return [t for t in toks if looks_like_class(t)]
+
+
 def check_classes(files, extra_css, myds_css):
     if not myds_css:
         try:
             fetch(MYDS_CSS_URL)
-            myds_css = os.path.join(CACHE, re.sub(r'[^a-z0-9]+', '_', MYDS_CSS_URL.lower()) + '.txt')
+            myds_css = cache_path(MYDS_CSS_URL)
         except Exception as e:
             sys.exit(f"Could not download {MYDS_CSS_URL} ({e}). Download it yourself and pass --myds-css <path>.")
     known = css_selectors([myds_css] + extra_css)
     missing = {}
     for f in files:
         src = open(f, encoding='utf8', errors='replace').read()
-        for m in re.finditer(r'class(?:Name)?\s*=\s*(["\'])(.*?)\1', src, re.S):
-            val = re.sub(r'<\?.*?\?>|\{\{.*?\}\}|\$\{.*?\}', ' ', m.group(2), flags=re.S)
-            for c in val.split():
+        for m in re.finditer(r'\bclass(?:Name)?\s*=\s*(["\'])(.*?)\1', src, re.S):
+            for c in class_tokens(m.group(2), m.group(1)):
                 if c not in known and not c.startswith(('js-', 'is-', 'has-')):
+                    missing.setdefault(c, set()).add(os.path.basename(f))
+        for m in re.finditer(r'classList\.(?:add|toggle|remove)\(\s*([\'"])([^\'"]+)\1', src):
+            for c in m.group(2).split():
+                if CLASS_TOKEN.match(c) and c not in known and not c.startswith(('js-', 'is-', 'has-')):
                     missing.setdefault(c, set()).add(os.path.basename(f))
     if not missing:
         print('All classes are defined (MYDS 1.0.0 + given CSS).')
@@ -269,8 +418,12 @@ if __name__ == '__main__':
     l = sp.add_parser('list'); l.add_argument('--category', default='')
     r = sp.add_parser('retrieve'); r.add_argument('ids'); r.add_argument('--lang', default='both')
     c = sp.add_parser('check-classes'); c.add_argument('files', nargs='+'); c.add_argument('--css', nargs='*', default=[]); c.add_argument('--myds-css', default='')
+    pf = sp.add_parser('prefetch'); pf.add_argument('ids', help="comma-separated ids, a category name, or 'all'"); pf.add_argument('--lang', default='both')
+    tk = sp.add_parser('tokens'); tk.add_argument('--filter', default=''); tk.add_argument('--myds-css', default='')
     a = ap.parse_args()
+    if a.cmd == 'tokens': tokens(a.filter, a.myds_css); sys.exit()
     if a.cmd == 'search': search(a.query, a.limit)
     elif a.cmd == 'list': do_list(a.category)
+    elif a.cmd == 'prefetch': prefetch(a.ids, a.lang)
     elif a.cmd == 'check-classes': check_classes(a.files, a.css, a.myds_css)
     else: retrieve(a.ids, a.lang)

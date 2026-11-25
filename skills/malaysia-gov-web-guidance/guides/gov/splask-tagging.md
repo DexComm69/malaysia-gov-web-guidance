@@ -78,7 +78,10 @@ Not tagged; measured by SPLaSK itself: loading time, downtime, browser compatibi
 2. **Tag the real element** (the visible search form, the footer link) wherever possible. Then the tag stays true even if the page is redesigned.
 3. If you need an invisible marker, take it out of the tab order and the accessibility tree: `<a href="/faq" splwpk-faq="splwpk-faq" timestamp="…" hidden></a>`. JDN uses `style="display:none"` on an `<a>`. Some portals put links inside `class="sr-only" aria-hidden="true"`, but a focusable link under `aria-hidden` is a WCAG failure, so don't copy that.
 4. **Spell tags exactly.** Live sites have typos the crawler will not match, for example `splwpk-elecronic-archive` and `splwpk-advanced-search-funtion`. Copy names from the table above.
-5. Put tags on the **home page**, which is where all three reference portals put them. Tags on inner pages may not be crawled.
+5. **Where tags go.** The crawler reads the **home page**, which is where all three reference portals put their tags.
+   - **Shared header and footer** (search, multilang, w3c, privacy-policy, pdpa, sitemap, feedback-form): render them in the shared layout, so they appear on the home page and, harmlessly, on every inner page too.
+   - **Timestamped "updated content" tags** (news, broadcast, about-us, contact-details, faq and so on) belong on the home page, where the links to that content live. Fill each timestamp from the real `updated_at` of that content.
+   - **An inner service page** (a form, a listing) needs only the shared layout tags. Don't add timestamped tags there just to have them. If a real date isn't available, leave the tag out rather than inventing one.
 6. A timestamp must reflect a **real content update**. A fake or auto-refreshed timestamp defeats the purpose of the "Updated Content" criterion, and auditors can compare it with the actual content.
 7. After deploying, check with *View Source* or `curl -s https://site | grep -o 'splwpk-[a-z-]*' | sort -u`.
 

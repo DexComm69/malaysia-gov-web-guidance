@@ -87,6 +87,22 @@ Headings use Poppins (`font-heading`): h1 36/44px, h2 30/38, h3 24/32, h4 20/28,
 - **Available as HTML/CSS:** Button (`develop-ta-button`) and Toggle (`develop-ta-toggle`). Their CSS is in https://github.com/govtechmy/myds/blob/main/apps/docs/public/assets/ta-preview.
 - **Official component is React-only; plain HTML version in this skill:** Masthead (`masthead-html`).
 - **Everything else:** read the component's *design* guide (`design-<name>`) for anatomy, states and spacing, and the *develop* guide (`develop-<name>`) for structure and ARIA. Then build it in HTML with tokens. Prefer native elements (`<details>`, `<dialog>`, `<select>`, `<input type="date">`) wherever they meet the design. The other `ta-*` pages are still "Work In Progress" at the source.
+- **A React-only component in a non-React project is not a conflict to ask about.** Use the native HTML element styled with MYDS tokens, for example `<input type="date">` for the date picker, and mention it in the reply. Only ask if the user specifically wants the MYDS look of that component.
+
+### 8. Token names
+
+To list every theme token with its light and dark value, run `python scripts/mgwg.py tokens` (or `tokens --filter otl`). Use those names instead of guessing.
+
+### 9. Known conflict: input border contrast (MYDS vs WCAG)
+
+MYDS outlines inputs with `otl-gray-200` (#E4E4E7, **1.27:1** on white) or `otl-gray-300` (#D4D4D8, **1.48:1**). WCAG 2.2 success criterion 1.4.11 (non-text contrast) requires **3:1** for the visual boundary that identifies a form control. A thin light-grey border is usually the only boundary of a text input, so it fails unless the field also has a distinct background fill.
+
+This is a conflict between two official requirements, so follow SKILL.md: **ask the user**. Give the options:
+- keep the MYDS border;
+- use a darker token for input borders only, for example `--_gray-500` (#6B6B74, 5.28:1);
+- give fields a filled background that meets 3:1 against the page.
+
+Recommend the darker border, because accessibility is a legal and SPLaSK requirement and the visual change is small. In a non-interactive run, keep the MYDS default and list this as the first question.
 
 ## Bahasa Melayu
 
@@ -97,4 +113,6 @@ MYDS terdiri daripada dua pakej: `@govtechmy/myds-style` (CSS: token dan kelas u
 3. Mod cerah wajib disokong secara lalai; mod gelap pilihan melalui kelas `.dark` pada `<html>`.
 4. *Stylesheet* ini ialah binaan Tailwind yang dipangkas, jadi tidak semua kelas utiliti wujud. Semak dengan `mgwg.py check-classes`, dan tulis CSS sendiri menggunakan token untuk kelas yang tiada.
 5. Grid 12-8-4: desktop ≥1024px 12 lajur (jarak 24px, lebar maksimum 1280px); tablet 768–1023px 8 lajur (24px); mudah alih ≤767px 4 lajur (18px). Lebar teks artikel maksimum 640px.
-6. Komponen HTML/CSS rasmi setakat ini hanya Butang dan *Toggle*. Gunakan `masthead-html` untuk *masthead*. Komponen lain dibina sendiri berdasarkan panduan reka bentuk MYDS.
+6. Komponen HTML/CSS rasmi setakat ini hanya Butang dan *Toggle*. Gunakan `masthead-html` untuk *masthead*. Komponen lain dibina sendiri berdasarkan panduan reka bentuk MYDS. Komponen yang hanya ada dalam React (contoh: pemilih tarikh) diganti dengan elemen HTML asli yang digayakan dengan token MYDS; ini bukan konflik yang perlu ditanya.
+7. Senarai nama token: `python scripts/mgwg.py tokens`.
+8. **Konflik diketahui:** warna garis luar medan input MYDS (`otl-gray-200`, 1.27:1) gagal syarat kontras WCAG 1.4.11 (3:1). Tanya pengguna: kekalkan warna MYDS, guna garis lebih gelap (contoh `--_gray-500`, 5.28:1), atau beri medan latar berwarna.
