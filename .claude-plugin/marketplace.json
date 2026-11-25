@@ -1,0 +1,14 @@
+{
+  "name": "malaysia-gov-web-guidance",
+  "owner": { "name": "DexComm69" },
+  "metadata": { "description": "Unofficial Claude skill for Malaysian government web standards (MYDS and SPLaSK)." },
+  "plugins": [
+    {
+      "name": "malaysia-gov-web-guidance",
+      "source": "./",
+      "description": "MYDS components, tokens and patterns, plus SPLaSK criteria and splwpk-* tagging, in English and Bahasa Melayu.",
+      "version": "1.0.0",
+      "license": "MIT"
+    }
+  ]
+}

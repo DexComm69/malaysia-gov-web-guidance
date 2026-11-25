@@ -1,0 +1,86 @@
+---
+name: malaysia-gov-web-guidance
+description: "Unofficial guide to Malaysian government web standards: MYDS (Malaysia Government Design System, design.digital.gov.my) components, tokens, grid, typography, accessibility and page patterns, plus JDN's SPLaSK website-monitoring criteria and the splwpk-* HTML tags its crawler reads. Bilingual (English + Bahasa Melayu). Use it FIRST whenever building, reviewing or documenting a Malaysian public-sector website, portal, online service or internal system: anything for a kementerian, jabatan, agensi, badan berkanun, PBT/majlis, state government or a .gov.my site, or when the user mentions MYDS, SPLaSK, JDN, MAMPU, PKPA, GovTech Malaysia, masthead, 'portal rasmi' or government UI/UX compliance, even if they only ask for a login page, header, footer, form or dashboard. Do NOT use for non-government projects (use modern-web-guidance there), or for backend-only work (SQL, APIs, deployment)."
+---
+
+# Malaysia Government Web Guidance
+
+> **Unofficial.** This skill is not made, endorsed or maintained by Jabatan Digital Negara (JDN), GovTech Malaysia or any government agency. It points to the official sources and summarises them. When the official source and this skill disagree, the official source wins. Tell the user so whenever it matters.
+
+Malaysian public-sector sites are judged against two things a model's training data covers poorly:
+
+1. **MYDS** (Malaysia Government Design System): the official look, tokens and components from GovTech Malaysia / JDN, documented at design.digital.gov.my.
+2. **SPLaSK**: JDN's automated monitor, which scores every official agency portal (ministries, departments, statutory bodies, state governments and local councils) against 24 criteria. Most criteria are detected only through custom `splwpk-*` HTML attributes. A page can have a perfect search box or feedback form and still score zero for it if the tag is missing.
+
+The skill has two kinds of guides:
+- **Hand-written guides** (`guides/gov/`): SPLaSK overview, tagging, criteria checklist, a plain-HTML masthead, and MYDS without React. Each has an English section and a Bahasa Melayu section.
+- **MYDS documentation pages**, about 115 of them: the index holds only titles and links. `retrieve` reads each page **live from design.digital.gov.my**, in English and/or Malay, and caches it for 7 days. This needs internet access the first time.
+
+## Step 1: Search
+
+```sh
+python "<this-skill-dir>/scripts/mgwg.py" search "<what you are building>"
+```
+
+Queries can be in English or Malay ("borang maklum balas", "log masuk", "footer with privacy policy"). Run 1–3 searches covering the distinct parts of the task, for example the page pattern, its components and the compliance rules. To browse: `python ".../mgwg.py" list` (or `list --category gov`).
+
+Categories:
+- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page.
+- `myds-foundation`: grid, colour, typography, icons, motion, radius, shadow, spacing.
+- `myds-component-design`: a component's design spec (anatomy, states, do's and don'ts).
+- `myds-component-react` / `myds-react-hook`: a component's React API.
+- `myds-html-css`: non-React components (only Button and Toggle are complete; the rest are stubs at the source).
+- `myds-pattern`: login, registration, forgot password, landing page, standard page, contact us.
+- `myds-setup`, `accessibility`, `splask`.
+
+## Step 2: Retrieve
+
+```sh
+python ".../mgwg.py" retrieve <id>[,<id>...] --lang en     # English only, to save context
+python ".../mgwg.py" retrieve <id> --lang ms               # official Malay wording
+```
+
+Retrieve the 3–6 guides that matter most for the task, not every hit. Each guide costs context, and extra ones rarely change the result. Fetch another one later if a specific question comes up. Use `--lang ms` or `both` when the user is writing Malay UI text or formal documents (URS/SRS).
+
+If a live fetch fails (offline, or a site change), say so, give the user the page URL, and continue with the hand-written guides. Don't fill the gap from memory as if it were MYDS.
+
+**Match the guides to the project's stack.** MYDS components are React. If the project is plain PHP/HTML/Blade (no React), retrieve `myds-plain-html-php` and `masthead-html`, and use each component's `design-*` page for its anatomy rather than copying React code.
+
+## Step 3: Build and verify against the guides
+
+- Use MYDS tokens (`rgb(var(--txt-black-900))`), not hand-picked hex values. Use the 12-8-4 grid, Poppins for headings and Inter for body text.
+- Render `splwpk-*` attributes server-side, with the exact spelling from `splask-tagging`, and give "updated content" tags a real `timestamp`.
+- Meet the accessibility rules in `develop-accessibility` (WCAG 2.2: labels, keyboard support, focus, semantics).
+- For non-React projects, run `python ".../mgwg.py" check-classes <changed templates> --css <project css>` to catch utility classes that the purged MYDS stylesheet doesn't define.
+- Confirm the result does what the user asked. Don't add features they didn't request just because a guide mentions them; list relevant compliance gaps at the end instead.
+
+## Conflicts: always ask, before building
+
+When a government guide disagrees with another source of guidance, **don't pick one yourself**. The other source might be modern-web-guidance, the project's own conventions (CLAUDE.md, an existing design system, the agency's branding) or the user's request. Examples: MYDS primary blue vs an agency's own colours, Poppins/Inter vs the project's fonts, a React-only MYDS component vs a PHP stack, a hidden SPLaSK marker vs an accessibility rule.
+
+1. Do the parts that don't conflict.
+2. Ask the user (AskUserQuestion when available). Give both rules, each with its source (guide id and URL), what each choice means for this task, and your recommendation.
+3. Ask before building anything that depends on the answer, every time. Don't build your recommended option and ask afterwards, and don't reuse an answer from a different project or an earlier task.
+4. If you truly cannot ask (a non-interactive run), use the MYDS default. Put the question at the top of your reply and say which option you assumed.
+
+The same applies when the official sources disagree with each other (for example SPLaSK's 6 vs 7 dimensions): state the discrepancy rather than smoothing it over.
+
+## Language of reports and documents
+
+Before writing a report, audit, checklist or other document (as opposed to UI text), ask which language the user wants: Bahasa Melayu, English, or both. Don't infer it from the language of the request. UI strings follow the site's own languages (BM default, with an EN switch on gov sites).
+
+## How much to trust each guide
+
+- Hand-written guides carry `sources`, `status` and `retrieved` in their frontmatter. MYDS pages are always the live official text.
+- `status: stub`: the source page is a placeholder. Say so, and fall back to the design page or general best practice.
+- The SPLaSK tag list was taken from live government portals, because JDN's official *Manual Tagging SPLaSK 2.0* could not be obtained. Tags marked "community module only" or "unverified" need confirming. If the user or their agency's SPLaSK supervisor has the manual, it wins.
+- If the user reports a newer MYDS release or SPLaSK change, trust them and say the hand-written guide may be out of date.
+
+## Step 4: Disclose
+
+In the response where you deliver work shaped by these guides, end with a section headed `### Panduan Web Kerajaan`:
+- One bullet per guide that actually changed what you built: `- **\`<id>\`**: <the non-obvious choice it drove and the mistake it prevented> ("<short verbatim quote of the rule>")`. Keep each bullet to 2 sentences or fewer.
+- Then, if any apply: **Open compliance items:** things this page still needs for SPLaSK or MYDS that you didn't build.
+- Only cite guides you retrieved in this turn. Never quote from memory after context compaction; re-run `retrieve` instead.
+
+If you searched but no guide applied, say in one sentence what you checked.

@@ -1,0 +1,10 @@
+{
+  "name": "malaysia-gov-web-guidance",
+  "version": "1.0.0",
+  "description": "Unofficial guide to Malaysian government web standards: MYDS design system and JDN's SPLaSK criteria and splwpk-* tags. Bilingual (English and Bahasa Melayu).",
+  "author": { "name": "DexComm69" },
+  "homepage": "https://github.com/DexComm69/malaysia-gov-web-guidance",
+  "repository": "https://github.com/DexComm69/malaysia-gov-web-guidance",
+  "license": "MIT",
+  "keywords": ["malaysia", "myds", "splask", "government", "gov.my", "accessibility", "bahasa-melayu"]
+}

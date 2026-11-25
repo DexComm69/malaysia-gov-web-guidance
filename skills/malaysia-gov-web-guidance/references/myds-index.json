@@ -1,0 +1,2029 @@
+{
+ "note": "Index of public MYDS documentation pages (titles, section headings and links only). Content is fetched live from design.digital.gov.my by scripts/mgwg.py.",
+ "retrieved": "2026-11-25",
+ "pages": [
+  {
+   "id": "develop-accessibility",
+   "category": "accessibility",
+   "title": "Accessibility",
+   "title_ms": "Kebolehcapaian",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/accessibility",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/accessibility",
+   "status": "current",
+   "sections": [
+    "Core Principles",
+    "Keyboard Navigation",
+    "Focus Management",
+    "Semantic HTML and ARIA",
+    "Forms and Validation",
+    "Images and Media",
+    "Color and Contrast",
+    "Motion and Animation",
+    "Interactive Components",
+    "Page Structure and Navigation",
+    "Content and Text",
+    "WCAG 2.2 New Success Criteria",
+    "Testing and Validation",
+    "Automated Testing",
+    "Manual Testing",
+    "Tools",
+    "eslint-plugin-jsx-a11y",
+    "jest-axe",
+    "IBM Equal Access Toolkit",
+    "Storybook",
+    "Resource & References",
+    "WCAG 2.2 Documentation",
+    "WCAG 2.2 Success Criteria",
+    "React Accessibility Docs",
+    "WAI-ARIA Authoring Practices"
+   ]
+  },
+  {
+   "id": "develop-accessibility-test",
+   "category": "accessibility",
+   "title": "Accessibility Test",
+   "title_ms": "Alat Ujian Kebolehcapaian",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/accessibility-test",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/accessibility-test",
+   "status": "current",
+   "sections": [
+    "Automated Testing Tools",
+    "ESLint Plugin: jsx-a11y",
+    "Storybook: a11y-addon",
+    "VS Code: axe Accessibility Linter",
+    "Resource & References",
+    "jsx-a11y",
+    "Storybook accessibility testing",
+    "axe Accessibility Linter"
+   ]
+  },
+  {
+   "id": "design-accordion",
+   "category": "myds-component-design",
+   "title": "Accordion",
+   "title_ms": "Akordion",
+   "url_en": "https://design.digital.gov.my/en/docs/design/accordion",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/accordion",
+   "status": "current",
+   "sections": [
+    "State",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-alert-dialog",
+   "category": "myds-component-design",
+   "title": "Alert dialog",
+   "title_ms": "Dialog amaran",
+   "url_en": "https://design.digital.gov.my/en/docs/design/alert-dialog",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/alert-dialog",
+   "status": "current",
+   "sections": [
+    "Size",
+    "Desktop/Tablet",
+    "Mobile",
+    "Section",
+    "Header",
+    "Footer",
+    "Usage example",
+    "Forms",
+    "Alerts"
+   ]
+  },
+  {
+   "id": "design-backlink",
+   "category": "myds-component-design",
+   "title": "Backlink",
+   "title_ms": "Pautan kembali",
+   "url_en": "https://design.digital.gov.my/en/docs/design/backlink",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/backlink",
+   "status": "current",
+   "sections": [
+    "State"
+   ]
+  },
+  {
+   "id": "design-breadcrumb",
+   "category": "myds-component-design",
+   "title": "Breadcrumb",
+   "title_ms": "Breadcrumb",
+   "url_en": "https://design.digital.gov.my/en/docs/design/breadcrumb",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/breadcrumb",
+   "status": "current",
+   "sections": [
+    "Hover state",
+    "Wrapper",
+    "Limit title length"
+   ]
+  },
+  {
+   "id": "design-button",
+   "category": "myds-component-design",
+   "title": "Button",
+   "title_ms": "Butang",
+   "url_en": "https://design.digital.gov.my/en/docs/design/button",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/button",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Size",
+    "Appearance state",
+    "Leading & Trailing icon",
+    "Counter",
+    "Icon only",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-callout",
+   "category": "myds-component-design",
+   "title": "Callout",
+   "title_ms": "Callout",
+   "url_en": "https://design.digital.gov.my/en/docs/design/callout",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/callout",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Close Icon",
+    "Action Buttons",
+    "Usage example",
+    "Forms",
+    "Page"
+   ]
+  },
+  {
+   "id": "design-character-count",
+   "category": "myds-component-design",
+   "title": "Character count",
+   "title_ms": "Penghitung aksara",
+   "url_en": "https://design.digital.gov.my/en/docs/design/character-count",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/character-count",
+   "status": "current",
+   "sections": [
+    "State"
+   ]
+  },
+  {
+   "id": "design-checkbox",
+   "category": "myds-component-design",
+   "title": "Checkbox",
+   "title_ms": "Kotak semak",
+   "url_en": "https://design.digital.gov.my/en/docs/design/checkbox",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/checkbox",
+   "status": "current",
+   "sections": [
+    "Size",
+    "State",
+    "Property",
+    "Checked",
+    "Indeterminate",
+    "Label size",
+    "Hint text"
+   ]
+  },
+  {
+   "id": "design-cookies-banner",
+   "category": "myds-component-design",
+   "title": "Cookies banner",
+   "title_ms": "Banner kuki",
+   "url_en": "https://design.digital.gov.my/en/docs/design/cookies-banner",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/cookies-banner",
+   "status": "current",
+   "sections": [
+    "State",
+    "Mobile view",
+    "Cookie banner location",
+    "Usage example"
+   ]
+  },
+  {
+   "id": "design-date-field",
+   "category": "myds-component-design",
+   "title": "Date field",
+   "title_ms": "Input tarikh",
+   "url_en": "https://design.digital.gov.my/en/docs/design/date-field",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/date-field",
+   "status": "current",
+   "sections": [
+    "Field highlight",
+    "Size",
+    "State",
+    "Error"
+   ]
+  },
+  {
+   "id": "design-date-picker",
+   "category": "myds-component-design",
+   "title": "Date picker",
+   "title_ms": "Pemilih tarikh",
+   "url_en": "https://design.digital.gov.my/en/docs/design/date-picker",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/date-picker",
+   "status": "current",
+   "sections": [
+    "Month and Year picker",
+    "Navigate in between views",
+    "Language",
+    "Single date selection",
+    "Range date selection",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-details",
+   "category": "myds-component-design",
+   "title": "Details",
+   "title_ms": "Butiran",
+   "url_en": "https://design.digital.gov.my/en/docs/design/details",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/details",
+   "status": "current",
+   "sections": [
+    "State",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-file-upload",
+   "category": "myds-component-design",
+   "title": "File upload",
+   "title_ms": "Muat naik fail",
+   "url_en": "https://design.digital.gov.my/en/docs/design/file-upload",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/file-upload",
+   "status": "current",
+   "sections": [
+    "File preview",
+    "State",
+    "Loading",
+    "File upload",
+    "Usage example",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-inset-text",
+   "category": "myds-component-design",
+   "title": "Inset text",
+   "title_ms": "Teks sisipan",
+   "url_en": "https://design.digital.gov.my/en/docs/design/inset-text",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/inset-text",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Usage example"
+   ]
+  },
+  {
+   "id": "design-pagination",
+   "category": "myds-component-design",
+   "title": "Pagination",
+   "title_ms": "Penomboran halaman",
+   "url_en": "https://design.digital.gov.my/en/docs/design/pagination",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/pagination",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Previous & Next button",
+    "Pagination numbers"
+   ]
+  },
+  {
+   "id": "design-panel",
+   "category": "myds-component-design",
+   "title": "Panel",
+   "title_ms": "Panel",
+   "url_en": "https://design.digital.gov.my/en/docs/design/panel",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/panel",
+   "status": "current",
+   "sections": [
+    "Colour",
+    "Usage example",
+    "Informational Blue",
+    "Success Green",
+    "Warning Yellow",
+    "Danger Red"
+   ]
+  },
+  {
+   "id": "design-password-input",
+   "category": "myds-component-design",
+   "title": "Password input",
+   "title_ms": "Input kata laluan",
+   "url_en": "https://design.digital.gov.my/en/docs/design/password-input",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/password-input",
+   "status": "current",
+   "sections": [
+    "Show/Hide icon trigger area",
+    "State",
+    "Size"
+   ]
+  },
+  {
+   "id": "design-phase-banner",
+   "category": "myds-component-design",
+   "title": "Phase banner",
+   "title_ms": "Banner fasa",
+   "url_en": "https://design.digital.gov.my/en/docs/design/phase-banner",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/phase-banner",
+   "status": "current",
+   "sections": [
+    "Responsive view",
+    "Usage examples",
+    "Status type",
+    "Placement"
+   ]
+  },
+  {
+   "id": "design-pill",
+   "category": "myds-component-design",
+   "title": "Pill",
+   "title_ms": "Pill",
+   "url_en": "https://design.digital.gov.my/en/docs/design/pill",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/pill",
+   "status": "current",
+   "sections": [
+    "Size",
+    "Disabled",
+    "Trailing icon"
+   ]
+  },
+  {
+   "id": "design-radio",
+   "category": "myds-component-design",
+   "title": "Radio",
+   "title_ms": "Radio",
+   "url_en": "https://design.digital.gov.my/en/docs/design/radio",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/radio",
+   "status": "current",
+   "sections": [
+    "Size",
+    "State",
+    "Checked",
+    "Radio group",
+    "Label Size",
+    "Hint text"
+   ]
+  },
+  {
+   "id": "design-search-bar",
+   "category": "myds-component-design",
+   "title": "Search bar",
+   "title_ms": "Search Bar",
+   "url_en": "https://design.digital.gov.my/en/docs/design/search-bar",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/search-bar",
+   "status": "current",
+   "sections": [
+    "Size",
+    "States",
+    "Search result dropdown"
+   ]
+  },
+  {
+   "id": "design-select",
+   "category": "myds-component-design",
+   "title": "Select",
+   "title_ms": "Pilihan",
+   "url_en": "https://design.digital.gov.my/en/docs/design/select",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/select",
+   "status": "current",
+   "sections": [
+    "Select button",
+    "Type",
+    "Size",
+    "State",
+    "Counter",
+    "Icon only",
+    "Select menu",
+    "Menu list type",
+    "Menu list state",
+    "Dropdown menu",
+    "Grouped menu items",
+    "Dropdown menu size",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-skip-link",
+   "category": "myds-component-design",
+   "title": "Skip link",
+   "title_ms": "Pautan langkau",
+   "url_en": "https://design.digital.gov.my/en/docs/design/skip-link",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/skip-link",
+   "status": "current",
+   "sections": [
+    "Where to use?",
+    "How it works?",
+    "What if user continue to press TAB?",
+    "Demo",
+    "Press TAB → Enter",
+    "Press TAB → TAB → TAB .."
+   ]
+  },
+  {
+   "id": "design-summary-list",
+   "category": "myds-component-design",
+   "title": "Summary list",
+   "title_ms": "Senarai ringkasan",
+   "url_en": "https://design.digital.gov.my/en/docs/design/summary-list",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/summary-list",
+   "status": "current",
+   "sections": [
+    "Usage examples"
+   ]
+  },
+  {
+   "id": "design-switch",
+   "category": "myds-component-design",
+   "title": "Switch",
+   "title_ms": "Suis",
+   "url_en": "https://design.digital.gov.my/en/docs/design/switch",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/switch",
+   "status": "current",
+   "sections": [
+    "Size",
+    "State",
+    "Checked",
+    "Toggle group",
+    "Label size"
+   ]
+  },
+  {
+   "id": "design-table",
+   "category": "myds-component-design",
+   "title": "Table",
+   "title_ms": "Jadual",
+   "url_en": "https://design.digital.gov.my/en/docs/design/table",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/table",
+   "status": "current",
+   "sections": [
+    "Usage examples",
+    "Expand column",
+    "Sort column"
+   ]
+  },
+  {
+   "id": "design-tabs",
+   "category": "myds-component-design",
+   "title": "Tabs",
+   "title_ms": "Tabs",
+   "url_en": "https://design.digital.gov.my/en/docs/design/tabs",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/tabs",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Size",
+    "State",
+    "Leading icon",
+    "Counter"
+   ]
+  },
+  {
+   "id": "design-tag",
+   "category": "myds-component-design",
+   "title": "Tag",
+   "title_ms": "Tag",
+   "url_en": "https://design.digital.gov.my/en/docs/design/tag",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/tag",
+   "status": "current",
+   "sections": [
+    "Status tag type",
+    "Style",
+    "Size",
+    "Status dot (Optional)"
+   ]
+  },
+  {
+   "id": "design-task-list",
+   "category": "myds-component-design",
+   "title": "Task list",
+   "title_ms": "Task list",
+   "url_en": "https://design.digital.gov.my/en/docs/design/task-list",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/task-list",
+   "status": "current",
+   "sections": [
+    "State",
+    "Usage example",
+    "Grouping tasks"
+   ]
+  },
+  {
+   "id": "design-text-input",
+   "category": "myds-component-design",
+   "title": "Text input",
+   "title_ms": "Input teks",
+   "url_en": "https://design.digital.gov.my/en/docs/design/text-input",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/text-input",
+   "status": "current",
+   "sections": [
+    "Text input",
+    "Type",
+    "Size",
+    "State",
+    "Error state",
+    "Leading & Trailing icon",
+    "Text input group",
+    "Hint text",
+    "Hint order",
+    "WYSIWYG editor",
+    "Responsive view",
+    "Button type",
+    "Button state",
+    "Usage example"
+   ]
+  },
+  {
+   "id": "design-toast",
+   "category": "myds-component-design",
+   "title": "Toast",
+   "title_ms": "Toast",
+   "url_en": "https://design.digital.gov.my/en/docs/design/toast",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/toast",
+   "status": "current",
+   "sections": [
+    "Type",
+    "Close icon state",
+    "Toast location",
+    "Toast with Progress Bar",
+    "Demo"
+   ]
+  },
+  {
+   "id": "design-tooltip",
+   "category": "myds-component-design",
+   "title": "Tooltip",
+   "title_ms": "Tooltip",
+   "url_en": "https://design.digital.gov.my/en/docs/design/tooltip",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/tooltip",
+   "status": "current",
+   "sections": [
+    "Minimum trigger size",
+    "Tooltip direction",
+    "Tooltip alignment",
+    "Description length",
+    "Demo",
+    "Small trigger area",
+    "Large trigger area"
+   ]
+  },
+  {
+   "id": "develop-accordion",
+   "category": "myds-component-react",
+   "title": "Accordion",
+   "title_ms": "Akordion",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/accordion",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/accordion",
+   "status": "current",
+   "sections": [
+    "What is MYDS?",
+    "Who is it built for?",
+    "Is it open source?",
+    "SourceStorybook",
+    "Usage",
+    "Import",
+    "Examples",
+    "Type",
+    "Collapsible",
+    "Disabled",
+    "Example of disabled AccordionItem ⛔",
+    "Props",
+    "Accordion",
+    "AccordionItem",
+    "AccordionTrigger",
+    "AccordionContent"
+   ]
+  },
+  {
+   "id": "develop-alert-dialog",
+   "category": "myds-component-react",
+   "title": "Alert Dialog",
+   "title_ms": "Dialog Amaran",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/alert-dialog",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/alert-dialog",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Trigger",
+    "Uncontrolled vs Controlled State",
+    "Dismissible",
+    "Alignment",
+    "Action",
+    "Props",
+    "AlertDialog",
+    "AlertDialogContent",
+    "AlertDialogAction"
+   ]
+  },
+  {
+   "id": "develop-announcebar",
+   "category": "myds-component-react",
+   "title": "Announce Bar",
+   "title_ms": "Bar Pengumuman",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/announcebar",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/announcebar",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Props",
+    "AnnounceBar",
+    "AnnounceBarTag",
+    "AnnounceBarDescription"
+   ]
+  },
+  {
+   "id": "develop-breadcrumb",
+   "category": "myds-component-react",
+   "title": "Breadcrumb",
+   "title_ms": "Breadcrumb",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/breadcrumb",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/breadcrumb",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Link vs Page",
+    "Ellipsis Crumb",
+    "Props",
+    "Breadcrumb"
+   ]
+  },
+  {
+   "id": "develop-button",
+   "category": "myds-component-react",
+   "title": "Button",
+   "title_ms": "Butang",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/button",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/button",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Size",
+    "With Icon",
+    "Icon Only",
+    "With Counter",
+    "Props",
+    "Button",
+    "ButtonIcon",
+    "ButtonCounter"
+   ]
+  },
+  {
+   "id": "develop-callout",
+   "category": "myds-component-react",
+   "title": "Callout",
+   "title_ms": "Callout",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/callout",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/callout",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Layout",
+    "Dismissible",
+    "Props",
+    "Callout"
+   ]
+  },
+  {
+   "id": "develop-carousel",
+   "category": "myds-component-react",
+   "title": "Carousel",
+   "title_ms": "Karusel",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/carousel",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/carousel",
+   "status": "current",
+   "sections": [
+    "Overview",
+    "How It Works",
+    "Usage"
+   ]
+  },
+  {
+   "id": "develop-checkbox",
+   "category": "myds-component-react",
+   "title": "Checkbox",
+   "title_ms": "Kotak Semak",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/checkbox",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/checkbox",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Uncontrolled vs Controlled State",
+    "Disabled",
+    "Indeterminate",
+    "Props",
+    "Checkbox"
+   ]
+  },
+  {
+   "id": "develop-cookies-banner",
+   "category": "myds-component-react",
+   "title": "Cookies Banner",
+   "title_ms": "Banner Kuki",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/cookies-banner",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/cookies-banner",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Uncontrolled vs Controlled State",
+    "Preference Call-to-Action (CTA)",
+    "Props",
+    "CookieBanner",
+    "CookieBannerTitle",
+    "CookieBannerDescription",
+    "CookieBannerPreferences",
+    "CookieBannerPreferencesTrigger",
+    "CookieBannerAction",
+    "CookieBannerClose"
+   ]
+  },
+  {
+   "id": "develop-data-table",
+   "category": "myds-component-react",
+   "title": "Data Table",
+   "title_ms": "Jadual Data",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/data-table",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/data-table",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Data & Columns",
+    "Expanding Columns",
+    "Tooltip on Column Headers",
+    "Sorting",
+    "Skeleton Loading",
+    "Empty Table",
+    "Row Selection",
+    "Grouped Header",
+    "Fixed/Sticky Header",
+    "Nested Rows",
+    "Pinned Columns",
+    "Table Footer",
+    "Props",
+    "DataTable",
+    "DataTable ColumnDef"
+   ]
+  },
+  {
+   "id": "develop-date-field",
+   "category": "myds-component-react",
+   "title": "Date Field",
+   "title_ms": "Medan Tarikh",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/date-field",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/date-field",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Uncontrolled vs Controlled State",
+    "Disabled",
+    "Invalid",
+    "Props",
+    "DateField"
+   ]
+  },
+  {
+   "id": "develop-date-picker",
+   "category": "myds-component-react",
+   "title": "Date Picker",
+   "title_ms": "Pemilih Tarikh",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/date-picker",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/date-picker",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Uncontrolled vs Controlled State",
+    "Disabled",
+    "Maximum and Minimum Year",
+    "Year Sort Order",
+    "Locale",
+    "Props",
+    "DatePicker"
+   ]
+  },
+  {
+   "id": "develop-daterange-picker",
+   "category": "myds-component-react",
+   "title": "Date Range Picker",
+   "title_ms": "Pemilih Julat Tarikh",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/daterange-picker",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/daterange-picker",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Uncontrolled vs Controlled State",
+    "Disabled",
+    "Maximum and Minimum Year",
+    "Year Sort Order",
+    "Locale",
+    "Props",
+    "DateRangePicker"
+   ]
+  },
+  {
+   "id": "develop-dialog",
+   "category": "myds-component-react",
+   "title": "Dialog",
+   "title_ms": "Dialog",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/dialog",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/dialog",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Trigger",
+    "Uncontrolled vs Controlled State",
+    "Dismissible",
+    "Border",
+    "Alignment",
+    "Action",
+    "Props",
+    "Dialog",
+    "DialogBody",
+    "DialogHeader",
+    "DialogFooter"
+   ]
+  },
+  {
+   "id": "develop-dropdown",
+   "category": "myds-component-react",
+   "title": "Dropdown",
+   "title_ms": "Dropdown",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/dropdown",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/dropdown",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Trigger",
+    "Uncontrolled vs Controlled State",
+    "With Icon",
+    "Variant",
+    "Disabled",
+    "Alignment",
+    "Side",
+    "Props",
+    "Dropdown",
+    "DropdownTrigger",
+    "DropdownContent",
+    "DropdownItem"
+   ]
+  },
+  {
+   "id": "develop-footer",
+   "category": "myds-component-react",
+   "title": "Footer",
+   "title_ms": "Footer",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/footer",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/footer",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "FooterSection",
+    "SiteInfo",
+    "SiteLinkGroup",
+    "Props",
+    "Footer",
+    "FooterLogo",
+    "SiteLink"
+   ]
+  },
+  {
+   "id": "develop-footer-logo",
+   "category": "myds-component-react",
+   "title": "Footer Logo",
+   "title_ms": "Logo Footer",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/footer-logo",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/footer-logo",
+   "status": "current",
+   "sections": [
+    "Overview",
+    "Usage",
+    "Props & Customization",
+    "You may update:",
+    "Example with Real URLs",
+    "Explanation of className (Styling)"
+   ]
+  },
+  {
+   "id": "develop-input",
+   "category": "myds-component-react",
+   "title": "Input",
+   "title_ms": "Input",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/input",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/input",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Disabled",
+    "Uncontrolled vs Controlled State",
+    "Input Icon",
+    "Input Addons",
+    "Props",
+    "Input",
+    "InputIcon",
+    "InputAddon"
+   ]
+  },
+  {
+   "id": "develop-input-otp",
+   "category": "myds-component-react",
+   "title": "Input OTP",
+   "title_ms": "Input OTP",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/input-otp",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/input-otp",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Invalid",
+    "Disabled",
+    "Controlled Component",
+    "Using the pattern Prop",
+    "Props",
+    "InputOTP",
+    "InputOTPSlot"
+   ]
+  },
+  {
+   "id": "develop-label",
+   "category": "myds-component-react",
+   "title": "Label",
+   "title_ms": "Label",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/label",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/label",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Using as Slot",
+    "Props",
+    "LabelProps"
+   ]
+  },
+  {
+   "id": "develop-link",
+   "category": "myds-component-react",
+   "title": "Link",
+   "title_ms": "Pautan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/link",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/link",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Using asChild for Custom Links",
+    "Open in a New Tab",
+    "Primary",
+    "Underline",
+    "Props",
+    "Link"
+   ]
+  },
+  {
+   "id": "develop-masthead",
+   "category": "myds-component-react",
+   "title": "Masthead",
+   "title_ms": "Masthead",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/masthead",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/masthead",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Props",
+    "Masthead",
+    "MastheadHeader",
+    "MastheadTitle",
+    "MastheadTrigger",
+    "MastheadContent",
+    "MastheadSection"
+   ]
+  },
+  {
+   "id": "develop-navbar",
+   "category": "myds-component-react",
+   "title": "Navbar",
+   "title_ms": "Bar Navigasi",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/navbar",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/navbar",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Example",
+    "Navbar Logo",
+    "Navbar Menu",
+    "Navbar Action",
+    "Props",
+    "Navbar",
+    "NavbarLogo",
+    "NavbarMenu",
+    "NavbarMenuItem",
+    "NavbarMenuDropdown",
+    "NavbarAction"
+   ]
+  },
+  {
+   "id": "develop-pagination",
+   "category": "myds-component-react",
+   "title": "Pagination",
+   "title_ms": "Paginasi",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/pagination",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/pagination",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Simple Usage",
+    "Advanced Usage",
+    "Examples",
+    "AutoPagination Types",
+    "Pagination Configurations",
+    "Props",
+    "AutoPagination",
+    "Pagination",
+    "PaginationContent",
+    "PaginationItem",
+    "PaginationNext",
+    "PaginationPrevious",
+    "PaginationLabel",
+    "PaginationEllipsis"
+   ]
+  },
+  {
+   "id": "develop-pill",
+   "category": "myds-component-react",
+   "title": "Pill",
+   "title_ms": "Pill",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/pill",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/pill",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "With Trailing \"x\" Button",
+    "Disabled",
+    "Props",
+    "Pill"
+   ]
+  },
+  {
+   "id": "develop-radio",
+   "category": "myds-component-react",
+   "title": "Radio",
+   "title_ms": "Radio",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/radio",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/radio",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Disabled",
+    "Controlled Component",
+    "Props",
+    "Radio",
+    "RadioButton",
+    "RadioItem",
+    "RadioHintText",
+    "RadioLabel"
+   ]
+  },
+  {
+   "id": "develop-search-bar",
+   "category": "myds-component-react",
+   "title": "Search Bar",
+   "title_ms": "Search Bar",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/search-bar",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/search-bar",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Clear Button",
+    "Hint",
+    "Show Search Results or Suggestions",
+    "Controlled Component",
+    "Props",
+    "SearchBar",
+    "SearchBarInput",
+    "SearchBarInputContainer",
+    "SearchBarSearchButton",
+    "SearchBarClearButton",
+    "SearchBarHint",
+    "SearchBarResults",
+    "SearchBarResultsList",
+    "SearchBarResultsItem",
+    "SearchBarResultsGroup"
+   ]
+  },
+  {
+   "id": "develop-select",
+   "category": "myds-component-react",
+   "title": "Select",
+   "title_ms": "Pilih",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/select",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/select",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Variant",
+    "Disabled",
+    "Grouped Options",
+    "With Header",
+    "With Footer",
+    "Multiple",
+    "Custom Value Display",
+    "Props",
+    "Select",
+    "SelectValue",
+    "SelectItem"
+   ]
+  },
+  {
+   "id": "develop-skiplink",
+   "category": "myds-component-react",
+   "title": "Skiplink",
+   "title_ms": "Skiplink",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/skiplink",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/skiplink",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Props",
+    "Skiplink"
+   ]
+  },
+  {
+   "id": "develop-spinner",
+   "category": "myds-component-react",
+   "title": "Spinner",
+   "title_ms": "Spinner",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/spinner",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/spinner",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variants",
+    "Size",
+    "Show",
+    "Props",
+    "Spinner"
+   ]
+  },
+  {
+   "id": "develop-summarylist",
+   "category": "myds-component-react",
+   "title": "Summary List",
+   "title_ms": "Senarai Ringkasan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/summarylist",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/summarylist",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Main Wrapper: SummaryList",
+    "1. SummaryListHeader",
+    "2. SummaryListBody",
+    "2.1 SummaryListRow",
+    "2.1.1 SummaryListTerm",
+    "2.1.2 SummaryListDetail",
+    "2.1.3 SummaryListAction",
+    "2.1.4 SummaryListAddition",
+    "Props",
+    "SummaryList",
+    "SummaryListHeader",
+    "SummaryListBody",
+    "SummaryListRow",
+    "SummaryListTerm",
+    "SummaryListDetail",
+    "SummaryListAction",
+    "SummaryListAddition"
+   ]
+  },
+  {
+   "id": "develop-table",
+   "category": "myds-component-react",
+   "title": "Table",
+   "title_ms": "Jadual",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/table",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/table",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Basic Table",
+    "Row Span and Col Span",
+    "With Footer",
+    "Skeleton Loading",
+    "Empty Table",
+    "Props",
+    "TableHead",
+    "TableCell"
+   ]
+  },
+  {
+   "id": "develop-tabs",
+   "category": "myds-component-react",
+   "title": "Tabs",
+   "title_ms": "Tabs",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/tabs",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/tabs",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Size",
+    "Leading Icons",
+    "Counter",
+    "Props",
+    "Tabs",
+    "TabsList",
+    "TabsTrigger",
+    "TabsContent",
+    "TabsIcon",
+    "TabsCounter"
+   ]
+  },
+  {
+   "id": "develop-tag",
+   "category": "myds-component-react",
+   "title": "Tag",
+   "title_ms": "Tag",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/tag",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/tag",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Variant",
+    "Size",
+    "Mode",
+    "Dot",
+    "Props",
+    "Tag"
+   ]
+  },
+  {
+   "id": "develop-text-area",
+   "category": "myds-component-react",
+   "title": "Text Area",
+   "title_ms": "Text Area",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/text-area",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/text-area",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Disabled",
+    "Props",
+    "TextArea"
+   ]
+  },
+  {
+   "id": "develop-theme-switch",
+   "category": "myds-component-react",
+   "title": "Theme Switch",
+   "title_ms": "Suis Tema",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/theme-switch",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/theme-switch",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "As Toggle",
+    "As Select",
+    "Custom Themes",
+    "Props",
+    "ThemeSwitch",
+    "ThemeProvider"
+   ]
+  },
+  {
+   "id": "develop-toast",
+   "category": "myds-component-react",
+   "title": "Toast",
+   "title_ms": "Toast",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/toast",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/toast",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Simple Usage",
+    "Advanced Usage",
+    "Examples",
+    "Variant",
+    "Props",
+    "ToastProvider",
+    "ToastViewport",
+    "ToastRoot",
+    "ToastTitle",
+    "ToastDescription",
+    "ToastClose"
+   ]
+  },
+  {
+   "id": "develop-toggle",
+   "category": "myds-component-react",
+   "title": "Toggle",
+   "title_ms": "Toggle",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/toggle",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/toggle",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Size",
+    "Disabled",
+    "Controlled Toggle",
+    "Uncontrolled Toggle",
+    "Props",
+    "Toggle"
+   ]
+  },
+  {
+   "id": "develop-tooltip",
+   "category": "myds-component-react",
+   "title": "Tooltip",
+   "title_ms": "Tooltip",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/tooltip",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/tooltip",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "Import",
+    "Examples",
+    "Controlled Component",
+    "Tooltip Content Placement",
+    "Props",
+    "Tooltip",
+    "TooltipContent",
+    "TooltipTrigger"
+   ]
+  },
+  {
+   "id": "design-12-8-4-grid",
+   "category": "myds-foundation",
+   "title": "12-8-4 Grid System",
+   "title_ms": "Sistem Grid 12-8-4",
+   "url_en": "https://design.digital.gov.my/en/docs/design/12-8-4-grid",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/12-8-4-grid",
+   "status": "current",
+   "sections": [
+    "Breakpoints",
+    "Desktop",
+    "Tablet",
+    "Mobile",
+    "Usage example",
+    "Content section",
+    "Article page"
+   ]
+  },
+  {
+   "id": "design-color",
+   "category": "myds-foundation",
+   "title": "Colour",
+   "title_ms": "Warna",
+   "url_en": "https://design.digital.gov.my/en/docs/design/color",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/color",
+   "status": "current",
+   "sections": [
+    "Primitive colour",
+    "White",
+    "Gray",
+    "Primary",
+    "Danger",
+    "Success",
+    "Warning",
+    "Colour tokens",
+    "Light mode",
+    "Dark mode"
+   ]
+  },
+  {
+   "id": "design-icon",
+   "category": "myds-foundation",
+   "title": "Icon",
+   "title_ms": "Ikon",
+   "url_en": "https://design.digital.gov.my/en/docs/design/icon",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/icon",
+   "status": "current",
+   "sections": [
+    "Icon design guidelines",
+    "Grid size",
+    "Stroke width",
+    "Sizes",
+    "Generic Icon",
+    "Outline icon",
+    "Filled icon",
+    "WYSIWYG Icon",
+    "Social Media Icon",
+    "Media icon",
+    "Usage example",
+    "Web UI"
+   ]
+  },
+  {
+   "id": "design-intro",
+   "category": "myds-foundation",
+   "title": "Overview",
+   "title_ms": "Utama",
+   "url_en": "https://design.digital.gov.my/en/docs/design",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design",
+   "status": "current",
+   "sections": [
+    "Introduction",
+    "What is MYDS?",
+    "Why use MYDS?",
+    "Use cases for MYDS",
+    "Resources",
+    "Figma"
+   ]
+  },
+  {
+   "id": "design-motion",
+   "category": "myds-foundation",
+   "title": "Motion",
+   "title_ms": "Pergerakan",
+   "url_en": "https://design.digital.gov.my/en/docs/design/motion",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/motion",
+   "status": "current",
+   "sections": [
+    "Principle",
+    "Motion Types",
+    "No transition (Instant)",
+    "Linear",
+    "Ease-Out",
+    "Ease-Out-Back (Custom)",
+    "Transition Duration",
+    "Motion Tokens",
+    "Examples",
+    "Toast",
+    "Toast Enter",
+    "Delay Start / Progress Bar Start",
+    "Progress Bar End / Toast Exit"
+   ]
+  },
+  {
+   "id": "design-radius",
+   "category": "myds-foundation",
+   "title": "Radius",
+   "title_ms": "Jejari sudut",
+   "url_en": "https://design.digital.gov.my/en/docs/design/radius",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/radius",
+   "status": "current",
+   "sections": [
+    "Specification"
+   ]
+  },
+  {
+   "id": "design-shadow",
+   "category": "myds-foundation",
+   "title": "Shadow",
+   "title_ms": "Bayang",
+   "url_en": "https://design.digital.gov.my/en/docs/design/shadow",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/shadow",
+   "status": "current",
+   "sections": [
+    "Specification"
+   ]
+  },
+  {
+   "id": "design-spacing",
+   "category": "myds-foundation",
+   "title": "Spacing",
+   "title_ms": "Jarak",
+   "url_en": "https://design.digital.gov.my/en/docs/design/spacing",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/spacing",
+   "status": "current",
+   "sections": [
+    "Specification"
+   ]
+  },
+  {
+   "id": "design-typography",
+   "category": "myds-foundation",
+   "title": "Typography",
+   "title_ms": "Tipografi",
+   "url_en": "https://design.digital.gov.my/en/docs/design/typography",
+   "url_ms": "https://design.digital.gov.my/ms/docs/design/typography",
+   "status": "current",
+   "sections": [
+    "Heading",
+    "Font size and weight",
+    "Body",
+    "Rich Text Format (RTF)"
+   ]
+  },
+  {
+   "id": "develop-ta-accordion",
+   "category": "myds-html-css",
+   "title": "Accordion",
+   "title_ms": "Accordion",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-accordion",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-accordion",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-alert",
+   "category": "myds-html-css",
+   "title": "Alert",
+   "title_ms": "Alert",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-alert",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-alert",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-button",
+   "category": "myds-html-css",
+   "title": "Button",
+   "title_ms": "Butang",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-button",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-button",
+   "status": "current",
+   "sections": [
+    "Overview",
+    "1. Setup",
+    "Step 2 - Include the required font",
+    "2. Usage",
+    "3. Variants",
+    "Primary",
+    "Secondary",
+    "Secondary Color",
+    "Tertiary",
+    "Tertiary Color",
+    "Danger - Primary",
+    "Danger - Secondary",
+    "Danger - Tertiary",
+    "4. States",
+    "5. Anatomy",
+    "6. Customization",
+    "7. Accessibility"
+   ]
+  },
+  {
+   "id": "develop-ta-callout",
+   "category": "myds-html-css",
+   "title": "Callout",
+   "title_ms": "Callout",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-callout",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-callout",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-card",
+   "category": "myds-html-css",
+   "title": "Card",
+   "title_ms": "Card",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-card",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-card",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-dialog",
+   "category": "myds-html-css",
+   "title": "Dialog",
+   "title_ms": "Dialog",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-dialog",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-dialog",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-input",
+   "category": "myds-html-css",
+   "title": "Input",
+   "title_ms": "Input",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-input",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-input",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-label",
+   "category": "myds-html-css",
+   "title": "Label",
+   "title_ms": "Label",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-label",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-label",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-link",
+   "category": "myds-html-css",
+   "title": "Link",
+   "title_ms": "Link",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-link",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-link",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-pagination",
+   "category": "myds-html-css",
+   "title": "Pagination",
+   "title_ms": "Pagination",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-pagination",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-pagination",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-popover",
+   "category": "myds-html-css",
+   "title": "Popover",
+   "title_ms": "Popover",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-popover",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-popover",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-select",
+   "category": "myds-html-css",
+   "title": "Select",
+   "title_ms": "Select",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-select",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-select",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-spinner",
+   "category": "myds-html-css",
+   "title": "Spinner",
+   "title_ms": "Spinner",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-spinner",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-spinner",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-tag",
+   "category": "myds-html-css",
+   "title": "Tag",
+   "title_ms": "Tag",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-tag",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-tag",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-theme-switcher",
+   "category": "myds-html-css",
+   "title": "Theme Switcher",
+   "title_ms": "Theme Switcher",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-theme-switcher",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-theme-switcher",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-ta-toggle",
+   "category": "myds-html-css",
+   "title": "Toggle",
+   "title_ms": "Toggle",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/ta-toggle",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/ta-toggle",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-contact-us",
+   "category": "myds-pattern",
+   "title": "Contact Us",
+   "title_ms": "Contact Us",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/contact-us",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/contact-us",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-forgot-password",
+   "category": "myds-pattern",
+   "title": "Forgot Password",
+   "title_ms": "Lupa Kata Laluan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/forgot-password",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/forgot-password",
+   "status": "current",
+   "sections": [
+    "Overview",
+    "Anatomy",
+    "Features",
+    "Customization"
+   ]
+  },
+  {
+   "id": "develop-landing-page",
+   "category": "myds-pattern",
+   "title": "Landing Page",
+   "title_ms": "Landing Page",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/landing-page",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/landing-page",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-login",
+   "category": "myds-pattern",
+   "title": "Login",
+   "title_ms": "Login",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/login",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/login",
+   "status": "current",
+   "sections": [
+    "Overview",
+    "Usage",
+    "Anatomy",
+    "Features",
+    "Customization"
+   ]
+  },
+  {
+   "id": "develop-registration",
+   "category": "myds-pattern",
+   "title": "Registration",
+   "title_ms": "Registration",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/registration",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/registration",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-standard-page",
+   "category": "myds-pattern",
+   "title": "Standard Directory",
+   "title_ms": "Standard Directory",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/standard-page",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/standard-page",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  },
+  {
+   "id": "develop-use-pagination",
+   "category": "myds-react-hook",
+   "title": "usePagination",
+   "title_ms": "usePagination",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/use-pagination",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/use-pagination",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "HookRequirement",
+    "Example",
+    "Building a Self Assembled Pagination Component",
+    "API",
+    "usePagination (Arguments)",
+    "usePagination (Return)"
+   ]
+  },
+  {
+   "id": "develop-use-theme",
+   "category": "myds-react-hook",
+   "title": "useTheme",
+   "title_ms": "useTheme",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/use-theme",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/use-theme",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "HookRequirement",
+    "Example",
+    "Building a Theme Switch Component",
+    "Declaring a Globally Accessible ThemeProvider",
+    "API",
+    "useTheme",
+    "ThemeProvider"
+   ]
+  },
+  {
+   "id": "develop-use-toast",
+   "category": "myds-react-hook",
+   "title": "useToast",
+   "title_ms": "useToast",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/use-toast",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/use-toast",
+   "status": "current",
+   "sections": [
+    "Usage",
+    "HookRequirement",
+    "Example",
+    "Trigger a Toast Event",
+    "Building a Self Assembled Toast Component",
+    "Accessing Active Toasts",
+    "API",
+    "useTheme"
+   ]
+  },
+  {
+   "id": "develop-install",
+   "category": "myds-setup",
+   "title": "Installation",
+   "title_ms": "Pemasangan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/install",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/install",
+   "status": "current",
+   "sections": [
+    "Manual Installation",
+    "Framework Guide",
+    "Next.js",
+    "Vite",
+    "Laravel"
+   ]
+  },
+  {
+   "id": "develop-intro",
+   "category": "myds-setup",
+   "title": "Introduction",
+   "title_ms": "Pengenalan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop",
+   "status": "current",
+   "sections": [
+    "Key Features",
+    "Resources",
+    "GitHub (@govtechmy/myds)",
+    "Storybook",
+    "Thinking of Contributing?"
+   ]
+  },
+  {
+   "id": "develop-laravel",
+   "category": "myds-setup",
+   "title": "Laravel",
+   "title_ms": "Laravel",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/laravel",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/laravel",
+   "status": "current",
+   "sections": [
+    "Steps to install"
+   ]
+  },
+  {
+   "id": "develop-nextjs",
+   "category": "myds-setup",
+   "title": "Next.js",
+   "title_ms": "Next.js",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/nextjs",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/nextjs",
+   "status": "current",
+   "sections": [
+    "Steps to install"
+   ]
+  },
+  {
+   "id": "develop-style-configuration",
+   "category": "myds-setup",
+   "title": "Style Configuration",
+   "title_ms": "Konfigurasi Gaya",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/style-configuration",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/style-configuration",
+   "status": "current",
+   "sections": [
+    "Foundation",
+    "Fonts",
+    "Color",
+    "Theme",
+    "TailwindCSS",
+    "Installation",
+    "Preset Configuration",
+    "Color Token"
+   ]
+  },
+  {
+   "id": "develop-usage",
+   "category": "myds-setup",
+   "title": "Usage",
+   "title_ms": "Penggunaan",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/usage",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/usage",
+   "status": "current",
+   "sections": [
+    "Basic",
+    "Composition"
+   ]
+  },
+  {
+   "id": "develop-vite",
+   "category": "myds-setup",
+   "title": "Vite",
+   "title_ms": "Vite",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/vite",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/vite",
+   "status": "current",
+   "sections": [
+    "Steps to install"
+   ]
+  },
+  {
+   "id": "develop-splask-compliance",
+   "category": "splask",
+   "title": "SPLaSK Compliance",
+   "title_ms": "Pematuhan SPLaSK",
+   "url_en": "https://design.digital.gov.my/en/docs/develop/splask-compliance",
+   "url_ms": "https://design.digital.gov.my/ms/docs/develop/splask-compliance",
+   "status": "stub",
+   "sections": [
+    "Work In Progress"
+   ]
+  }
+ ]
+}
