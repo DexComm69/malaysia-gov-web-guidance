@@ -104,6 +104,8 @@ python scripts/mgwg.py prefetch all                 # cache every MYDS page for 
 
 ## Accuracy and known limits
 
+- **Tested before release:** three rounds of stress tests (a full review of a 7-role system, a PHP public form, a Next.js page) and a trigger test with 16 real prompts in English, BM and Manglish. The skill turned on for all 8 government tasks and stayed off for all 8 near-misses (a bakery site, Singapore's SGDS, SQL, deployment, generic React and others). Details in `CHANGELOG.md`.
+
 - **The SPLaSK tag list is evidence-based, not official.** It comes from the live HTML of government portals (including JDN's own), because JDN's *Manual Tagging SPLaSK 2.0* could not be obtained. If you have the manual, please [open an issue](https://github.com/DexComm69/malaysia-gov-web-guidance/issues) so the list can be checked.
 - **The sources disagree on SPLaSK's dimensions.** malaysia.gov.my lists 7 (including Web Design); JDN's 2024 notice lists 6. The skill uses 6 and points out the difference.
 - MYDS's own "SPLaSK Compliance" page, and most of its plain HTML/CSS components, are still *Work In Progress* at the source.

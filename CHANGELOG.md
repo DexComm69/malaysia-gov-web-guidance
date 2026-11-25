@@ -1,8 +1,10 @@
 # Changelog
 
-## 1.2.0 (unreleased)
+## 1.2.0 (25 November 2026)
 
-From stress-test round 3: a Next.js 14 App Router build using the official MYDS React components. All 11 imports were checked against the published `@govtechmy/myds-react` 1.0.2 exports.
+From stress-test round 3: a Next.js 14 App Router build using the official MYDS React components (all 11 imports checked against the published `@govtechmy/myds-react` 1.0.2 exports), and a trigger test with 16 real prompts (8 that should use the skill, 8 near-misses that shouldn't). **Final trigger score: 16/16.**
+
+- **Description:** now says that short reviews of pasted HTML/PHP should consult the skill, because SPLaSK tag names aren't reliably known from memory.
 
 - **New guide `myds-react-nextjs`:**
   - confirming imports and undocumented props;
