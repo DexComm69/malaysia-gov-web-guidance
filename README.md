@@ -1,174 +1,219 @@
-# Malaysia Gov Web Guidance
+<div align="center">
 
-**An unofficial Claude skill for building Malaysian government websites that follow MYDS and pass SPLaSK.**
+# Malaysia Government Web Guidance
+
+**A Claude skill for building and auditing Malaysian public-sector websites against MYDS and SPLaSK 2.0**
+
+[![Release](https://img.shields.io/github/v/release/DexComm69/malaysia-gov-web-guidance?label=release)](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) ![Python](https://img.shields.io/badge/python-3.8%2B-3776AB) ![Claude skill](https://img.shields.io/badge/Claude-skill%20%7C%20plugin-d97757) ![Languages](https://img.shields.io/badge/docs-English%20%7C%20Bahasa%20Melayu-2e7d32)
+
 English · [Bahasa Melayu](#bahasa-melayu)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Claude skill](https://img.shields.io/badge/Claude-skill-d97757)
-![Languages](https://img.shields.io/badge/lang-EN%20%7C%20BM-green)
+</div>
 
 > [!IMPORTANT]
-> **Unofficial.** This project is not made, endorsed or maintained by Jabatan Digital Negara (JDN), GovTech Malaysia or any Malaysian government agency. It links to and summarises the official sources. When they disagree with this skill, **the official source wins**: [design.digital.gov.my](https://design.digital.gov.my) and your agency's SPLaSK supervisor or webmaster.
+> **Unofficial project.** This skill is not developed, endorsed or maintained by Jabatan Digital Negara (JDN), GovTech Malaysia or any government agency. It summarises and links to the official sources, and **the official sources take precedence** wherever they differ: [design.digital.gov.my](https://design.digital.gov.my) for MYDS, and your agency's SPLaSK supervisor for SPLaSK.
 
----
+## Contents
 
-## Why this exists
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Coverage](#coverage)
+- [Sources and accuracy](#sources-and-accuracy)
+- [Validation](#validation)
+- [Limitations](#limitations)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Licence](#licence)
+- [Bahasa Melayu](#bahasa-melayu)
 
-Every official Malaysian public-sector website (ministries, departments, statutory bodies, state governments and local councils) is expected to:
+## Overview
 
-1. **Look and behave like a government site.** That means following **MYDS**, the Malaysia Government Design System: the official masthead, colour tokens, Poppins/Inter typography, the 12-8-4 grid and accessible components.
-2. **Pass SPLaSK**, JDN's automated website monitor. It scores portals against **25 criteria** (SPLaSK 2.0), and its crawler finds most of them only through hidden HTML attributes such as `splwpk-search-function="splwpk-search-function"`. A site can have a perfect search box and still score zero if the attribute is missing or misspelled.
+Official Malaysian public-sector websites, from ministries to local councils, are expected to meet two standards:
 
-AI assistants know very little about either. In testing, Claude without this skill **made up SPLaSK tag names** (`splwpk-search`, `splwpk-multilingual`) that the crawler would never match, and **wrote the wrong masthead wording**. With the skill, both came out right.
+| Standard | Owner | What it requires |
+|---|---|---|
+| **MYDS**: Malaysia Government Design System | GovTech Malaysia / JDN | Official masthead, colour tokens, Poppins/Inter typography, the 12-8-4 grid, accessible components |
+| **SPLaSK 2.0**: Sistem Pemantauan Laman Web dan Servis Kerajaan | JDN | 25 criteria across 6 dimensions, assessed by an automated crawler that detects most criteria through `splwpk-*` HTML attributes |
 
-## What it does
+Neither standard is well represented in general-purpose AI models. Without guidance, models invent SPLaSK tag names that the crawler will never match, and paraphrase the official masthead text. This skill gives Claude the official rules, the MYDS documentation and tools to check its own output.
 
-When you ask Claude to build or review something for a Malaysian government site, the skill makes Claude:
+## Features
 
-- **Search** about 120 guides (MYDS docs plus hand-written SPLaSK guides) in English or Malay, for example "borang maklum balas" or "login page".
-- **Read the official MYDS page live** from design.digital.gov.my, in English and/or Bahasa Melayu.
-- **Build to the rules:**
-  - MYDS tokens (`rgb(var(--txt-black-900))`), fonts and grid;
-  - the official masthead text ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website");
-  - correctly spelled, server-rendered `splwpk-*` tags with real timestamps.
-- **Work without React.** MYDS components are React-only, so the skill includes guides for plain **PHP / HTML / Blade** projects. This matters because many agencies run PHP on XAMPP or Laravel.
-- **Pre-check a live site for SPLaSK** with `scan`, using the official SPLaSK 2.0 rules: missing, misspelled or misplaced tags, stale timestamps, tags hidden in HTML comments or only added by JavaScript, home-page SEO limits, viewport, HTTPS and redirects. It reads the page the way the crawler does.
-- **Check your templates** for CSS classes that the published MYDS stylesheet doesn't define. Works with PHP, Blade and JavaScript-built HTML.
-- **Review existing sites:** a step-by-step audit checklist with a browser check script and a report format.
-- **Build public service forms** the government way: an error summary, a PDPA notice, a reference number on the acknowledgement, and e-Rating.
-- **Ask before deciding.** If MYDS conflicts with your agency's branding or your project's conventions (for example MYDS blue vs your council's colours), it stops and asks you.
-- **Ask which language** (BM, English or both) before writing a report or audit.
-- **Show its work.** Answers end with a *Panduan Web Kerajaan* section listing the rules applied and any compliance items still open.
+**Guidance**
+- Searchable guides in English and Bahasa Melayu: about 115 MYDS documentation pages, read live from design.digital.gov.my, plus 9 hand-written guides on SPLaSK and government web patterns.
+- SPLaSK rules taken from JDN's *Manual Tagging SPLaSK V2.0* and the SPLaSK user manuals: tag placement, timestamps, freshness windows, SEO limits, crawler access and site profiles.
+- Patterns for plain **PHP / HTML / Blade** as well as **React / Next.js**, since the official MYDS components are React-only.
+- Government service patterns: masthead, BM/EN language switch, public forms with PDPA notice and reference numbers, status lookups, and audits.
 
-## Install
+**Tooling** (Python 3.8+, standard library only)
+- `scan`: a SPLaSK 2.0 pre-check of a live site or HTML file. It reads the server HTML the way the crawler does, without running JavaScript.
+- `check-classes`: finds CSS classes that the published MYDS stylesheet doesn't define. Works with PHP, Blade and JavaScript-built markup.
+- `tokens`: lists every MYDS theme token with its light and dark value.
+- `search`, `retrieve` and `prefetch` over the guides, with retries and an offline cache.
 
-### Claude app (claude.ai, desktop, mobile)
+**Behaviour**
+- Raises conflicts with the user instead of deciding them, for example agency branding versus MYDS colours.
+- Never invents facts the rules depend on, such as URLs or dates; it leaves marked TODOs instead.
+- Asks which language a report should be written in.
+- Ends each answer with a *Panduan Web Kerajaan* section listing the rules applied and any compliance items still open.
 
-1. Download **`malaysia-gov-web-guidance.skill`** from the [latest release](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest).
-2. Open it in Claude and click **Save skill**, or upload it under **Settings → Capabilities → Skills**.
+## Installation
 
-Code execution must be on, because the skill runs a small Python script.
+| Environment | Steps |
+|---|---|
+| **Claude app** (claude.ai, desktop, mobile) | Download `malaysia-gov-web-guidance.skill` from the [latest release](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest), open it in Claude and select **Save skill**. Code execution must be enabled. |
+| **Claude Code**: plugin (recommended) | `/plugin marketplace add DexComm69/malaysia-gov-web-guidance`<br>`/plugin install malaysia-gov-web-guidance@malaysia-gov-web-guidance` |
+| **Claude Code**: manual | Copy `skills/malaysia-gov-web-guidance/` to `~/.claude/skills/` (all projects) or `.claude/skills/` (one project). |
 
-### Claude Code: as a plugin (recommended)
+**Requirements:** Python 3.8 or later. Network access the first time each MYDS page is read; pages are then cached for 7 days. Run `prefetch all` before working offline.
 
-```text
-/plugin marketplace add DexComm69/malaysia-gov-web-guidance
-/plugin install malaysia-gov-web-guidance@malaysia-gov-web-guidance
-```
+## Usage
 
-### Claude Code: manual
+### With Claude
 
-Copy `skills/malaysia-gov-web-guidance/` into `~/.claude/skills/` (all projects) or `.claude/skills/` (one project).
+The skill activates automatically for Malaysian public-sector work. Example requests:
 
-**Requirements:** Python 3.8+ (standard library only), and internet access the first time each MYDS page is read. Pages are then cached for 7 days.
+- "Build a staff login page in plain PHP for our council portal, following government design rules."
+- "Create header.php and footer.php for our agency site. It must pass SPLaSK, with BM by default and an EN switch."
+- "Our portal failed SPLaSK last month. Fix index.html."
+- "Semak index.html ini untuk pematuhan MYDS dan SPLaSK."
 
-## Try it
-
-Ask Claude things like:
-
-- *"Build a staff login page in plain PHP for our council's portal, following government design rules."*
-- *"Make header.php and footer.php for our agency site. It must pass SPLaSK, with BM by default and an EN switch."*
-- *"Semak index.html ni untuk pematuhan MYDS dan SPLaSK."*
-- *"Which SPLaSK criteria does our feedback page need to meet?"*
-
-The skill turns on automatically for government work. You can also name it: *"use malaysia-gov-web-guidance"*.
-
-## What's inside
-
-```text
-skills/malaysia-gov-web-guidance/
-├── SKILL.md                     instructions Claude follows
-├── scripts/mgwg.py              search / list / retrieve / prefetch / tokens / scan / check-classes (stdlib Python)
-├── scripts/splask_scan.py       the SPLaSK 2.0 pre-check used by `scan`
-├── guides/gov/                  hand-written guides, English + Bahasa Melayu
-│   ├── splask-overview.md         what SPLaSK is, who it covers, its 6 dimensions
-│   ├── splask-tagging.md          splwpk-* attributes, timestamps, pitfalls
-│   ├── splask-criteria-checklist.md  the 25 criteria and their crawler rules, mapped to build tasks
-│   ├── splask-operations.md       crawler whitelist, site profile, Criteria URL, assessments, errors
-│   ├── service-form-pattern.md    public forms: validation, PDPA notice, reference number, e-Rating
-│   ├── audit-checklist.md         how to review a site: scope, browser checks, report format
-│   ├── myds-react-nextjs.md       React/Next.js: imports, tags in JSX, BM/EN routing, doc gaps
-│   ├── masthead-html.md           official masthead in plain HTML/PHP, exact BM/EN wording
-│   └── myds-plain-html-php.md     MYDS without React: stylesheet, tokens, grid, fonts
-└── references/
-    ├── myds-index.json            titles + links of ~115 MYDS pages (content fetched live)
-    └── sources.md                 every source, known gaps and discrepancies
-```
-
-The script can also be used on its own:
+### Command line
 
 ```sh
-python scripts/mgwg.py search "footer privacy policy sitemap"
-python scripts/mgwg.py retrieve splask-tagging,design-12-8-4-grid --lang en
-python scripts/mgwg.py check-classes templates/*.php --css assets/app.css
-python scripts/mgwg.py scan https://www.example.gov.my --follow   # SPLaSK 2.0 pre-check of a live site
-python scripts/mgwg.py tokens --filter otl          # MYDS token names with light/dark values
-python scripts/mgwg.py prefetch all                 # cache every MYDS page for slow or offline use
+cd skills/malaysia-gov-web-guidance
+python scripts/mgwg.py scan https://www.example.gov.my --follow
 ```
 
-## Accuracy and known limits
+| Command | Purpose |
+|---|---|
+| `scan <url-or-file> [--follow] [--json]` | SPLaSK 2.0 pre-check of a page (`--follow` also checks the privacy page) |
+| `search "<query>"` | Rank guides for a task (English or Malay) |
+| `retrieve <id>[,<id>] [--lang en\|ms\|both]` | Print guides; MYDS pages are fetched live |
+| `list [--category <name>]` | List all guides |
+| `check-classes <files> [--css <file>]` | Find CSS classes not defined by MYDS 1.0.0 |
+| `tokens [--filter <prefix>]` | List MYDS theme tokens with light and dark values |
+| `prefetch all\|<category>\|<ids>` | Cache MYDS pages for slow or offline use |
 
-- **Tested before release:** three rounds of stress tests (a full review of a 7-role system, a PHP public form, a Next.js page) and a trigger test with 16 real prompts in English, BM and Manglish. The skill turned on for all 8 government tasks and stayed off for all 8 near-misses (a bakery site, Singapore's SGDS, SQL, deployment, generic React and others). Details in `CHANGELOG.md`.
+Example `scan` output (abridged):
 
-- **The SPLaSK rules follow JDN's official *Manual Tagging SPLaSK V2.0* and the SPLaSK user manuals** (checked November 2026). If JDN publishes a newer version, please [open an issue](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).
-- **SPLaSK's dimensions:** the v2.0 manual confirms 6. malaysia.gov.my still describes the older model with 7, including Web Design.
-- MYDS's own "SPLaSK Compliance" page, and most of its plain HTML/CSS components, are still *Work In Progress* at the source.
-- **Known conflict:** MYDS's input border colour (1.27:1) is below WCAG's 3:1 for form controls. The skill raises this instead of deciding it.
-- Content was reviewed on 25 November 2026. MYDS pages are always read live, but the hand-written guides can go out of date. Check `references/sources.md`.
+```text
+FAIL  Tag spelling            `splwpk-search-funtion` is not an official tag; did you mean `splwpk-search-function`?
+FAIL  Feedback Form           `splwpk-feedback-form` is on an <i> element (1x); tag the link/element itself
+FAIL  Commented-out tags      tags that exist only inside HTML comments <!-- --> (switched off): splwpk-sitemap
+FAIL  Updated Content: News   newest timestamp 2024-11-02 is 752 days old (limit 30)
+FAIL  SEO                     <title> is 94 characters (must be under 70)
+PASS  Updated Content: About Us  `splwpk-about-us` found (1x); newest timestamp 2026-11-10, 14 days old (limit 30)
+```
+
+## Coverage
+
+| Guide | Scope |
+|---|---|
+| `splask-overview` | What SPLaSK is, who it applies to, the 6 dimensions |
+| `splask-tagging` | Every `splwpk-*` tag: placement, conditions, timestamps |
+| `splask-criteria-checklist` | All 25 criteria, including the rules the crawler measures directly |
+| `splask-operations` | Crawler whitelisting, site profile, Criteria URL, assessments, error statuses |
+| `audit-checklist` | Reviewing an existing site: scope, automated checks, report format |
+| `service-form-pattern` | Public submission and lookup forms: validation, PDPA notice, acknowledgement |
+| `masthead-html` | The official masthead in HTML/PHP with the exact BM/EN wording |
+| `myds-plain-html-php` | Using MYDS without React: stylesheet, tokens, grid, typography |
+| `myds-react-nextjs` | MYDS React components, tags in JSX/TSX, BM/EN routing |
+| `design-*`, `develop-*` | About 115 MYDS documentation pages, read live from the official site |
+
+## Sources and accuracy
+
+| Source | Used for |
+|---|---|
+| *Manual Tagging SPLaSK V2.0*, JDN | Tags, criteria, conditions and crawler rules |
+| *Manual Penggunaan SPLaSK* (Webmaster, Supervisor), JDN | Operations: access, site profile, assessments |
+| [design.digital.gov.my](https://design.digital.gov.my) and [github.com/govtechmy/myds](https://github.com/govtechmy/myds) | MYDS documentation, tokens, components |
+| SPLaSK pages on malaysia.gov.my and jdn.gov.my | Background and the GOS criteria |
+
+The official manuals are summarised in this project's own words and are not redistributed; ask your agency's SPLaSK supervisor or JDN for copies. The full source list and known discrepancies are in [`references/sources.md`](skills/malaysia-gov-web-guidance/references/sources.md).
+
+## Validation
+
+Each release is tested by having Claude complete realistic tasks with and without the skill.
+
+| Test | Result |
+|---|---|
+| Review of a 7-role staff system (63 page and role combinations) | Report produced; skill issues fixed in 1.1.0 |
+| Public PHP application form, built from scratch | Exact masthead wording, correct tags, accessible validation |
+| Next.js page with MYDS React components | All 11 imports matched the published `@govtechmy/myds-react` exports |
+| Trigger test: 16 prompts in English, BM and Manglish | 16/16: the skill activated for all 8 government tasks and none of the 8 near-misses |
+| `scan` on 5 live government portals | Real issues found (misspelled tags, tags inside HTML comments, stale timestamps); false alarms fixed |
+| Fixing a page with 15 seeded faults | 25 fails reduced to 12 with the skill, against 17 without it; the run without the skill also invented two tag names |
+
+See [`CHANGELOG.md`](CHANGELOG.md) for details.
+
+## Limitations
+
+- `scan` is a **pre-check**. It hasn't yet been calibrated against an official SPLaSK on-demand assessment, which remains the only authoritative score.
+- `scan` checks one page at a time and doesn't run JavaScript. It doesn't yet check broken links, data.gov.my dataset titles or GAMMA app names.
+- The GOS (online service) criteria are taken from the older criteria diagram on malaysia.gov.my, not from the v2.0 tagging manual.
+- The MYDS page index reflects the documentation as of November 2026.
+- A few manual rules are terse and have been interpreted conservatively (for example "under 70 characters" for titles).
+
+## Roadmap
+
+- Calibrate `scan` against an official SPLaSK assessment.
+- Check broken links, data.gov.my titles and GAMMA app names in `scan`.
+- Automated regression tests in CI.
+- Guides for WordPress and Joomla, MyDigital ID sign-in, and a BM interface wording glossary.
+- An `update-index` command to track new MYDS pages.
 
 ## Contributing
 
-Corrections are welcome, especially:
-- tag names or rules confirmed against the official SPLaSK tagging manual;
-- changes to MYDS (new pages, renamed tokens);
-- better Malay wording in the guides.
+Issues and pull requests are welcome, especially:
+- corrections confirmed against an official JDN or GovTech source;
+- changes in MYDS (new pages, renamed tokens) or a newer SPLaSK manual;
+- improvements to the Malay wording.
 
-Keep both language sections in `guides/gov/*.md`, cite an official source, and update `retrieved:`.
+Guides in `guides/gov/` keep an English and a Bahasa Melayu section, cite an official source, and record a `retrieved:` date.
 
 ## Licence
 
-[MIT](LICENSE), covering this repository's own files only (see [NOTICE](NOTICE)). MYDS documentation, code and assets belong to GovTech Malaysia / JDN, and SPLaSK material belongs to JDN. This repository doesn't copy them: it links to them or reads them from the official websites when it runs. "MYDS", "SPLaSK", "JDN" and "GovTech Malaysia" are named only to identify the official sources.
+Released under the [MIT Licence](LICENSE). The licence covers this repository's own files only; see [NOTICE](NOTICE). MYDS and SPLaSK materials belong to GovTech Malaysia and JDN and are not included. "MYDS", "SPLaSK", "JDN" and "GovTech Malaysia" are used only to identify the official sources.
 
 ---
 
 ## Bahasa Melayu
 
-**Skill Claude tidak rasmi untuk membina laman web kerajaan Malaysia yang mematuhi MYDS dan lulus penilaian SPLaSK.**
+**Skill Claude untuk membina dan mengaudit laman web sektor awam Malaysia mengikut MYDS dan SPLaSK 2.0.**
 
 > [!IMPORTANT]
-> **Tidak rasmi.** Projek ini tidak dibangunkan, disahkan atau diselenggara oleh Jabatan Digital Negara (JDN), GovTech Malaysia atau mana-mana agensi kerajaan. Jika berbeza dengan sumber rasmi, **sumber rasmi diutamakan**: [design.digital.gov.my](https://design.digital.gov.my) serta *supervisor* atau *webmaster* SPLaSK agensi anda.
+> **Projek tidak rasmi.** Skill ini tidak dibangunkan, disahkan atau diselenggara oleh Jabatan Digital Negara (JDN), GovTech Malaysia atau mana-mana agensi kerajaan. **Sumber rasmi diutamakan** sekiranya terdapat perbezaan: [design.digital.gov.my](https://design.digital.gov.my) bagi MYDS, dan *supervisor* SPLaSK agensi anda bagi SPLaSK.
 
-### Mengapa
+### Gambaran keseluruhan
 
-Portal rasmi sektor awam (kementerian, jabatan, badan berkanun, kerajaan negeri dan PBT) perlu:
-1. Mengikut **MYDS**: *masthead* rasmi, token warna, fon Poppins/Inter, grid 12-8-4 dan komponen yang mesra OKU.
-2. Lulus **SPLaSK**: 24 kriteria. Kebanyakannya dikesan melalui atribut HTML `splwpk-*`. Ciri yang wujud tanpa tag yang betul dikira **tiada**.
+Laman web rasmi sektor awam perlu mematuhi **MYDS** (*masthead* rasmi, token warna, fon Poppins/Inter, grid 12-8-4, komponen mesra OKU) dan **SPLaSK 2.0** (25 kriteria dalam 6 dimensi, dinilai oleh *crawler* yang mengesan kebanyakan kriteria melalui atribut HTML `splwpk-*`). Skill ini membekalkan Claude dengan peraturan rasmi, dokumentasi MYDS dan alat semakan.
 
-Tanpa skill ini, Claude mereka nama tag SPLaSK yang salah dan menulis teks *masthead* yang tidak rasmi.
+### Ciri utama
 
-### Apa yang dilakukan
-
-- Mencari kira-kira 120 panduan dalam BM atau BI, dan membaca halaman MYDS terus daripada laman rasmi.
-- Membina mengikut peraturan: token dan fon MYDS, teks *masthead* rasmi, dan tag `splwpk-*` dengan ejaan tepat serta *timestamp* sebenar.
-- Menyokong projek **PHP / HTML / Blade** tanpa React.
-- **Bertanya dahulu** jika MYDS bercanggah dengan jenama agensi atau konvensyen projek anda.
-- **Bertanya bahasa** laporan (BM, BI atau kedua-duanya) sebelum menulis.
-- Menyenaraikan peraturan yang digunakan dan perkara pematuhan yang belum selesai dalam bahagian *Panduan Web Kerajaan*.
+- Panduan dalam BM dan BI: kira-kira 115 halaman MYDS (dibaca terus dari laman rasmi) dan 9 panduan SPLaSK serta corak laman kerajaan.
+- Peraturan SPLaSK berdasarkan *Manual Tagging SPLaSK V2.0* dan manual pengguna SPLaSK (JDN).
+- Arahan `scan`: semakan awal SPLaSK 2.0 bagi laman web atau fail HTML.
+- Sokongan PHP / HTML / Blade dan React / Next.js.
+- Bertanya dahulu apabila berlaku konflik, tidak mereka maklumat, dan menyenaraikan perkara pematuhan yang belum selesai dalam bahagian *Panduan Web Kerajaan*.
 
 ### Pemasangan
 
-- **Aplikasi Claude:** muat turun `malaysia-gov-web-guidance.skill` daripada [*release* terkini](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest), buka dalam Claude, dan klik **Save skill**.
+- **Aplikasi Claude:** muat turun `malaysia-gov-web-guidance.skill` daripada [*release* terkini](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest), buka dalam Claude dan pilih **Save skill**.
 - **Claude Code:**
   ```text
   /plugin marketplace add DexComm69/malaysia-gov-web-guidance
   /plugin install malaysia-gov-web-guidance@malaysia-gov-web-guidance
   ```
-- Memerlukan Python 3.8+ dan akses internet kali pertama setiap halaman MYDS dibaca.
+- Memerlukan Python 3.8 ke atas, dan akses internet kali pertama setiap halaman MYDS dibaca.
 
 ### Had
 
-Peraturan SPLaSK mengikut *Manual Tagging SPLaSK V2.0* dan manual pengguna SPLaSK rasmi (JDN). Jika versi baharu diterbitkan, sila buka [*issue*](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).
+- `scan` ialah semakan awal dan belum dikalibrasi dengan penilaian *On-Demand* SPLaSK yang rasmi.
+- Kriteria GOS diambil daripada rajah kriteria lama di malaysia.gov.my.
 
 ### Lesen
 
-[MIT](LICENSE), bagi fail repositori ini sahaja. Kandungan MYDS dan SPLaSK tertakluk kepada syarat pemiliknya.
+[MIT](LICENSE), bagi fail repositori ini sahaja. Bahan MYDS dan SPLaSK adalah milik GovTech Malaysia dan JDN.
