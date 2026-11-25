@@ -55,6 +55,7 @@ SYN = {
     # reviews
     'audit': 'audit checklist review', 'review': 'audit checklist', 'semak': 'audit checklist review',
     'semakan': 'audit checklist review', 'pematuhan': 'compliance audit checklist splask', 'compliance': 'audit checklist splask',
+    'status': 'lookup status service-form-pattern', 'lookup': 'lookup service-form-pattern', 'track': 'lookup status',
     'check': 'audit checklist', 'dashboard': 'data-table table grid internal', 'admin': 'internal dashboard',
 }
 STOP = set('a an the and or of to for in on with how do i is are my our we use using make build add create page dan atau untuk di ke yang dengan ini itu'.split())

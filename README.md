@@ -84,6 +84,7 @@ skills/malaysia-gov-web-guidance/
 │   ├── splask-criteria-checklist.md  the 24 criteria mapped to build tasks
 │   ├── service-form-pattern.md    public forms: validation, PDPA notice, reference number, e-Rating
 │   ├── audit-checklist.md         how to review a site: scope, browser checks, report format
+│   ├── myds-react-nextjs.md       React/Next.js: imports, tags in JSX, BM/EN routing, doc gaps
 │   ├── masthead-html.md           official masthead in plain HTML/PHP, exact BM/EN wording
 │   └── myds-plain-html-php.md     MYDS without React: stylesheet, tokens, grid, fonts
 └── references/

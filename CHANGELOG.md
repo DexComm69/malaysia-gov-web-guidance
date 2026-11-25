@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.0 (unreleased)
+
+From stress-test round 3: a Next.js 14 App Router build using the official MYDS React components. All 11 imports were checked against the published `@govtechmy/myds-react` 1.0.2 exports.
+
+- **New guide `myds-react-nextjs`:**
+  - confirming imports and undocumented props;
+  - SPLaSK tags in JSX/TSX (TypeScript declaration for `timestamp`, tags on native elements, check the server HTML);
+  - BM/EN locale routing and the language switch;
+  - known gaps in the MYDS React docs.
+- **Language-switch pattern** added for plain PHP/HTML too.
+- **Masthead wording:** documented that one MYDS demo says "Malaysian"; the locale files and malaysia.gov.my say "Malaysia".
+- **Lookup services** (status checks) added to `service-form-pattern`: POST only, the same message for not-found and mismatch, rate limiting, never echo the MyKad number.
+- **SKILL.md:** React projects retrieve one `develop-*` page per imported component; flag MYDS doc gaps instead of guessing.
+
 ## 1.1.0 (25 November 2026)
 
 Fixes from two rounds of stress testing: a full review of a 7-role staff system, and building a public application form from scratch.

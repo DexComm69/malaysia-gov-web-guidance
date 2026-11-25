@@ -18,7 +18,7 @@ retrieved: 2026-11-25
 
 MYDS defines the masthead as "a standardized header for Malaysian government websites": a thin bar above the site header with the Malaysian flag, the line "Official Malaysia Government Website", and a "Here's how you know" toggle that explains `.gov.my` and HTTPS. The official component is React-only (`@govtechmy/myds-react/masthead`). The markup below reproduces it for PHP/HTML using the classes from the published MYDS stylesheet (see `myds-plain-html-php`).
 
-**Wording: use it verbatim (from the MYDS locale files):**
+**Wording: use it verbatim (from the MYDS locale files).** One MYDS docs demo shows "Official Malays*ian* Government Website", but the locale files and www.malaysia.gov.my both use "Official Malays*ia* Government Website" (checked 25 Nov 2026), so use that.
 
 | Key | English | Bahasa Melayu |
 |---|---|---|

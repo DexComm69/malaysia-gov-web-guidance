@@ -89,11 +89,15 @@ Headings use Poppins (`font-heading`): h1 36/44px, h2 30/38, h3 24/32, h4 20/28,
 - **Everything else:** read the component's *design* guide (`design-<name>`) for anatomy, states and spacing, and the *develop* guide (`develop-<name>`) for structure and ARIA. Then build it in HTML with tokens. Prefer native elements (`<details>`, `<dialog>`, `<select>`, `<input type="date">`) wherever they meet the design. The other `ta-*` pages are still "Work In Progress" at the source.
 - **A React-only component in a non-React project is not a conflict to ask about.** Use the native HTML element styled with MYDS tokens, for example `<input type="date">` for the date picker, and mention it in the reply. Only ask if the user specifically wants the MYDS look of that component.
 
-### 8. Token names
+### 8. Language switch
+
+Link to the *same page* in the other language (`?lang=en` or `/en/...`), and mark each label with its own language: `<a href="?lang=en" lang="en" hreflang="en">EN</a>`. Show the current language with `aria-current="true"`, set `<html lang>` to match, and tag the wrapper `splwpk-multilang="splwpk-multilang"`. See `myds-react-nextjs` §3 for the full pattern.
+
+### 9. Token names
 
 To list every theme token with its light and dark value, run `python scripts/mgwg.py tokens` (or `tokens --filter otl`). Use those names instead of guessing.
 
-### 9. Known conflict: input border contrast (MYDS vs WCAG)
+### 10. Known conflict: input border contrast (MYDS vs WCAG)
 
 MYDS outlines inputs with `otl-gray-200` (#E4E4E7, **1.27:1** on white) or `otl-gray-300` (#D4D4D8, **1.48:1**). WCAG 2.2 success criterion 1.4.11 (non-text contrast) requires **3:1** for the visual boundary that identifies a form control. A thin light-grey border is usually the only boundary of a text input, so it fails unless the field also has a distinct background fill.
 

@@ -3,7 +3,7 @@ id: service-form-pattern
 title: "Government online service forms: fields, validation, submission, acknowledgement"
 title_ms: "Borang perkhidmatan dalam talian kerajaan: medan, pengesahan, penghantaran, pengakuan terima"
 category: gov
-keywords: "form borang permohonan application request service perkhidmatan gos online service submit hantar validation pengesahan error ralat summary ringkasan acknowledgement pengakuan reference number nombor rujukan thank you terima kasih pdpa consent persetujuan e-rating feedback csrf post redirect get"
+keywords: "lookup status semak-status check-status tracking jejak form borang permohonan application request service perkhidmatan gos online service submit hantar validation pengesahan error ralat summary ringkasan acknowledgement pengakuan reference number nombor rujukan thank you terima kasih pdpa consent persetujuan e-rating feedback csrf post redirect get"
 description: "The end-to-end pattern for a public government form (application, request, complaint, registration): accessible fields, server-side validation with an error summary, PDPA notice, safe submission, an acknowledgement page with a reference number, automatic notification and GOS e-Rating. Use when building any form that the public submits."
 description_ms: "Corak lengkap borang awam kerajaan: medan, pengesahan, notis PDPA, penghantaran selamat, halaman pengakuan dengan nombor rujukan, notifikasi automatik dan GOS e-Rating."
 sources: "MYDS design/text-input, design/radio, design/checkbox, design/date-field, develop/accessibility (WCAG 2.2); SPLaSK GOS criteria (Rajah 1, malaysia.gov.my): feedback auto-notification, availability of GOS e-Rating, online service security; Personal Data Protection Act 2010 (Malaysia), general notice principle"
@@ -49,7 +49,14 @@ A form the public submits is a **government online service (GOS)**. Besides MYDS
 - Send an **automatic acknowledgement** by e-mail or SMS with the same reference number. SPLaSK checks "feedback auto-notification".
 - Opening the acknowledgement page directly, without a submission, should redirect back to the form.
 
-### 6. GOS e-Rating and help
+### 6. Lookup services (status check, search by reference)
+A lookup ("Semak status permohonan") is a GOS too, but it isn't a submission. Keep §1–§3 (fields, validation and error summary, PDPA notice), and replace §4–§5 with:
+- **Don't put identifiers in the URL.** Send a MyKad number or reference with POST (or a server action), not as a GET query, so it stays out of logs, history and referrers.
+- **Return the same message for "no such reference" and "reference doesn't match this IC"**, so the form can't be used to discover which references exist.
+- **Rate-limit attempts** per IP and per reference. A limit kept only in memory is a demo; production needs a shared store.
+- Show the result as a table with a caption (`design-table`), and never echo the full MyKad number back.
+
+### 7. GOS e-Rating and help
 - Offer the **GOS e-Rating** on or after the acknowledgement. SPLaSK checks "availability of GOS e-Rating". The agency's SPLaSK supervisor can say how e-Rating is embedded.
 - Link to help and FAQ for the service ("aid, tools and help resources").
 
