@@ -159,11 +159,49 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
 ## Roadmap
 
-- Calibrate `scan` against an official SPLaSK assessment.
-- Check broken links, data.gov.my titles and GAMMA app names in `scan`.
-- Automated regression tests in CI.
-- Guides for WordPress and Joomla, MyDigital ID sign-in, and a BM interface wording glossary.
-- An `update-index` command to track new MYDS pages.
+```mermaid
+flowchart TB
+    subgraph shipped ["✅ Released"]
+        direction LR
+        v10["<b>v1.0</b><br/>MYDS + SPLaSK<br/>guides, EN / BM"]
+        v11["<b>v1.1</b><br/>Audit checklist,<br/>service forms"]
+        v12["<b>v1.2</b><br/>React / Next.js,<br/>trigger-tested 16/16"]
+        v13["<b>v1.3</b><br/>Official SPLaSK 2.0<br/>manual rules"]
+        v14["<b>v1.4</b><br/>scan command"]
+        v10 --> v11 --> v12 --> v13 --> v14
+    end
+
+    subgraph next ["🚧 Next"]
+        direction LR
+        cal["🎯 Calibrate scan against<br/>an official SPLaSK assessment"]
+        ci["🧪 Automated regression<br/>tests in CI"]
+        cal ~~~ ci
+    end
+
+    subgraph later ["🗺️ Later"]
+        direction LR
+        scanplus["🔗 scan: broken links,<br/>data.gov.my titles,<br/>GAMMA app names"]
+        upd["🔄 update-index for<br/>new MYDS pages"]
+        cms["🧩 WordPress &<br/>Joomla guides"]
+        idm["🔐 MyDigital ID<br/>sign-in"]
+        bm["📖 BM interface<br/>glossary"]
+        scanplus ~~~ upd ~~~ cms ~~~ idm ~~~ bm
+    end
+
+    shipped --> next --> later
+
+    classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
+    classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
+    classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
+    class v10,v11,v12,v13,v14 done
+    class cal,ci nxt
+    class scanplus,upd,cms,idm,bm plan
+    style shipped fill:transparent,stroke:#16a34a,stroke-width:2px
+    style next fill:transparent,stroke:#ca8a04,stroke-width:2px
+    style later fill:transparent,stroke:#4f46e5,stroke-width:1px,stroke-dasharray:4 3
+```
+
+<sub>✅ released · 🚧 next up · 🗺️ planned. Full history in [CHANGELOG.md](CHANGELOG.md). Suggestions are welcome as [issues](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).</sub>
 
 ## Contributing
 
