@@ -40,10 +40,10 @@ Render the timestamp from the content's real `updated_at`, never a hard-coded va
 
 | Criterion (dimension) | Tag | Conditions in the manual |
 |---|---|---|
-| Search Function (Ease of Use) | `splwpk-search-function` | The search must be a real `<form>` |
-| Advanced Search Option (Ease of Use) | `splwpk-advanced-search-function` | Also a `<form>` |
-| W3C Disability Accessibility (Ease of Use) | `splwpk-w3c` | Offer at least one of: change text size, change font, change background colour |
-| Multi-Language for Content (Accessibility) | `splwpk-multilang` | Content available in more than one language (BM and English) |
+| Search Function (Ease of Use) | `splwpk-search-function` | **On the `<form>` element itself** (manual example: `<form splwpk-search-function="…">`) |
+| Advanced Search Option (Ease of Use) | `splwpk-advanced-search-function` | On the advanced-search `<form>` element |
+| W3C Disability Accessibility (Ease of Use) | `splwpk-w3c` | On the wrapper of the accessibility controls. Offer at least one of: change text size, change font, change background colour (snippet below) |
+| Multi-Language for Content (Accessibility) | `splwpk-multilang` | On the language switcher (manual example: a `<div>` wrapping the BM/EN links). Content available in BM and English |
 | Sitemap (Accessibility) | `splwpk-sitemap` | Tag not on an `<i>` element |
 | Mobile Apps (Accessibility) | `splwpk-mobile-apps` | On a link to the app's page in **GAMMA** (gamma.malaysia.gov.my). Link text = the app's name in GAMMA. At least one app |
 | Presence of Datasets (Quality of Content) | `splwpk-open-data` | At least one link to a dataset that **exists on data.gov.my**. Link text = the dataset's **exact title** there |
@@ -61,15 +61,34 @@ Render the timestamp from the content's real `updated_at`, never a hard-coded va
 | Online Procurement Announcement (Quality of Content) | `splwpk-procurement` | Tag not on `<i>` |
 | Online E-Participation (Quality of Content) | `splwpk-online-e-participation` | An e-participation policy or guideline must be provided there; tag not on `<i>` |
 | Privacy Policy (Privacy/Security) | `splwpk-privacy-policy` | **Two parts:** (1) on the privacy-policy *link*, on every page and especially the home page; (2) a dedicated privacy page whose heading (H1–H6) contains the keyword *privasi* or *privacy*, with that heading tagged too |
-| Feedback Form (Responsiveness) | `splwpk-feedback-form` | A real `<form>` |
+| Feedback Form (Responsiveness) | `splwpk-feedback-form` | **On the feedback `<form>` element itself** (manual example). A tagged *link* to a form doesn't count. If the form lives on another page, tag the `<form>` there and register that page as a **Criteria URL** |
 
 **Not tagged; the crawler measures these itself:** Active Link, Device Responsiveness, SEO, Find Website Using Search Tool, Link to MyGov Portal, HTTPS Availability, Downtime and Loading Time. See `splask-criteria-checklist` for their rules.
 
 **Not in the official manual:** `splwpk-pdpa` and `seo-h1` come from a third-party Joomla module. They're harmless, but they don't score anything.
 
+### Ready-made W3C control (plain HTML)
+
+```html
+<div class="a11y-tools" role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
+  <button type="button" data-fs="0.875">A-</button>
+  <button type="button" data-fs="1">A</button>
+  <button type="button" data-fs="1.25">A+</button>
+</div>
+<script>
+  document.querySelectorAll('[data-fs]').forEach(b => b.addEventListener('click', () => {
+    document.documentElement.style.fontSize = (16 * b.dataset.fs) + 'px';
+    localStorage.setItem('fs', b.dataset.fs);
+  }));
+  if (localStorage.getItem('fs')) document.documentElement.style.fontSize = (16 * localStorage.getItem('fs')) + 'px';
+</script>
+```
+
+Size text in `rem` so it scales. A contrast or background toggle (adding a class on `<html>`) also satisfies the criterion.
+
 ### Rules of thumb
 
-1. **Don't put tags on `<i>` icon elements.** The manual rules this out for several criteria, and some live portals get it wrong (for example a feedback tag on an icon). Tag the link or form itself.
+1. **Don't put tags on `<i>` icon elements.** The manual rules this out for several criteria, and some live portals get it wrong (for example a feedback tag on an icon). Search, advanced search and feedback go on their `<form>`; link-type criteria go on the `<a>`.
 2. **Render tags on the server** (PHP, or server-side React). Tags added later by JavaScript may not be seen by the crawler.
 3. **Where tags go:** by default the crawler reads the home page. Global items (search, multilang, w3c, privacy-policy link, sitemap, feedback) belong in the shared header and footer. If a criterion's tag lives on another page, the SPLaSK webmaster registers that page as a **Criteria URL** in the site profile (SPLaSK user manual).
 4. A timestamp must show a **real** update, and that update must fall inside the window above. A fake or auto-refreshed date defeats the criterion.

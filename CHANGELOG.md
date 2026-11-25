@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0 (25 November 2026)
+
+- **New `scan` command:** a SPLaSK 2.0 pre-check of a live site or HTML file, built from JDN's tagging manual. Like the crawler, it reads the server HTML without running JavaScript. It reports:
+  - missing, misspelled or misplaced tags (on `<i>`, not on the `<form>`, privacy tag not on a link);
+  - tags that exist only in HTML comments or only in JavaScript;
+  - missing or badly formatted timestamps, and freshness against each criterion's window;
+  - data.gov.my and GAMMA link targets, the dedicated privacy page (`--follow`), and the MyGov link;
+  - home-page SEO limits, viewport, HTTPS, redirects and fetch time;
+  - the MYDS masthead (info only), and a hint when the URL looks like a splash page.
+- **Stress test round 4:** the scanner was run on 5 real portals (JDN, MBSA, digital.gov.my, Selangor, MOH), and its false alarms were fixed. Real issues it found include a misspelled tag value, tags inside HTML comments, a curly quote inside a tag value, and stale timestamps. Fixing a page with 15 seeded faults took it from 25 fails to 12 with the skill, against 17 without it; the run without the skill also invented two tag names.
+- **Placement rules clarified from the manual's examples:** search, advanced search and feedback tags go on the `<form>` element itself; multilang goes on the language switcher; w3c goes on the controls' wrapper (ready-made snippet added); keep one `<h1>` for the page's main subject.
+- **SKILL.md:**
+  - start "we failed SPLaSK" requests with `scan`;
+  - never invent URLs or dates that the rules depend on; leave TODOs instead;
+  - the report-language question applies to document files, not chat replies.
+- **`splask-operations`:** logins with a one-time code, dashboard refresh times, and the fact that assessment reports are kept 6 months only.
+
 ## 1.3.0 (25 November 2026)
 
 **SPLaSK guides now follow JDN's official manuals:** *Manual Tagging SPLaSK V2.0* and the SPLaSK user manuals for Webmaster and Supervisor. Before this, the tag list came from live portal HTML.

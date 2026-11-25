@@ -22,7 +22,11 @@ retrieved: 2026-11-25
 - **Scope:** public pages only, or every screen and role? For role-based systems, ask which roles exist and how to switch between them.
 - **What is being judged:** the agency's *portal* (SPLaSK applies in full), a *government online service* (online-service criteria apply), or an *internal staff tool* (MYDS and accessibility apply; SPLaSK website criteria mostly don't). Retrieve `splask-overview` for the scope rules. If unsure, report SPLaSK items as "applies if this becomes public-facing" rather than as failures.
 
-### 2. Automated checks (run in the browser on every page and role)
+### 2. Automated checks
+
+**First, for a live site or an HTML file:** `python scripts/mgwg.py scan <url-or-file> --follow`. This checks the SPLaSK 2.0 rules against the server HTML, the way the crawler sees it: tags, spelling, placement, timestamps and freshness, link targets, privacy page, SEO limits, viewport, HTTPS and redirects, plus tags hidden in comments or only in JavaScript. Then run the browser script below on every page and role, for what only a rendered page shows.
+
+#### Browser script (every page and role)
 
 Run this in the page console, or through a browser-automation tool, once per route. For single-page apps, switch the role and route, wait for rendering, then run it again.
 

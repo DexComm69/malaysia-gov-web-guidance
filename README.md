@@ -32,6 +32,7 @@ When you ask Claude to build or review something for a Malaysian government site
   - the official masthead text ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website");
   - correctly spelled, server-rendered `splwpk-*` tags with real timestamps.
 - **Work without React.** MYDS components are React-only, so the skill includes guides for plain **PHP / HTML / Blade** projects. This matters because many agencies run PHP on XAMPP or Laravel.
+- **Pre-check a live site for SPLaSK** with `scan`, using the official SPLaSK 2.0 rules: missing, misspelled or misplaced tags, stale timestamps, tags hidden in HTML comments or only added by JavaScript, home-page SEO limits, viewport, HTTPS and redirects. It reads the page the way the crawler does.
 - **Check your templates** for CSS classes that the published MYDS stylesheet doesn't define. Works with PHP, Blade and JavaScript-built HTML.
 - **Review existing sites:** a step-by-step audit checklist with a browser check script and a report format.
 - **Build public service forms** the government way: an error summary, a PDPA notice, a reference number on the acknowledgement, and e-Rating.
@@ -77,7 +78,8 @@ The skill turns on automatically for government work. You can also name it: *"us
 ```text
 skills/malaysia-gov-web-guidance/
 ├── SKILL.md                     instructions Claude follows
-├── scripts/mgwg.py              search / list / retrieve / prefetch / tokens / check-classes (stdlib Python)
+├── scripts/mgwg.py              search / list / retrieve / prefetch / tokens / scan / check-classes (stdlib Python)
+├── scripts/splask_scan.py       the SPLaSK 2.0 pre-check used by `scan`
 ├── guides/gov/                  hand-written guides, English + Bahasa Melayu
 │   ├── splask-overview.md         what SPLaSK is, who it covers, its 6 dimensions
 │   ├── splask-tagging.md          splwpk-* attributes, timestamps, pitfalls
@@ -99,6 +101,7 @@ The script can also be used on its own:
 python scripts/mgwg.py search "footer privacy policy sitemap"
 python scripts/mgwg.py retrieve splask-tagging,design-12-8-4-grid --lang en
 python scripts/mgwg.py check-classes templates/*.php --css assets/app.css
+python scripts/mgwg.py scan https://www.example.gov.my --follow   # SPLaSK 2.0 pre-check of a live site
 python scripts/mgwg.py tokens --filter otl          # MYDS token names with light/dark values
 python scripts/mgwg.py prefetch all                 # cache every MYDS page for slow or offline use
 ```

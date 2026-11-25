@@ -24,7 +24,7 @@ retrieved: 2026-11-25
 |---|---|---|
 | Active Link | No broken links (pages deleted, moved or renamed) | crawler |
 | Device Responsiveness | All content and functions work on mobile, **and** `<meta name="viewport" content="width=device-width, initial-scale=1">` | crawler |
-| Search Engine Optimization | On the **home page**: `<title>` **under 70 characters**, `<meta name="description">` **under 160 characters**, `alt` on **every** `<img>`, **no deprecated HTML tags**, **exactly one `<h1>`** | crawler |
+| Search Engine Optimization | On the **home page**: `<title>` **under 70 characters**, `<meta name="description">` **under 160 characters**, `alt` on **every** `<img>`, **no deprecated HTML tags**, **exactly one `<h1>`**: keep it for the page's main subject (on a home page, usually the agency name) and demote the others to `<h2>` | crawler |
 | Mobile Apps | A link to the app's GAMMA page, with the link text matching the app's name in GAMMA | `splwpk-mobile-apps` |
 | Multi-Language for Content | BM and English content | `splwpk-multilang` |
 | Sitemap | A sitemap page or file, linked | `splwpk-sitemap` |

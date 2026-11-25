@@ -50,6 +50,11 @@ Register scheduled maintenance in the site profile **before** it starts, for exa
 ### 6. Integration
 The profile's **API token** lets other systems read the site's SPLaSK marks, for example to show them on the agency's own site.
 
+### 7. Logins, dashboards and reports
+- SPLaSK logins use **email + password + a one-time code** sent to the registered email (valid 10 minutes). Roles: HQ supervisor (manages agencies), agency supervisor, webmaster.
+- **Public dashboard:** Government Analytics refreshes every 15 minutes from the Matomo tracking code; SPLaSK Analytics refreshes daily at 4 a.m. Only agencies with the tracking code installed appear in it.
+- **Reports:** detailed daily assessment reports are kept for the **last 6 months only**, then deleted. Download the ones you need as evidence (for audits or a URS/SRS).
+
 ## Bahasa Melayu
 
 1. **Whitelist IP crawler SPLaSK** pada port 80 dan 443 (wajib). Hosting di PDSA: mohon melalui MyGovCloud. Persekitaran GITN: mohon melalui MyGovOSF. Senarai IP terdapat dalam manual pengguna SPLaSK (slaid 4), yang boleh diperoleh daripada *supervisor* SPLaSK agensi. Tanpa akses, tiada penilaian dibuat (ralat 404, cURL 28 atau *No route to host*).
@@ -57,4 +62,5 @@ The profile's **API token** lets other systems read the site's SPLaSK marks, for
 3. **Kod penjejakan Matomo** pada setiap halaman, sebelum `</head>`.
 4. **Penilaian:** *Scheduler* (automatik) atau *On-Demand* (bila-bila masa). Selepas membetulkan tag, buat *deploy* dahulu, kemudian jalankan *On-Demand*.
 5. **Downtime berjadual:** daftarkan dalam profil sebelum penyelenggaraan supaya tidak dikira.
+7. **Log masuk, papan pemuka dan laporan:** log masuk dengan e-mel, kata laluan dan kod OTP (sah 10 minit). Papan pemuka awam dikemas kini setiap 15 minit (Government Analytics) dan setiap hari pada 4 pagi (SPLaSK Analytics). Laporan penilaian harian disimpan **6 bulan sahaja**, jadi muat turun laporan yang diperlukan sebagai bukti.
 6. **Token API:** untuk memaparkan markah SPLaSK di sistem lain.

@@ -25,7 +25,7 @@ python "<this-skill-dir>/scripts/mgwg.py" search "<what you are building>"
 Queries can be in English or Malay ("borang maklum balas", "log masuk", "footer with privacy policy"). Run 1–3 searches covering the distinct parts of the task, for example the page pattern, its components and the compliance rules. To browse: `python ".../mgwg.py" list` (or `list --category gov`).
 
 Categories:
-- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page. **When a site is launching, or SPLaSK shows errors or no marks**, retrieve `splask-operations`. **For any review, audit or "semak" request, start with `audit-checklist`.** It has the scope rules, a browser check script, the rules for internal staff systems and the report format. **For any form the public submits or uses to look something up** (permohonan, aduan, pendaftaran, semak status), retrieve `service-form-pattern`. **For React, Next.js, Vite or Inertia projects**, retrieve `myds-react-nextjs` (tags in JSX/TSX, BM/EN routing and language switch, known gaps in the MYDS docs).
+- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page. **When a site is launching, or SPLaSK shows errors or no marks**, retrieve `splask-operations`. **For "we failed SPLaSK", "check our site" or any live URL or HTML file, run `python ".../mgwg.py" scan <url-or-file> --follow` first.** It checks the official SPLaSK 2.0 rules against the HTML the server sends (tags, spelling, placement, timestamps, SEO limits) and gives a FAIL/WARN/PASS list to work from. Re-run it after fixing. **For any review, audit or "semak" request, also use `audit-checklist`.** It has the scope rules, a browser check script, the rules for internal staff systems and the report format. **For any form the public submits or uses to look something up** (permohonan, aduan, pendaftaran, semak status), retrieve `service-form-pattern`. **For React, Next.js, Vite or Inertia projects**, retrieve `myds-react-nextjs` (tags in JSX/TSX, BM/EN routing and language switch, known gaps in the MYDS docs).
 - `myds-foundation`: grid, colour, typography, icons, motion, radius, shadow, spacing.
 - `myds-component-design`: a component's design spec (anatomy, states, do's and don'ts).
 - `myds-component-react` / `myds-react-hook`: a component's React API.
@@ -69,7 +69,11 @@ The same applies when the official sources disagree with each other (for example
 
 ## Language of reports and documents
 
-Before writing a report, audit, checklist or other document (as opposed to UI text), ask which language the user wants: Bahasa Melayu, English, or both. Don't infer it from the language of the request. UI strings follow the site's own languages (BM default, with an EN switch on gov sites).
+Before writing a report, audit, checklist or other document *file* (not your chat reply, and not UI text), ask which language the user wants: Bahasa Melayu, English, or both. Don't infer it from the language of the request. UI strings follow the site's own languages (BM default, with an EN switch on gov sites).
+
+## Never invent facts the rules depend on
+
+SPLaSK rules often need real-world facts: dataset URLs and titles on data.gov.my, an app's GAMMA page, real `updated_at` dates, privacy and CIO page URLs. If you don't have them, **don't make them up.** Leave a clear `TODO` in the code (for example `<!-- TODO: data.gov.my dataset URL + exact title -->`), and list each one under **Open compliance items** with exactly what the user must supply. A fake date or a guessed link fails SPLaSK anyway, and it also hides the problem.
 
 ## How much to trust each guide
 
