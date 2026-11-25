@@ -67,9 +67,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
   <tr>
     <td valign="top" width="33%">
 
-<img src="assets/icons/guidance.svg" width="32" height="32" alt="">
-
-### Guidance
+### Guidance <img src="assets/icons/guidance.svg" width="24" height="24" align="top" alt="">
 
 - **Official SPLaSK 2.0 rules** from JDN's tagging manual and user manuals: placement, timestamps, freshness windows, SEO limits, crawler access.
 - **MYDS documentation**, searchable in English and Malay and fetched live from design.digital.gov.my.
@@ -79,9 +77,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
 </td>
     <td valign="top" width="33%">
 
-<img src="assets/icons/tooling.svg" width="32" height="32" alt="">
-
-### Tooling
+### Tooling <img src="assets/icons/tooling.svg" width="24" height="24" align="top" alt="">
 
 - **`scan`:** a SPLaSK 2.0 pre-check of a live site, reading the server HTML the way the crawler does.
 - **`check-classes`:** catches CSS classes that MYDS doesn't define, in PHP, Blade or JS-built markup.
@@ -92,9 +88,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
 </td>
     <td valign="top" width="33%">
 
-<img src="assets/icons/behaviour.svg" width="32" height="32" alt="">
-
-### Behaviour
+### Behaviour <img src="assets/icons/behaviour.svg" width="24" height="24" align="top" alt="">
 
 - **Asks before deciding** conflicts, such as agency branding versus MYDS colours.
 - **Never invents facts** the rules depend on, like URLs or dates; it leaves TODOs instead.
