@@ -55,11 +55,11 @@ Neither standard is well represented in general-purpose AI models. Without guida
 
 <table>
   <tr>
-    <td align="center" width="20%"><h3>25</h3>SPLaSK 2.0 criteria</td>
-    <td align="center" width="20%"><h3>~115</h3>MYDS pages, read live</td>
-    <td align="center" width="20%"><h3>9</h3>hand-written guides</td>
-    <td align="center" width="20%"><h3>16 / 16</h3>trigger tests passed</td>
-    <td align="center" width="20%"><h3>BM · EN</h3>bilingual throughout</td>
+    <td align="center" width="20%"><h2>25</h2>SPLaSK 2.0 criteria</td>
+    <td align="center" width="20%"><h2>~115</h2>MYDS pages, read live</td>
+    <td align="center" width="20%"><h2>9</h2>hand-written guides</td>
+    <td align="center" width="20%"><h2>16 / 16</h2>trigger tests passed</td>
+    <td align="center" width="20%"><h2>BM · EN</h2>bilingual throughout</td>
   </tr>
 </table>
 
