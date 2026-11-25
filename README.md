@@ -270,7 +270,7 @@ Each release is tested by having Claude complete realistic tasks **with and with
 
 ```mermaid
 xychart-beta
-    title "Fixing a page with 15 seeded SPLaSK faults (fails left, lower is better)"
+    title "15 seeded faults: SPLaSK fails left (lower is better)"
     x-axis ["Before fixing", "Without skill", "With skill"]
     y-axis "SPLaSK fails" 0 --> 30
     bar [25, 17, 12]
