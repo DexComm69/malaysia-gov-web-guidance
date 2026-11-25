@@ -9,7 +9,7 @@
   - data.gov.my and GAMMA link targets, the dedicated privacy page (`--follow`), and the MyGov link;
   - home-page SEO limits, viewport, HTTPS, redirects and fetch time;
   - the MYDS masthead (info only), and a hint when the URL looks like a splash page.
-- **Stress test round 4:** the scanner was run on 5 real portals (JDN, MBSA, digital.gov.my, Selangor, MOH), and its false alarms were fixed. Real issues it found include a misspelled tag value, tags inside HTML comments, a curly quote inside a tag value, and stale timestamps. Fixing a page with 15 seeded faults took it from 25 fails to 12 with the skill, against 17 without it; the run without the skill also invented two tag names.
+- **Stress test round 4:** the scanner was run on 5 live federal, state and local-government portals, and its false alarms were fixed. Real issues it found include a misspelled tag value, tags inside HTML comments, a curly quote inside a tag value, and stale timestamps. Fixing a page with 15 seeded faults took it from 25 fails to 12 with the skill, against 17 without it; the run without the skill also invented two tag names.
 - **Placement rules clarified from the manual's examples:** search, advanced search and feedback tags go on the `<form>` element itself; multilang goes on the language switcher; w3c goes on the controls' wrapper (ready-made snippet added); keep one `<h1>` for the page's main subject.
 - **SKILL.md:**
   - start "we failed SPLaSK" requests with `scan`;
