@@ -113,7 +113,7 @@ Keep both language sections in `guides/gov/*.md`, cite an official source, and u
 
 ## Licence
 
-[MIT](LICENSE), covering this repository's own files only. MYDS documentation, code and assets belong to GovTech Malaysia / JDN, and SPLaSK material belongs to JDN. This repository doesn't copy them: it links to them or reads them from the official websites when it runs. "MYDS", "SPLaSK", "JDN" and "GovTech Malaysia" are named only to identify the official sources.
+[MIT](LICENSE), covering this repository's own files only (see [NOTICE](NOTICE)). MYDS documentation, code and assets belong to GovTech Malaysia / JDN, and SPLaSK material belongs to JDN. This repository doesn't copy them: it links to them or reads them from the official websites when it runs. "MYDS", "SPLaSK", "JDN" and "GovTech Malaysia" are named only to identify the official sources.
 
 ---
 

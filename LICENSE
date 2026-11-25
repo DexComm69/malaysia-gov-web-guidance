@@ -19,18 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----------------------------------------------------------------------------
-Scope of this licence
-
-This licence covers only the files in this skill: SKILL.md, README.md,
-scripts/, guides/gov/ and references/. It does not cover MYDS documentation,
-code or assets (GovTech Malaysia / Jabatan Digital Negara), or SPLaSK
-material (Jabatan Digital Negara). The skill does not include copies of
-those; it links to them or reads them from the official websites at run time,
-and their own terms apply. Short official phrases (such as the masthead
-wording) are quoted so that implementations use the exact official text.
-
-This project is unofficial and is not endorsed by any Malaysian government
-agency. "MYDS", "SPLaSK", "JDN" and "GovTech Malaysia" are used only to
-identify the official sources.
