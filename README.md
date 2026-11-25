@@ -101,13 +101,55 @@ Neither standard is well represented in general-purpose AI models. Without guida
 
 ## Installation
 
-| Environment | Steps |
-|---|---|
-| **Claude app** (claude.ai, desktop, mobile) | Download `malaysia-gov-web-guidance.skill` from the [latest release](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest), open it in Claude and select **Save skill**. Code execution must be enabled. |
-| **Claude Code**: plugin (recommended) | `/plugin marketplace add DexComm69/malaysia-gov-web-guidance`<br>`/plugin install malaysia-gov-web-guidance@malaysia-gov-web-guidance` |
-| **Claude Code**: manual | Copy `skills/malaysia-gov-web-guidance/` to `~/.claude/skills/` (all projects) or `.claude/skills/` (one project). |
+<p align="center">
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest/download/malaysia-gov-web-guidance.skill"><img alt="Download .skill" src="https://img.shields.io/badge/Download-.skill-D97757?style=for-the-badge&logo=claude&logoColor=white"></a>
+  <a href="#claude-code-plugin"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-Plugin-8250df?style=for-the-badge&logo=claude&logoColor=white"></a>
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/releases"><img alt="All releases" src="https://img.shields.io/badge/All-Releases-2ea043?style=for-the-badge&logo=github&logoColor=white"></a>
+</p>
 
-**Requirements:** Python 3.8 or later. Network access the first time each MYDS page is read; pages are then cached for 7 days. Run `prefetch all` before working offline.
+<details open>
+<summary><b>Claude app</b> <img src="assets/icons/app.svg" width="20" height="20" align="top" alt=""> <sub>claude.ai · desktop · mobile</sub></summary>
+
+<br>
+
+1. **[Download `malaysia-gov-web-guidance.skill`](https://github.com/DexComm69/malaysia-gov-web-guidance/releases/latest/download/malaysia-gov-web-guidance.skill)** (always the latest release).
+2. Open it in Claude and select **Save skill**, or upload it under **Settings → Capabilities → Skills**.
+3. Make sure **code execution** is turned on, because the skill runs a small Python script.
+
+</details>
+
+<details open>
+<summary><b>Claude Code: plugin</b> <img src="assets/icons/plugin.svg" width="20" height="20" align="top" alt=""> <sub>recommended</sub></summary>
+
+<a id="claude-code-plugin"></a>
+
+```text
+/plugin marketplace add DexComm69/malaysia-gov-web-guidance
+/plugin install malaysia-gov-web-guidance@malaysia-gov-web-guidance
+```
+
+Update later with `/plugin marketplace update malaysia-gov-web-guidance`.
+
+</details>
+
+<details>
+<summary><b>Claude Code: manual</b> <img src="assets/icons/folder.svg" width="20" height="20" align="top" alt=""> <sub>copy the folder</sub></summary>
+
+<br>
+
+```sh
+git clone https://github.com/DexComm69/malaysia-gov-web-guidance.git
+cp -r malaysia-gov-web-guidance/skills/malaysia-gov-web-guidance ~/.claude/skills/        # all projects
+# or: cp -r … <your-project>/.claude/skills/                                                # one project
+```
+
+</details>
+
+> [!NOTE]
+> **Requirements:** Python 3.8 or later (standard library only). Network access the first time each MYDS page is read; pages are then cached for 7 days.
+
+> [!TIP]
+> Working offline or on a slow agency network? Run `python scripts/mgwg.py prefetch all` once to cache every MYDS page.
 
 ## Usage
 
