@@ -10,7 +10,7 @@ description: "Unofficial guide to Malaysian government web standards: MYDS (Mala
 Malaysian public-sector sites are judged against two things a model's training data covers poorly:
 
 1. **MYDS** (Malaysia Government Design System): the official look, tokens and components from GovTech Malaysia / JDN, documented at design.digital.gov.my.
-2. **SPLaSK**: JDN's automated monitor, which scores every official agency portal (ministries, departments, statutory bodies, state governments and local councils) against 24 criteria. Most criteria are detected only through custom `splwpk-*` HTML attributes. A page can have a perfect search box or feedback form and still score zero for it if the tag is missing.
+2. **SPLaSK**: JDN's automated monitor, which scores every official agency portal (ministries, departments, statutory bodies, state governments and local councils) against 25 criteria. Most criteria are detected only through custom `splwpk-*` HTML attributes. A page can have a perfect search box or feedback form and still score zero for it if the tag is missing.
 
 The skill has two kinds of guides:
 - **Hand-written guides** (`guides/gov/`): SPLaSK overview, tagging, criteria checklist, a plain-HTML masthead, and MYDS without React. Each has an English section and a Bahasa Melayu section.
@@ -25,7 +25,7 @@ python "<this-skill-dir>/scripts/mgwg.py" search "<what you are building>"
 Queries can be in English or Malay ("borang maklum balas", "log masuk", "footer with privacy policy"). Run 1–3 searches covering the distinct parts of the task, for example the page pattern, its components and the compliance rules. To browse: `python ".../mgwg.py" list` (or `list --category gov`).
 
 Categories:
-- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page. **For any review, audit or "semak" request, start with `audit-checklist`.** It has the scope rules, a browser check script, the rules for internal staff systems and the report format. **For any form the public submits or uses to look something up** (permohonan, aduan, pendaftaran, semak status), retrieve `service-form-pattern`. **For React, Next.js, Vite or Inertia projects**, retrieve `myds-react-nextjs` (tags in JSX/TSX, BM/EN routing and language switch, known gaps in the MYDS docs).
+- `gov`: hand-written cross-source guides. **For any page on a gov website, also retrieve `splask-tagging` and `splask-criteria-checklist`**, because the crawler checks the header, footer and home page. **When a site is launching, or SPLaSK shows errors or no marks**, retrieve `splask-operations`. **For any review, audit or "semak" request, start with `audit-checklist`.** It has the scope rules, a browser check script, the rules for internal staff systems and the report format. **For any form the public submits or uses to look something up** (permohonan, aduan, pendaftaran, semak status), retrieve `service-form-pattern`. **For React, Next.js, Vite or Inertia projects**, retrieve `myds-react-nextjs` (tags in JSX/TSX, BM/EN routing and language switch, known gaps in the MYDS docs).
 - `myds-foundation`: grid, colour, typography, icons, motion, radius, shadow, spacing.
 - `myds-component-design`: a component's design spec (anatomy, states, do's and don'ts).
 - `myds-component-react` / `myds-react-hook`: a component's React API.
@@ -65,7 +65,7 @@ When a government guide disagrees with another source of guidance, **don't pick 
 3. Ask before building anything that depends on the answer, every time. Don't build your recommended option and ask afterwards, and don't reuse an answer from a different project or an earlier task.
 4. If you truly cannot ask (a non-interactive run), use the MYDS default. Put the question at the top of your reply and say which option you assumed.
 
-The same applies when the official sources disagree with each other (for example SPLaSK's 6 vs 7 dimensions): state the discrepancy rather than smoothing it over.
+The same applies when the official sources disagree with each other (for example an older malaysia.gov.my page describing 7 SPLaSK dimensions where JDN's v2.0 manual has 6): state the discrepancy rather than smoothing it over.
 
 ## Language of reports and documents
 
@@ -75,7 +75,7 @@ Before writing a report, audit, checklist or other document (as opposed to UI te
 
 - Hand-written guides carry `sources`, `status` and `retrieved` in their frontmatter. MYDS pages are always the live official text.
 - `status: stub`: the source page is a placeholder. Say so, and fall back to the design page or general best practice.
-- The SPLaSK tag list was taken from live government portals, because JDN's official *Manual Tagging SPLaSK 2.0* could not be obtained. Tags marked "community module only" or "unverified" need confirming. If the user or their agency's SPLaSK supervisor has the manual, it wins.
+- The SPLaSK guides (`splask-tagging`, `splask-criteria-checklist`, `splask-operations`) follow JDN's official *Manual Tagging SPLaSK V2.0* and SPLaSK user manuals. Tags the manual doesn't list (`splwpk-pdpa`, `seo-h1`) are marked as such. If the user has a newer manual, it wins.
 - If the user reports a newer MYDS release or SPLaSK change, trust them and say the hand-written guide may be out of date.
 
 ## Step 4: Disclose

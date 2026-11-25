@@ -1,13 +1,13 @@
 ---
 id: splask-tagging
-title: "SPLaSK tagging: splwpk-* attributes and timestamps in HTML"
-title_ms: "Tagging SPLaSK: atribut splwpk-* dan timestamp dalam HTML"
+title: "SPLaSK tagging: every splwpk-* tag, its rules and timestamps (per the official SPLaSK 2.0 tagging manual)"
+title_ms: "Tagging SPLaSK: setiap tag splwpk-*, syarat dan timestamp (mengikut Manual Tagging SPLaSK 2.0 rasmi)"
 category: gov
-keywords: "splask tagging penandaan splwpk attribute atribut timestamp crawler url tagging search-function feedback-form privacy-policy pdpa sitemap w3c multilang broadcast news about-us faq client-charter contact-details gov-policies open-data publication procurement electronic-archive e-participation online-services mobile-apps publicising seo-h1"
-description: "Exact syntax for the splwpk-* attributes the SPLaSK crawler reads, the full observed tag list, which tags carry a timestamp, placement rules, and pitfalls (typos, JS-injected tags, aria-hidden links). Use whenever building a header, footer, search, feedback form or home page for a gov site."
-description_ms: "Sintaks tepat atribut splwpk-* yang dibaca oleh crawler SPLaSK, senarai tag, tag yang memerlukan timestamp, dan perangkap biasa."
-sources: "Live HTML of www.jdn.gov.my, www.digital.gov.my and a local-council portal (inspected 2026-11-25); ammaridris.my Joomla SPLaSK Tagging module page (third-party, 2019, updated 2021). The official 'Manual Tagging SPLaSK 2.0' PDF (melaka.gov.my mirror) could not be read: TLS certificate error."
-authority: "Jabatan Digital Negara; syntax inferred from JDN's own portal"
+keywords: "splask tagging penandaan splwpk attribute atribut timestamp crawler url tagging search-function advanced-search-function feedback-form privacy-policy sitemap w3c multilang mobile-apps broadcast news gov-policies about-us faq client-charter contact-details open-data publication online-services electronic-archive publicising freedom procurement online-e-participation criteria url icon i element"
+description: "Exact syntax and conditions for every splwpk-* tag the SPLaSK crawler reads, taken from JDN's Manual Tagging SPLaSK V2.0: which element, which extra conditions (form, link text, freshness window, no <i>), timestamps, Criteria URL, and common mistakes. Use whenever building a header, footer, home page, search, feedback form or content listing for a gov site."
+description_ms: "Sintaks dan syarat setiap tag splwpk-* yang dibaca oleh crawler SPLaSK, mengikut Manual Tagging SPLaSK V2.0 (JDN)."
+sources: "Manual Tagging Sistem Pemantauan Laman Web dan Perkhidmatan Dalam Talian (SPLaSK) V2.0, Jabatan Digital Negara (32 slides; criteria definitions and code examples); Manual Penggunaan SPLaSK for Webmaster / Supervisor (Criteria URL); live HTML of www.jdn.gov.my and www.digital.gov.my"
+authority: "Jabatan Digital Negara (official manual)"
 status: current
 retrieved: 2026-11-25
 ---
@@ -16,94 +16,83 @@ retrieved: 2026-11-25
 
 ## English
 
-SPLaSK's crawler finds most website criteria by looking for **custom HTML attributes named `splwpk-<criterion>`** on the page. If the feature exists but the attribute is missing, SPLaSK scores it as missing. This is what the infographic calls "URL tagging".
+SPLaSK's crawler finds most criteria by looking for **custom HTML attributes named `splwpk-<criterion>`**. If a feature exists but its tag is missing or misspelled, SPLaSK scores the criterion as failed. Everything below follows JDN's *Manual Tagging SPLaSK V2.0*.
 
-### Syntax (as used on JDN's own portal)
+### Syntax
 
-The attribute name and value are the same string. "Updated content" criteria also carry a `timestamp` attribute in `YYYY-MM-DD HH:MM:SS` (24-hour, local time):
+The attribute's value repeats its name. Updated-content criteria add a separate `timestamp` attribute, `YYYY-MM-DD HH:MM:SS` (24-hour):
 
 ```html
-<!-- feature without freshness requirement -->
-<form action="/carian" method="get" role="search"
-      splwpk-search-function="splwpk-search-function"
-      splwpk-advanced-search-function="splwpk-advanced-search-function">…</form>
-
-<!-- freshness-tracked content: add timestamp = last real update of that content -->
-<a href="/berita" splwpk-news="splwpk-news" timestamp="2026-11-24 09:15:00">Berita</a>
+<form action="/carian" role="search" splwpk-search-function="splwpk-search-function">…</form>
+<li splwpk-news="splwpk-news" timestamp="2026-11-24 09:15:00">…</li>
+<a href="/peta-laman" splwpk-sitemap="splwpk-sitemap">Peta Laman</a>
 ```
 
-One portal also adds a per-tag twin, `splwpk-news-timestamp="2026-11-24 09:15:00"`, next to `timestamp`. Adding both is harmless and future-proof.
+The manual's own examples put tags on `<a>`, `<li>`, `<ul>`, `<div>`, `<small>`, `<form>` and headings. Some live portals also add a `splwpk-<tag>-timestamp` twin. The manual doesn't use it, so it isn't needed (though it's harmless).
 
-In PHP, render the timestamp from the content's real `updated_at`, never a hard-coded or `now()` value:
+Render the timestamp from the content's real `updated_at`, never a hard-coded value or `now()`:
 
 ```php
-<a href="/berita" splwpk-news="splwpk-news"
-   timestamp="<?= htmlspecialchars(date('Y-m-d H:i:s', strtotime($latestNews['updated_at']))) ?>">Berita</a>
+<li splwpk-news="splwpk-news" timestamp="<?= htmlspecialchars(date('Y-m-d H:i:s', strtotime($n['updated_at']))) ?>">…</li>
 ```
 
-### Tag list (observed on live government portals, 2024–2026)
+### Tags and their conditions (Manual Tagging SPLaSK V2.0)
 
-| Tag | Put it on | Timestamp seen |
+| Criterion (dimension) | Tag | Conditions in the manual |
 |---|---|---|
-| `splwpk-search-function` | the site search `<form>` | no |
-| `splwpk-advanced-search-function` | same search form, or the advanced search | no |
-| `splwpk-feedback-form` | the feedback form, or the link to it | no |
-| `splwpk-privacy-policy` | the link to the privacy policy (usually footer) | no |
-| `splwpk-pdpa` | link to the PDPA statement (community module; not seen on JDN) | no |
-| `splwpk-sitemap` | link to the sitemap (`/sitemap.xml` or the HTML sitemap); digital.gov.my also uses `<meta name="splwpk-sitemap" content="splwpk-sitemap">` | no |
-| `splwpk-w3c` | the accessibility toolbar or widget (font size, contrast) | no |
-| `splwpk-multilang` | the language switcher (BM / EN) | no |
-| `splwpk-broadcast` | announcements block or link | **yes** |
-| `splwpk-news` | news block or link | **yes** |
-| `splwpk-about-us` | About Us link | **yes** |
-| `splwpk-contact-details` | contact details block or link | **yes** |
-| `splwpk-faq` | FAQ link | **yes** |
-| `splwpk-client-charter` | client charter (*Piagam Pelanggan*) link | **yes** |
-| `splwpk-gov-policies` | government policies link | **yes** |
-| `splwpk-online-e-participation` | e-participation (*e-Penyertaan*) link | **yes** |
-| `splwpk-publicising` | page publicising the agency CIO/CDO or achievements | **yes** (a third-party guide says CIO/CDO info must be updated within 30 days; unverified) |
-| `splwpk-electronic-archive` | media centre or archive link | sometimes |
-| `splwpk-procurement` | tender or procurement listings | sometimes |
-| `splwpk-publication` | publications page | community module only |
-| `splwpk-open-data` | open data / datasets link (data.gov.my) | community module only |
-| `splwpk-online-services` | links to the agency's online services | no |
-| `splwpk-mobile-apps` | links to the agency's mobile apps (gamma.malaysia.gov.my listing) | no |
-| `seo-h1` | the page's main `<h1>` (community module; not seen on JDN, so unverified) | no |
+| Search Function (Ease of Use) | `splwpk-search-function` | The search must be a real `<form>` |
+| Advanced Search Option (Ease of Use) | `splwpk-advanced-search-function` | Also a `<form>` |
+| W3C Disability Accessibility (Ease of Use) | `splwpk-w3c` | Offer at least one of: change text size, change font, change background colour |
+| Multi-Language for Content (Accessibility) | `splwpk-multilang` | Content available in more than one language (BM and English) |
+| Sitemap (Accessibility) | `splwpk-sitemap` | Tag not on an `<i>` element |
+| Mobile Apps (Accessibility) | `splwpk-mobile-apps` | On a link to the app's page in **GAMMA** (gamma.malaysia.gov.my). Link text = the app's name in GAMMA. At least one app |
+| Presence of Datasets (Quality of Content) | `splwpk-open-data` | At least one link to a dataset that **exists on data.gov.my**. Link text = the dataset's **exact title** there |
+| Publication (Quality of Content) | `splwpk-publication` | Publications offered as an eBook or a download |
+| Updated Content: Broadcast | `splwpk-broadcast` + `timestamp` | Announcements updated within the last **30 days** |
+| Updated Content: About Us | `splwpk-about-us` + `timestamp` | Within **30 days**; changes to the Minister, Deputy Minister or senior management must be updated **immediately** |
+| Updated Content: News / Government policies | `splwpk-news` and/or `splwpk-gov-policies` + `timestamp` | Updated within **30 days** of the announcement |
+| Updated Content: FAQ | `splwpk-faq` + `timestamp` | An FAQ exists |
+| Updated Content: Client Charter | `splwpk-client-charter` + `timestamp` | The charter shown **with its achievement for the previous 60 days** |
+| Updated Content: Contact Details | `splwpk-contact-details` + `timestamp` | Updated within **30 days** |
+| Number of Online Services (Quality of Content) | `splwpk-online-services` | On links with an `href`, **shown on the home page** (the URL isn't checked for working) |
+| Electronic Archive (Quality of Content) | `splwpk-electronic-archive` | URL must work; tag not on `<i>` |
+| Publicising Agency CIO/CDO (Quality of Content) | `splwpk-publicising` + `timestamp` | Updated within **30 days**; URL must work; tag not on `<i>` |
+| Freedom of Information (Quality of Content) | `splwpk-freedom` | Information on freedom-of-information law. URL must work |
+| Online Procurement Announcement (Quality of Content) | `splwpk-procurement` | Tag not on `<i>` |
+| Online E-Participation (Quality of Content) | `splwpk-online-e-participation` | An e-participation policy or guideline must be provided there; tag not on `<i>` |
+| Privacy Policy (Privacy/Security) | `splwpk-privacy-policy` | **Two parts:** (1) on the privacy-policy *link*, on every page and especially the home page; (2) a dedicated privacy page whose heading (H1–H6) contains the keyword *privasi* or *privacy*, with that heading tagged too |
+| Feedback Form (Responsiveness) | `splwpk-feedback-form` | A real `<form>` |
 
-Not tagged; measured by SPLaSK itself: loading time, downtime, browser compatibility, device responsiveness, active links, search-engine findability. See `splask-criteria-checklist`.
+**Not tagged; the crawler measures these itself:** Active Link, Device Responsiveness, SEO, Find Website Using Search Tool, Link to MyGov Portal, HTTPS Availability, Downtime and Loading Time. See `splask-criteria-checklist` for their rules.
+
+**Not in the official manual:** `splwpk-pdpa` and `seo-h1` come from a third-party Joomla module. They're harmless, but they don't score anything.
 
 ### Rules of thumb
 
-1. **Render tags server-side.** JDN and digital.gov.my emit them in the HTML response. At least one local-council portal injects some with jQuery after load. Nothing reviewed confirms that the crawler runs JavaScript, so in PHP, echo the attributes into the markup.
-2. **Tag the real element** (the visible search form, the footer link) wherever possible. Then the tag stays true even if the page is redesigned.
-3. If you need an invisible marker, take it out of the tab order and the accessibility tree: `<a href="/faq" splwpk-faq="splwpk-faq" timestamp="…" hidden></a>`. JDN uses `style="display:none"` on an `<a>`. Some portals put links inside `class="sr-only" aria-hidden="true"`, but a focusable link under `aria-hidden` is a WCAG failure, so don't copy that.
-4. **Spell tags exactly.** Live sites have typos the crawler will not match, for example `splwpk-elecronic-archive` and `splwpk-advanced-search-funtion`. Copy names from the table above.
-5. **Where tags go.** The crawler reads the **home page**, which is where all three reference portals put their tags.
-   - **Shared header and footer** (search, multilang, w3c, privacy-policy, pdpa, sitemap, feedback-form): render them in the shared layout, so they appear on the home page and, harmlessly, on every inner page too.
-   - **Timestamped "updated content" tags** (news, broadcast, about-us, contact-details, faq and so on) belong on the home page, where the links to that content live. Fill each timestamp from the real `updated_at` of that content.
-   - **An inner service page** (a form, a listing) needs only the shared layout tags. Don't add timestamped tags there just to have them. If a real date isn't available, leave the tag out rather than inventing one.
-6. A timestamp must reflect a **real content update**. A fake or auto-refreshed timestamp defeats the purpose of the "Updated Content" criterion, and auditors can compare it with the actual content.
-7. After deploying, check with *View Source* or `curl -s https://site | grep -o 'splwpk-[a-z-]*' | sort -u`.
-
-**Open question to raise with the user:** the authoritative tag list is JDN's *Manual Tagging SPLaSK 2.0*, which was not readable during research. If the user has the PDF, verify this table against it.
+1. **Don't put tags on `<i>` icon elements.** The manual rules this out for several criteria, and some live portals get it wrong (for example a feedback tag on an icon). Tag the link or form itself.
+2. **Render tags on the server** (PHP, or server-side React). Tags added later by JavaScript may not be seen by the crawler.
+3. **Where tags go:** by default the crawler reads the home page. Global items (search, multilang, w3c, privacy-policy link, sitemap, feedback) belong in the shared header and footer. If a criterion's tag lives on another page, the SPLaSK webmaster registers that page as a **Criteria URL** in the site profile (SPLaSK user manual).
+4. A timestamp must show a **real** update, and that update must fall inside the window above. A fake or auto-refreshed date defeats the criterion.
+5. **Spell tags exactly** as in the table. Live portals have typos the crawler won't match (`splwpk-elecronic-archive`, `splwpk-advanced-search-funtion`).
+6. Invisible markers must be out of the tab order and the accessibility tree: use `hidden` or `display:none`, not `aria-hidden` on a focusable link.
+7. **Verify** with View Source, or `curl -s https://site | grep -o 'splwpk-[a-z0-9-]*' | sort -u`. Then run an **On-Demand Assessment** in SPLaSK (see `splask-operations`).
 
 ## Bahasa Melayu
 
-SPLaSK mengesan kebanyakan kriteria laman web melalui **atribut HTML tersuai `splwpk-<kriteria>`**. Jika ciri wujud tetapi atribut tiada, SPLaSK menganggap ciri itu tiada. Inilah yang disebut sebagai "URL tagging" dalam infografik.
+Crawler SPLaSK mengesan kebanyakan kriteria melalui **atribut HTML `splwpk-<kriteria>`**. Ciri tanpa tag yang betul dikira gagal. Kandungan di atas mengikut *Manual Tagging SPLaSK V2.0* (JDN).
 
-**Sintaks:** nilai atribut sama dengan namanya. Kriteria *Updated Content* memerlukan atribut `timestamp="YYYY-MM-DD HH:MM:SS"`, iaitu tarikh sebenar kandungan dikemas kini:
+**Sintaks:** nilai atribut sama dengan namanya. Kriteria *Updated Content* memerlukan atribut berasingan `timestamp="YYYY-MM-DD HH:MM:SS"`.
 
-```html
-<a href="/berita" splwpk-news="splwpk-news" timestamp="2026-11-24 09:15:00">Berita</a>
-```
-
-**Panduan:**
-1. Jana atribut di pelayan (PHP), bukan disuntik dengan JavaScript.
-2. Letakkan pada elemen sebenar (borang carian, pautan di *footer*).
-3. Penanda tersembunyi mesti dikeluarkan daripada turutan tab: gunakan `hidden` atau `display:none`, bukan `aria-hidden` pada pautan yang boleh difokus.
-4. Eja nama tag dengan tepat. Ejaan salah seperti `splwpk-elecronic-archive` tidak akan dikesan.
-5. Letakkan di halaman utama.
-6. *Timestamp* mesti mencerminkan kemas kini kandungan yang sebenar.
-7. Semak dengan *View Source* selepas pelaksanaan.
-
-Senarai tag rasmi terdapat dalam *Manual Tagging SPLaSK 2.0* (JDN). Sahkan jadual di atas dengan manual tersebut jika ada.
+**Syarat utama:**
+- Carian, carian terperinci dan maklum balas mesti menggunakan `<form>`.
+- W3C: sekurang-kurangnya satu kemudahan, iaitu tukar saiz tulisan, jenis tulisan atau warna latar.
+- Set data: pautan ke set data yang wujud di data.gov.my, dengan teks pautan sama dengan tajuk set data.
+- Aplikasi mudah alih: pautan ke GAMMA, dengan teks sama dengan nama aplikasi.
+- *Broadcast*, *About Us*, berita/dasar kerajaan, *Contact Details* dan CIO: dikemas kini dalam **30 hari**. Perubahan menteri dan pengurusan atasan: **serta-merta**.
+- Piagam pelanggan: dipaparkan bersama pencapaian **60 hari** sebelumnya.
+- Perkhidmatan dalam talian: dipaparkan di halaman utama, dengan `href`.
+- Arkib elektronik, CIO dan *Freedom of Information* (`splwpk-freedom`): URL mesti berfungsi.
+- **Jangan letak tag pada elemen `<i>`** (ikon).
+- Dasar privasi: tag pada pautan di semua halaman, **dan** halaman khas dengan tajuk (H1–H6) mengandungi perkataan *privasi*/*privacy* yang turut ditag.
+- Tag di halaman lain selain halaman utama perlu didaftarkan sebagai **Criteria URL** dalam profil laman web SPLaSK.
+- `splwpk-pdpa` dan `seo-h1` tiada dalam manual rasmi.

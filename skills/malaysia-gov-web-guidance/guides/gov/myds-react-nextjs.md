@@ -36,7 +36,7 @@ retrieved: 2026-11-25
   ```
   Then write `<a href="/berita" splwpk-news="splwpk-news" timestamp={formatSplask(news.updatedAt)}>`, where `formatSplask` returns `YYYY-MM-DD HH:MM:SS` in Malaysia time.
 - **Put tags on native elements.** A MYDS component only forwards unknown props if it spreads them, and that isn't documented. Prefer a native element (`<a>`, `<form>`, `<div>`), or a component's `asChild` child (Radix Slot merges props onto the child).
-- **Check the server HTML, not DevTools:** `curl -s http://localhost:3000/ms | grep -o 'splwpk-[a-z-]*' | sort -u`. In the Next.js App Router, both server and client components are server-rendered, so the tags are in the first HTML response. Tags added in `useEffect` are not.
+- **Check the server HTML, not DevTools:** `curl -s http://localhost:3000/ms | grep -o 'splwpk-[a-z0-9-]*' | sort -u`. In the Next.js App Router, both server and client components are server-rendered, so the tags are in the first HTML response. Tags added in `useEffect` are not.
 
 ### 3. BM / EN routing and the language switch
 - Put the locale in the path (`/ms/...`, `/en/...`) under `app/[lang]/`, and set `<html lang={lang}>` in that root layout. Use middleware to redirect bare paths to `/ms` (BM is the default for gov sites).

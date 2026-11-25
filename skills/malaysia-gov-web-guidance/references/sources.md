@@ -12,6 +12,13 @@ Every guide was checked against these sources on **2026-11-25**. This skill does
 | SPLaSK page on malaysia.gov.my: https://www.malaysia.gov.my/my/my-initiative/whole-government-digital-services/pemantauan/sistem-pemantauan-laman-web-dan-perkhidmatan-dalam-talian-kerajaan-splask | `splask-overview`, `splask-criteria-checklist` (Rajah 1) |
 | JDN notice *Info Kerajaan Digital Siri 32: SPLaSK* (12 Sep 2024) and its infographic: https://www.jdn.gov.my/hebahan-info-kerajaan-digital-siri-32-sistem-pemantauan-laman-web-dan-servis-kerajaan-splask/ | `splask-overview` |
 
+## Official SPLaSK manuals (supplied by the user, November 2026)
+
+- *Manual Tagging Sistem Pemantauan Laman Web dan Perkhidmatan Dalam Talian (SPLaSK) V2.0*, Jabatan Digital Negara: 25 criteria, 6 dimensions, conditions and code examples. Basis of `splask-tagging` and `splask-criteria-checklist`.
+- *Manual Penggunaan SPLaSK*: Webmaster, Supervisor (Agensi) and Supervisor (HQ) editions, JDN. Basis of `splask-operations`.
+
+These are summarised in this skill's own words. They are not redistributed: ask your agency's SPLaSK supervisor or JDN (splask@jdn.gov.my) for copies.
+
 ## Supporting evidence
 
 - Live HTML of www.jdn.gov.my, www.digital.gov.my and a local-council portal, inspected for `splwpk-*` attributes.
@@ -19,8 +26,7 @@ Every guide was checked against these sources on **2026-11-25**. This skill does
 
 ## Known gaps
 
-- **The official tagging manual was not read.** *Manual Tagging SPLaSK 2.0* could not be obtained (a mirrored copy failed with a TLS certificate error). The tag table in `splask-tagging` is evidence-based but unofficial.
-- **6 vs 7 dimensions.** malaysia.gov.my lists 7 (including Web Design); JDN's 2024 notice and infographic list 6. The guides treat 6 as current and say so.
+- **Dimensions:** malaysia.gov.my still describes 7 (including Web Design); JDN's v2.0 manual has 6. The guides follow the manual.
 - **Contact email.** splask@jdn.gov.my (2024) vs splask@digital.gov.my (malaysia.gov.my).
 - MYDS's own "SPLaSK Compliance" page and 15 of the 17 HTML/CSS component pages are "Work In Progress" at the source.
 - PKPA Bil. 2/2015 is referred to but not summarised. It may have been replaced; check the agency's current circulars.

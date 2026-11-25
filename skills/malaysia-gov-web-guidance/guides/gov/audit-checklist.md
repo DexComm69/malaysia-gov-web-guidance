@@ -43,8 +43,17 @@ Run this in the page console, or through a browser-automation tool, once per rou
     tablesWithoutHeaders: tables.filter(t => !t.querySelector('th')).length,
     tablesWithoutCaption: tables.filter(t => !t.querySelector('caption') && !t.getAttribute('aria-label') && !t.getAttribute('aria-labelledby')).length,
     smallTargets: small.slice(0, 5).map(e => (e.textContent || e.className).trim().slice(0, 30)),
+    // SPLaSK 2.0 crawler rules (Manual Tagging SPLaSK V2.0): run these on the HOME page
+    titleLength: document.title.length,                                   // must be < 70
+    metaDescriptionLength: (document.querySelector('meta[name=description]')?.content || '').length, // must be 1-159
+    viewport: !!document.querySelector('meta[name=viewport][content*="width=device-width"]'),
+    h1OnWholePage: document.querySelectorAll('h1').length,                // must be exactly 1
+    imgWithoutAltOnPage: [...document.querySelectorAll('img')].filter(i => !i.hasAttribute('alt')).length,
+    deprecatedTags: [...new Set([...document.querySelectorAll('acronym,applet,basefont,bgsound,big,blink,center,dir,font,frame,frameset,isindex,keygen,listing,marquee,menuitem,multicol,nextid,nobr,noembed,noframes,plaintext,spacer,strike,tt,xmp')].map(e => e.tagName.toLowerCase()))],
+    splwpkOnIcon: [...document.querySelectorAll('i')].filter(i => [...i.attributes].some(a => a.name.startsWith('splwpk-'))).map(i => [...i.attributes].find(a => a.name.startsWith('splwpk-')).name),
+    myGovLinks: [...new Set([...document.querySelectorAll('a[href*="malaysia.gov.my"]')].map(a => a.href))].slice(0, 5), // manual: link to https://www.malaysia.gov.my
     masthead: !!document.querySelector('#masthead, .masthead'),
-    splwpk: [...new Set((document.documentElement.outerHTML.match(/splwpk-[a-z-]+/g) || []))],
+    splwpk: [...new Set((document.documentElement.outerHTML.match(/splwpk-[a-z0-9-]+/g) || []))],
     searchForm: !!document.querySelector('form[role=search], input[type=search]'),
     myGovLink: [...document.querySelectorAll('a[href]')].some(a => /malaysia\.gov\.my/.test(a.href)),
     metaDescription: !!document.querySelector('meta[name=description]'),
@@ -60,7 +69,7 @@ Then:
 - **Mobile:** repeat at 375px width. Check for horizontal overflow and stacked layout (SPLaSK "device responsiveness").
 - **Keyboard:** Tab through one page. Focus must be visible, follow a logical order, and never get trapped.
 - **Contrast:** body text needs at least 4.5:1, large text and UI parts at least 3:1.
-- **SPLaSK tags from the server:** `curl -s <url> | grep -o 'splwpk-[a-z-]*' | sort -u`. Tags injected by JavaScript may not be seen by the crawler.
+- **SPLaSK tags from the server:** `curl -s <url> | grep -o 'splwpk-[a-z0-9-]*' | sort -u`. Tags injected by JavaScript may not be seen by the crawler.
 - **CSS classes (non-React projects):** `python scripts/mgwg.py check-classes <templates> --css <project.css>`.
 
 Automated checks give evidence, not verdicts. Look at the pages too.
@@ -71,7 +80,8 @@ Automated checks give evidence, not verdicts. Look at the pages too.
 |---|---|---|
 | Government identity | Official masthead, exact wording | `masthead-html` |
 | SPLaSK tagging | Correct `splwpk-*` names, server-rendered, real timestamps | `splask-tagging` |
-| SPLaSK features | Search form, feedback form, privacy policy (+PDPA), sitemap, contact details, MyGov link, separate policy pages, real "last updated" date, meta description | `splask-criteria-checklist` |
+| SPLaSK features | Search form, feedback form, privacy policy (link on every page + dedicated page), sitemap, contact details, exact MyGov link, real "last updated" date; home-page SEO (title < 70, description < 160, one `<h1>`, all `alt`, viewport, no deprecated tags); no `splwpk-*` on `<i>` | `splask-criteria-checklist`, `splask-tagging` |
+| SPLaSK operations | The crawler's IP is whitelisted, Criteria URLs are registered, the SerpAPI token is set, Matomo tracking is on every page | `splask-operations` |
 | Accessibility | Labels, one `<h1>`, landmarks, skip link, errors, table headers, focus, contrast, target size ≥ 24×24px (WCAG 2.5.8; inline text links are exempt) | `develop-accessibility` |
 | MYDS look | Poppins/Inter, tokens, 12-8-4 grid, light mode default | `myds-plain-html-php`, `design-typography`, `design-color` |
 

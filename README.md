@@ -17,7 +17,7 @@ English · [Bahasa Melayu](#bahasa-melayu)
 Every official Malaysian public-sector website (ministries, departments, statutory bodies, state governments and local councils) is expected to:
 
 1. **Look and behave like a government site.** That means following **MYDS**, the Malaysia Government Design System: the official masthead, colour tokens, Poppins/Inter typography, the 12-8-4 grid and accessible components.
-2. **Pass SPLaSK**, JDN's automated website monitor. It scores portals against **24 criteria**, and its crawler finds most of them only through hidden HTML attributes such as `splwpk-search-function="splwpk-search-function"`. A site can have a perfect search box and still score zero if the attribute is missing or misspelled.
+2. **Pass SPLaSK**, JDN's automated website monitor. It scores portals against **25 criteria** (SPLaSK 2.0), and its crawler finds most of them only through hidden HTML attributes such as `splwpk-search-function="splwpk-search-function"`. A site can have a perfect search box and still score zero if the attribute is missing or misspelled.
 
 AI assistants know very little about either. In testing, Claude without this skill **made up SPLaSK tag names** (`splwpk-search`, `splwpk-multilingual`) that the crawler would never match, and **wrote the wrong masthead wording**. With the skill, both came out right.
 
@@ -79,9 +79,10 @@ skills/malaysia-gov-web-guidance/
 ├── SKILL.md                     instructions Claude follows
 ├── scripts/mgwg.py              search / list / retrieve / prefetch / tokens / check-classes (stdlib Python)
 ├── guides/gov/                  hand-written guides, English + Bahasa Melayu
-│   ├── splask-overview.md         what SPLaSK is, who it covers, the 6 vs 7 dimensions
+│   ├── splask-overview.md         what SPLaSK is, who it covers, its 6 dimensions
 │   ├── splask-tagging.md          splwpk-* attributes, timestamps, pitfalls
-│   ├── splask-criteria-checklist.md  the 24 criteria mapped to build tasks
+│   ├── splask-criteria-checklist.md  the 25 criteria and their crawler rules, mapped to build tasks
+│   ├── splask-operations.md       crawler whitelist, site profile, Criteria URL, assessments, errors
 │   ├── service-form-pattern.md    public forms: validation, PDPA notice, reference number, e-Rating
 │   ├── audit-checklist.md         how to review a site: scope, browser checks, report format
 │   ├── myds-react-nextjs.md       React/Next.js: imports, tags in JSX, BM/EN routing, doc gaps
@@ -106,8 +107,8 @@ python scripts/mgwg.py prefetch all                 # cache every MYDS page for 
 
 - **Tested before release:** three rounds of stress tests (a full review of a 7-role system, a PHP public form, a Next.js page) and a trigger test with 16 real prompts in English, BM and Manglish. The skill turned on for all 8 government tasks and stayed off for all 8 near-misses (a bakery site, Singapore's SGDS, SQL, deployment, generic React and others). Details in `CHANGELOG.md`.
 
-- **The SPLaSK tag list is evidence-based, not official.** It comes from the live HTML of government portals (including JDN's own), because JDN's *Manual Tagging SPLaSK 2.0* could not be obtained. If you have the manual, please [open an issue](https://github.com/DexComm69/malaysia-gov-web-guidance/issues) so the list can be checked.
-- **The sources disagree on SPLaSK's dimensions.** malaysia.gov.my lists 7 (including Web Design); JDN's 2024 notice lists 6. The skill uses 6 and points out the difference.
+- **The SPLaSK rules follow JDN's official *Manual Tagging SPLaSK V2.0* and the SPLaSK user manuals** (checked November 2026). If JDN publishes a newer version, please [open an issue](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).
+- **SPLaSK's dimensions:** the v2.0 manual confirms 6. malaysia.gov.my still describes the older model with 7, including Web Design.
 - MYDS's own "SPLaSK Compliance" page, and most of its plain HTML/CSS components, are still *Work In Progress* at the source.
 - **Known conflict:** MYDS's input border colour (1.27:1) is below WCAG's 3:1 for form controls. The skill raises this instead of deciding it.
 - Content was reviewed on 25 November 2026. MYDS pages are always read live, but the hand-written guides can go out of date. Check `references/sources.md`.
@@ -163,7 +164,7 @@ Tanpa skill ini, Claude mereka nama tag SPLaSK yang salah dan menulis teks *mast
 
 ### Had
 
-Senarai tag SPLaSK diambil daripada HTML portal kerajaan yang sedang beroperasi, kerana *Manual Tagging SPLaSK 2.0* tidak dapat diperoleh. Jika anda mempunyai manual tersebut, sila buka [*issue*](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).
+Peraturan SPLaSK mengikut *Manual Tagging SPLaSK V2.0* dan manual pengguna SPLaSK rasmi (JDN). Jika versi baharu diterbitkan, sila buka [*issue*](https://github.com/DexComm69/malaysia-gov-web-guidance/issues).
 
 ### Lesen
 
