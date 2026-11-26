@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.1 (26 November 2026)
+
+- **`scan` fixes:**
+  - An open-data link to data.gov.my that isn't a dataset page (the home page, a dashboard) is now a clear FAIL ("not a dataset page") instead of a confusing title mismatch.
+  - A tag missing from the home page is only softened to the "register a Criteria URL" WARN when the tag on the other page is itself correct. A misplaced tag there (for example on an `<i>`) keeps the home-page FAIL.
+  - The "this may be a splash page" warning now appears only when the page links on to a separate home page (`/utama`, `/home`), not on every home page with few tags.
+- **GitHub Action:** a moving `v1` tag always points at the latest 1.x release, so workflows can use `@v1`.
+- **Trigger test** rerun on 1.7.1: 18/18 on the first pass (9 government prompts, 9 near-misses).
+- 40 unit tests (4 new).
+
 ## 1.7.0 (26 November 2026)
 
 - **`scan --check-links` checks the data.gov.my and GAMMA links:** for every link tagged `splwpk-open-data`, it opens the dataset on data.gov.my and compares the link text with the dataset's English and Malay titles; for every `splwpk-mobile-apps` link, it reads the app's name from its GAMMA page. A wrong title is a FAIL whose fix gives the exact title; a dataset or app that doesn't exist is a FAIL; a site that can't be reached is a WARN. Matching ignores case, spacing and punctuation. Tested live: jdn.gov.my's GAMMA link matches ("GAMMA.my"); a real dataset passes with either its English or Malay title and fails with a paraphrase.

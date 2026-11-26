@@ -243,7 +243,7 @@ jobs:
   splask:
     runs-on: ubuntu-latest
     steps:
-      - uses: DexComm69/malaysia-gov-web-guidance@v1.7.0
+      - uses: DexComm69/malaysia-gov-web-guidance@v1   # always the latest 1.x; pin a release such as @v1.7.1 if you prefer
         with:
           url: https://www.example.gov.my
           pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only

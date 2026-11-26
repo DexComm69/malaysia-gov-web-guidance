@@ -111,6 +111,37 @@ class Placement(unittest.TestCase):
         self.assertTrue(find(r, 'FAIL', 'Updated Content: Contact Details', text='not in YYYY-MM-DD HH:MM:SS'))
 
 
+class SiteRules(unittest.TestCase):
+    def site(self, home_body, pages):
+        import tempfile
+        d = tempfile.mkdtemp()
+        with open(os.path.join(d, 'index.html'), 'w', encoding='utf8') as h:
+            h.write('<html lang="ms"><body>' + home_body + '</body></html>')
+        for name, body in pages.items():
+            with open(os.path.join(d, name), 'w', encoding='utf8') as h:
+                h.write('<html lang="ms"><body>' + body + '</body></html>')
+        return os.path.join(d, 'index.html')
+
+    def test_misplaced_tag_elsewhere_keeps_home_fail(self):
+        home = self.site('<a href="maklum-balas.html">Maklum Balas</a>',
+                         {'maklum-balas.html': '<form action="/m"><button><i splwpk-feedback-form="splwpk-feedback-form"></i> Hantar</button></form>'})
+        r = s.scan_site(home, 'feedback', TODAY)
+        self.assertTrue(find(r, 'FAIL', 'Feedback Form', 'home', 'no `splwpk-feedback-form`'))
+        self.assertFalse(find(r, 'WARN', 'Feedback Form', 'home', 'Criteria URL'))
+
+    def test_correct_tag_elsewhere_softens_home_fail(self):
+        home = self.site('<a href="maklum-balas.html">Maklum Balas</a>',
+                         {'maklum-balas.html': '<form action="/m" splwpk-feedback-form="splwpk-feedback-form"><button>Hantar</button></form>'})
+        r = s.scan_site(home, 'feedback', TODAY)
+        self.assertTrue(find(r, 'WARN', 'Feedback Form', 'home', 'is not on the home page'))
+
+    def test_splash_hint_only_with_a_home_link(self):
+        plain = self.site('<h1>Majlis</h1><a href="hubungi.html">Hubungi</a>', {})
+        self.assertFalse(find(s.scan_site(plain, None, TODAY), 'WARN', 'Page choice'))
+        splash = self.site('<a href="/utama">Masuk ke laman utama</a>', {})
+        self.assertTrue(find(s.scan_site(splash, None, TODAY), 'WARN', 'Page choice', text='splash'))
+
+
 class Frameworks(unittest.TestCase):
     def page(self, body):
         import tempfile
@@ -180,6 +211,11 @@ class Targets(unittest.TestCase):
         self.assertTrue(find(bad, 'FAIL', 'Mobile Apps', text='"GAMMA.my"'))
         gone = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/0">Lama</a>')
         self.assertTrue(find(gone, 'FAIL', 'Mobile Apps', text='does not exist'))
+
+    def test_datagov_link_not_a_dataset(self):
+        for href in ('https://data.gov.my/', 'https://data.gov.my/dashboard/kawasanku'):
+            r = self.scan(f'<a splwpk-open-data="splwpk-open-data" href="{href}">Data terbuka</a>')
+            self.assertTrue(find(r, 'FAIL', 'Presence of Datasets', text='not a dataset page'), href)
 
     def test_unreachable_is_warn(self):
         r = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/5">X</a>')

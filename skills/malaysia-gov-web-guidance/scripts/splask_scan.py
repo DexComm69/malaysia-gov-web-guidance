@@ -320,11 +320,12 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
             A('WARN', 'Rendering', 'very little server HTML: if the site renders with JavaScript, the crawler may not see its content or tags',
               'render the page (or at least its tags) on the server')
         official = len(set(tagged) & set(TAGS))
-        if official < 5:
-            homes = [n.attrs.get('href') for n in nodes if n.tag == 'a' and re.search(r'/(utama|home|homepage|laman-utama)(\.\w+)?/?$', n.attrs.get('href', ''), re.I)
-                     and 'lang' not in n.attrs.get('href', '').lower()]
+        homes = [] if official >= 5 else [n.attrs.get('href') for n in nodes if n.tag == 'a' and re.search(r'/(utama|home|homepage|laman-utama)(\.\w+)?/?$', n.attrs.get('href', ''), re.I)
+                     and 'lang' not in n.attrs.get('href', '').lower()
+                     and urllib.parse.urljoin(final, n.attrs.get('href', '')).rstrip('/') != final.rstrip('/')]
+        if homes:
             A('WARN', 'Page choice', f'only {official} official tag(s) here: this may be a splash/landing page. SPLaSK scans the URL registered in the profile'
-              + (f'; try scanning {urllib.parse.urljoin(final, homes[0])}' if homes else ''))
+              + f'; try scanning {urllib.parse.urljoin(final, homes[0])}')
 
     js_tags = sorted(set(re.findall(r'splwpk-[a-z0-9-]+', ' '.join(re.findall(r'<script\b[^>]*>(.*?)</script>', html, re.S | re.I)))) - set(tagged))
     bound = sorted({k.split(':', 1)[1] for n in nodes for k in n.attrs
@@ -440,6 +441,8 @@ def datagov_titles(url):
     """Dataset titles (English and Malay) for a data.gov.my link -> ('ok'|'missing'|'unreachable', [titles])."""
     parts = urllib.parse.urlparse(url)
     path = re.sub(r'^/(ms-MY|en-GB)(?=/)', '', parts.path)
+    if not re.match(r'^/data-catalogue/[^/]+/?$', path):
+        return 'not-dataset', []
     titles, states = [], []
     for prefix in ('', '/ms-MY'):
         st, html = get_page(f'{parts.scheme}://{parts.netloc}{prefix}{path}')
@@ -481,7 +484,10 @@ def check_targets(pages_trees, add):
         if (href, text) in seen: continue
         seen.add((href, text))
         state, titles = lookup(href)
-        if state == 'missing':
+        if state == 'not-dataset':
+            add('FAIL', crit, f'{href} is not a dataset page; the open-data tag needs a link to a specific dataset',
+                'link to https://data.gov.my/data-catalogue/<dataset-id>, with the dataset title as the link text', name)
+        elif state == 'missing':
             add('FAIL', crit, f'{href} does not exist ({what} not found)', f'link to a real {"dataset on data.gov.my" if "Datasets" in crit else "app page on GAMMA"}', name)
         elif state == 'unreachable':
             add('WARN', crit, f'could not open {href} to compare the {what}; try again later', None, name)
@@ -564,7 +570,9 @@ def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=
     for r in results:
         if r['page'] == 'home' and r['level'] == 'FAIL' and r['message'].startswith('no `splwpk-'):
             tag = re.search(r'`(splwpk-[a-z0-9-]+)`', r['message']).group(1)
-            where = [p for p, tg in tags_by_page.items() if p != 'home' and tag in tg]
+            crit = TAGS[tag][0]
+            bad_pages = {x['page'] for x in results if x['level'] == 'FAIL' and x['criterion'] == crit and x['page'] != 'home'}
+            where = [p for p, tg in tags_by_page.items() if p != 'home' and tag in tg and p not in bad_pages]
             if where:
                 url = next(s['url'] for s in scanned if s['name'] == where[0])
                 r['level'] = 'WARN'
