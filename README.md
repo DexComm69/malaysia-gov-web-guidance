@@ -13,6 +13,7 @@
   <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=github&color=e3b341"></a>
   <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=git&logoColor=white&color=0969da"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/DexComm69/malaysia-gov-web-guidance?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=8250df"></a>
+  <a href="https://github.com/DexComm69/malaysia-gov-web-guidance/actions/workflows/selftest.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/DexComm69/malaysia-gov-web-guidance/selftest.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=tests"></a>
 </p>
 <p>
   <img alt="SPLaSK 2.0" src="https://img.shields.io/badge/SPLaSK-2.0-c8102e?style=for-the-badge">
@@ -78,7 +79,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
   <tr>
     <td align="center" valign="top" width="20%"><h2>25</h2>SPLaSK 2.0 criteria</td>
     <td align="center" valign="top" width="20%"><h2>~115</h2>MYDS pages, read live</td>
-    <td align="center" valign="top" width="20%"><h2>9</h2>hand-written guides</td>
+    <td align="center" valign="top" width="20%"><h2>10</h2>hand-written guides</td>
     <td align="center" valign="top" width="20%"><h2>16 / 16</h2>trigger tests passed</td>
     <td align="center" valign="top" width="20%"><h2>BM · EN</h2>bilingual throughout</td>
   </tr>
@@ -100,7 +101,8 @@ Neither standard is well represented in general-purpose AI models. Without guida
 
 ### Tooling&nbsp;<img src="assets/icons/tooling.svg" width="24" height="24" align="top" alt="">
 
-- **`scan`:** a SPLaSK 2.0 pre-check of a live site, reading the server HTML the way the crawler does.
+- **`scan`:** a SPLaSK 2.0 pre-check of the home page and any pages you pick, with a fix for every failure. Reads the server HTML the way the crawler does.
+- **GitHub Action:** runs `scan` on every push and writes the report to the job summary.
 - **`check-classes`:** catches CSS classes that MYDS doesn't define, in PHP, Blade or JS-built markup.
 - **`tokens`:** every MYDS colour token with its light and dark value.
 - **`search` / `retrieve` / `prefetch`**, with retries and an offline cache.
@@ -193,12 +195,14 @@ The skill activates automatically for Malaysian public-sector work. Try:
 
 ```sh
 cd skills/malaysia-gov-web-guidance
-python scripts/mgwg.py scan https://www.example.gov.my --follow
+python scripts/mgwg.py scan https://www.example.gov.my --list-pages      # see which pages can be scanned
+python scripts/mgwg.py scan https://www.example.gov.my --pages all       # home + every page found
+python scripts/mgwg.py scan https://www.example.gov.my --pages 1,3       # or by number, name or URL
 ```
 
 | Command | What it does |
 |---|---|
-| **`scan`** `<url-or-file> [--follow] [--json]` | SPLaSK 2.0 pre-check of a page (`--follow` also checks the privacy page) |
+| **`scan`** `<url-or-file> [--list-pages] [--pages …] [--format text\|json\|md] [--fail-on fail\|warn]` | SPLaSK 2.0 pre-check of the home page and the pages you choose: `all`, numbers, names (`privacy,sitemap`) or URLs. Every FAIL comes with a fix |
 | **`search`** `"<query>"` | Rank guides for a task (English or Malay) |
 | **`retrieve`** `<id>[,<id>] [--lang en\|ms\|both]` | Print guides; MYDS pages are fetched live |
 | **`list`** `[--category <name>]` | List all guides |
@@ -215,10 +219,35 @@ FAIL  Feedback Form           `splwpk-feedback-form` is on an <i> element (1x); 
 FAIL  Commented-out tags      tags that exist only inside HTML comments <!-- --> (switched off): splwpk-sitemap
 FAIL  Updated Content: News   newest timestamp 2024-11-02 is 752 days old (limit 30)
 FAIL  SEO                     <title> is 94 characters (must be under 70)
+                              -> fix: <title>Agency name, short (under 70 characters)</title>
+FAIL  Privacy Policy          [privacy] privacy page heading is not tagged
+                              -> fix: <h1 splwpk-privacy-policy="splwpk-privacy-policy">Dasar Privasi</h1>
+WARN  Sitemap                 `splwpk-sitemap` is not on the home page but is on "sitemap" (https://…/peta-laman)
+                              -> fix: register https://…/peta-laman as a Criteria URL for this tag in the SPLaSK site profile
 PASS  Updated Content: About Us  `splwpk-about-us` found (1x); newest timestamp 2026-11-10, 14 days old (limit 30)
 ```
 
 </details>
+
+### GitHub Action
+
+Check a site on every push, or on a schedule. The Markdown report appears in the job summary, and the step fails when `scan` finds a FAIL.
+
+```yaml
+# .github/workflows/splask.yml
+on:
+  push:
+  schedule: [{ cron: '0 0 * * 1' }]   # every Monday
+jobs:
+  splask:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DexComm69/malaysia-gov-web-guidance@v1.5.0
+        with:
+          url: https://www.example.gov.my
+          pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only
+          fail-on: fail         # fail | warn | never
+```
 
 ## Coverage&nbsp;<img src="assets/icons/coverage.svg" width="22" height="22" align="top" alt="">
 
@@ -246,6 +275,7 @@ PASS  Updated Content: About Us  `splwpk-about-us` found (1x); newest timestamp 
 
 #### Review and MYDS docs&nbsp;<img src="assets/icons/myds.svg" width="18" height="18" align="top" alt="">
 - `audit-checklist`: reviewing an existing site
+- `cms-wordpress-joomla`: tags and masthead on WordPress and Joomla
 - `design-*`: ~40 MYDS design pages
 - `develop-*`: ~75 MYDS development pages, read live from design.digital.gov.my
 
@@ -291,7 +321,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
 > [!WARNING]
 > - `scan` is a **pre-check**. It hasn't yet been calibrated against an official SPLaSK on-demand assessment, which remains the only authoritative score.
-> - `scan` checks one page at a time and doesn't run JavaScript. It doesn't yet check broken links, data.gov.my dataset titles or GAMMA app names.
+> - `scan` only follows links from the home page (or the URLs you give it) and doesn't run JavaScript. It doesn't yet check broken links, data.gov.my dataset titles or GAMMA app names.
 > - The GOS (online service) criteria come from the older criteria diagram on malaysia.gov.my, not from the v2.0 tagging manual.
 > - The MYDS page index reflects the documentation as of November 2026.
 > - A few terse manual rules are interpreted conservatively (for example "under 70 characters" for titles).
@@ -307,24 +337,23 @@ flowchart TB
         v12["<b>v1.2</b><br/>React / Next.js,<br/>trigger-tested 16/16"]
         v13["<b>v1.3</b><br/>Official SPLaSK 2.0<br/>manual rules"]
         v14["<b>v1.4</b><br/>scan command"]
-        v10 --> v11 --> v12 --> v13 --> v14
+        v15["<b>v1.5</b><br/>Multi-page scan, fixes,<br/>GitHub Action, CI tests,<br/>WordPress & Joomla"]
+        v10 --> v11 --> v12 --> v13 --> v14 --> v15
     end
 
     subgraph next ["Next"]
         direction LR
         cal["Calibrate scan against<br/>an official SPLaSK assessment"]
-        ci["Automated regression<br/>tests in CI"]
-        cal ~~~ ci
+        scanplus["scan: broken links,<br/>data.gov.my titles,<br/>GAMMA app names"]
+        cal ~~~ scanplus
     end
 
     subgraph later ["Later"]
         direction LR
-        scanplus["scan: broken links,<br/>data.gov.my titles,<br/>GAMMA app names"]
         upd["update-index for<br/>new MYDS pages"]
-        cms["WordPress &<br/>Joomla guides"]
         idm["MyDigital ID<br/>sign-in"]
         bm["BM interface<br/>glossary"]
-        scanplus ~~~ upd ~~~ cms ~~~ idm ~~~ bm
+        upd ~~~ idm ~~~ bm
     end
 
     shipped --> next --> later
@@ -332,9 +361,9 @@ flowchart TB
     classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
     classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
     classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
-    class v10,v11,v12,v13,v14 done
-    class cal,ci nxt
-    class scanplus,upd,cms,idm,bm plan
+    class v10,v11,v12,v13,v14,v15 done
+    class cal,scanplus nxt
+    class upd,idm,bm plan
     style shipped fill:transparent,stroke:#16a34a,stroke-width:2px
     style next fill:transparent,stroke:#ca8a04,stroke-width:2px
     style later fill:transparent,stroke:#4f46e5,stroke-width:1px,stroke-dasharray:4 3
@@ -356,6 +385,7 @@ Issues and pull requests are welcome. The most useful contributions:
 
 > [!TIP]
 > Guides in `guides/gov/` keep an English and a Bahasa Melayu section, cite an official source, and record a `retrieved:` date.
+> Before a pull request, run the tests: `python -m unittest discover -s skills/malaysia-gov-web-guidance/tests`.
 
 ## Licence&nbsp;<img src="assets/icons/licence.svg" width="22" height="22" align="top" alt="">
 
@@ -376,9 +406,9 @@ Laman web rasmi sektor awam perlu mematuhi **MYDS** (*masthead* rasmi, token war
 
 ### Ciri utama&nbsp;<img src="assets/icons/features.svg" width="20" height="20" align="top" alt="">
 
-- Panduan dalam BM dan BI: kira-kira 115 halaman MYDS (dibaca terus dari laman rasmi) dan 9 panduan SPLaSK serta corak laman kerajaan.
+- Panduan dalam BM dan BI: kira-kira 115 halaman MYDS (dibaca terus dari laman rasmi) dan 10 panduan SPLaSK, corak laman kerajaan serta WordPress/Joomla.
 - Peraturan SPLaSK berdasarkan *Manual Tagging SPLaSK V2.0* dan manual pengguna SPLaSK (JDN).
-- Arahan `scan`: semakan awal SPLaSK 2.0 bagi laman web atau fail HTML.
+- Arahan `scan`: semakan awal SPLaSK 2.0 bagi halaman utama dan halaman yang anda pilih (`--pages all`, nombor, nama atau URL), dengan cadangan pembetulan bagi setiap FAIL. Boleh dijalankan sebagai GitHub Action.
 - Sokongan PHP / HTML / Blade dan React / Next.js.
 - Bertanya dahulu apabila berlaku konflik, tidak mereka maklumat, dan menyenaraikan perkara pematuhan yang belum selesai dalam bahagian *Panduan Web Kerajaan*.
 

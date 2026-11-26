@@ -9,8 +9,10 @@ and the hand-written SPLaSK / MYDS guides bundled with this skill.
   python mgwg.py prefetch all|<category>|<id,...> [--lang en|ms|both]
                                                 warm the cache for slow or offline use
   python mgwg.py tokens [--filter otl]          list MYDS theme tokens with light/dark hex values
-  python mgwg.py scan <url|file.html> [--follow] [--json]
-                                                SPLaSK 2.0 + MYDS pre-check of a live page (no JavaScript, like the crawler)
+  python mgwg.py scan <url|file.html> [--list-pages] [--pages all|1,3|privacy,sitemap|<urls>]
+                    [--format text|json|md] [--fail-on never|fail|warn]
+                                                SPLaSK 2.0 + MYDS pre-check of a site, with a fix for every FAIL
+                                                (no JavaScript, like the crawler; see splask_scan.py --help)
   python mgwg.py check-classes <file>... [--css my.css] [--myds-css path]
                                                 find classes the MYDS 1.0.0 stylesheet doesn't define
 
@@ -415,6 +417,9 @@ def check_classes(files, extra_css, myds_css):
 if __name__ == '__main__':
     try: sys.stdout.reconfigure(encoding='utf-8')
     except Exception: pass
+    if len(sys.argv) > 1 and sys.argv[1] == 'scan':   # all scan options live in splask_scan.py
+        sys.path.insert(0, HERE); import splask_scan
+        sys.exit(splask_scan.main(sys.argv[2:]))
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest='cmd', required=True)
     s = sp.add_parser('search'); s.add_argument('query'); s.add_argument('--limit', type=int, default=8)
@@ -423,13 +428,9 @@ if __name__ == '__main__':
     c = sp.add_parser('check-classes'); c.add_argument('files', nargs='+'); c.add_argument('--css', nargs='*', default=[]); c.add_argument('--myds-css', default='')
     pf = sp.add_parser('prefetch'); pf.add_argument('ids', help="comma-separated ids, a category name, or 'all'"); pf.add_argument('--lang', default='both')
     tk = sp.add_parser('tokens'); tk.add_argument('--filter', default=''); tk.add_argument('--myds-css', default='')
-    sc = sp.add_parser('scan'); sc.add_argument('target'); sc.add_argument('--follow', action='store_true'); sc.add_argument('--json', action='store_true'); sc.add_argument('--today', default='')
+    sp.add_parser('scan', help='SPLaSK pre-check (options: python mgwg.py scan --help)')
     a = ap.parse_args()
     if a.cmd == 'tokens': tokens(a.filter, a.myds_css); sys.exit()
-    if a.cmd == 'scan':
-        sys.path.insert(0, HERE); import splask_scan, datetime as _dt
-        r = splask_scan.scan(a.target, a.follow, _dt.datetime.strptime(a.today, '%Y-%m-%d') if a.today else None)
-        print(json.dumps(r, ensure_ascii=False, indent=1)) if a.json else splask_scan.report(r); sys.exit()
     if a.cmd == 'search': search(a.query, a.limit)
     elif a.cmd == 'list': do_list(a.category)
     elif a.cmd == 'prefetch': prefetch(a.ids, a.lang)

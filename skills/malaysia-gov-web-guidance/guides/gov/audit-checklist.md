@@ -24,7 +24,7 @@ retrieved: 2026-11-25
 
 ### 2. Automated checks
 
-**First, for a live site or an HTML file:** `python scripts/mgwg.py scan <url-or-file> --follow`. This checks the SPLaSK 2.0 rules against the server HTML, the way the crawler sees it: tags, spelling, placement, timestamps and freshness, link targets, privacy page, SEO limits, viewport, HTTPS and redirects, plus tags hidden in comments or only in JavaScript. Then run the browser script below on every page and role, for what only a rendered page shows.
+**First, for a live site or an HTML file:** `python scripts/mgwg.py scan <url-or-file> --pages all` (or the pages the user named; `--list-pages` shows them). This checks the SPLaSK 2.0 rules against the server HTML, the way the crawler sees it: tags, spelling, placement, timestamps and freshness, link targets, privacy page, SEO limits, viewport, HTTPS and redirects, plus tags hidden in comments or only in JavaScript. Then run the browser script below on every page and role, for what only a rendered page shows.
 
 #### Browser script (every page and role)
 

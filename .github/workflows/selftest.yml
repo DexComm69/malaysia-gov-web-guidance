@@ -1,0 +1,44 @@
+name: selftest
+on:
+  push:
+    paths: ['skills/**', 'action.yml', '.github/workflows/selftest.yml']
+  pull_request:
+  workflow_dispatch:
+jobs:
+  unit:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.8', '3.13']
+        exclude:
+          - os: windows-latest
+            python: '3.8'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s skills/malaysia-gov-web-guidance/tests -v
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clean fixture site passes with --fail-on fail? (expects 1 FAIL, so this must fail)
+        id: expect_fail
+        continue-on-error: true
+        uses: ./
+        with:
+          url: skills/malaysia-gov-web-guidance/tests/fixtures/site/index.html
+          pages: all
+          today: '2026-11-25'
+      - name: Check the action failed as expected
+        if: steps.expect_fail.outcome != 'failure'
+        run: echo "expected the action to fail on the privacy-heading fault" && exit 1
+      - name: Report only (never fails)
+        uses: ./
+        with:
+          url: skills/malaysia-gov-web-guidance/tests/fixtures/site/index.html
+          pages: privacy,sitemap
+          fail-on: never
+          today: '2026-11-25'

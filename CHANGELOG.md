@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5.0 (26 November 2026)
+
+- **Multi-page `scan`:** choose which pages to check, or check them all.
+  - `--list-pages` lists the pages linked from the home page that a SPLaSK review needs (privacy, sitemap, feedback, search, contact, FAQ, about, news, client charter, publication, archive, procurement, e-participation, CIO, freedom of information). It finds them from tagged links first, then from link text in BM or English.
+  - `--pages all`, `--pages 1,3` (numbers from the list), `--pages privacy,sitemap` (names) or `--pages <url>,<url>`; `--max-pages` caps the run. `--follow` still works and means `--pages privacy`.
+  - Each page gets the tag checks (spelling, placement, timestamps, freshness, link targets). Findings that repeat the home page word for word (shared header and footer) are shown once.
+  - The dedicated privacy page is checked for a tagged H1–H6 containing "privasi"/"privacy".
+  - A tag missing from the home page but found on a scanned page becomes a WARN that says to register that page as a Criteria URL in the SPLaSK profile.
+- **A suggested fix for every FAIL**, as ready-to-paste markup where possible.
+- **`--format text|json|md`, `--md-out FILE` and `--fail-on never|fail|warn`** for reports and CI.
+- **GitHub Action** (`action.yml`): `uses: DexComm69/malaysia-gov-web-guidance@v1.5.0` with `url`, `pages` and `fail-on`. It writes the Markdown report to the job summary.
+- **Automated tests** (`tests/`, standard-library `unittest`): a 15-fault page and a 4-page fixture site, run by a self-test workflow on Linux and Windows, Python 3.8 and 3.13.
+- **New guide `cms-wordpress-joomla`** (EN/BM): tags in child-theme or template code, menu-link filters and overrides, search forms, real timestamps from modified dates, and why editors strip `splwpk-*` attributes.
+- **SKILL.md and `audit-checklist`:** start site checks with `scan --pages all`, or the pages the user named.
+
 ## 1.4.0 (25 November 2026)
 
 - **New `scan` command:** a SPLaSK 2.0 pre-check of a live site or HTML file, built from JDN's tagging manual. Like the crawler, it reads the server HTML without running JavaScript. It reports:

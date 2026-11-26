@@ -1,0 +1,58 @@
+name: 'SPLaSK pre-check'
+description: 'Unofficial SPLaSK 2.0 + MYDS pre-check of a Malaysian government website, with a suggested fix for every failure.'
+author: 'malaysia-gov-web-guidance contributors'
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+inputs:
+  url:
+    description: 'Home page URL (or a path to an HTML file in the repository)'
+    required: true
+  pages:
+    description: "Extra pages to scan: 'all', numbers, names (privacy, sitemap, feedback, faq, ...) or URLs, comma-separated. Empty = home page only."
+    required: false
+    default: ''
+  fail-on:
+    description: "Fail the step on 'fail' findings, on 'warn' (or fail), or 'never'."
+    required: false
+    default: 'fail'
+  max-pages:
+    description: 'Upper limit on extra pages'
+    required: false
+    default: '15'
+  today:
+    description: 'Date used for freshness checks (YYYY-MM-DD). Empty = today.'
+    required: false
+    default: ''
+outputs:
+  report:
+    description: 'Path to the JSON report'
+    value: ${{ steps.scan.outputs.report }}
+runs:
+  using: 'composite'
+  steps:
+    - id: scan
+      shell: bash
+      env:
+        SCAN_URL: ${{ inputs.url }}
+        SCAN_PAGES: ${{ inputs.pages }}
+        SCAN_FAIL_ON: ${{ inputs.fail-on }}
+        SCAN_MAX: ${{ inputs.max-pages }}
+        SCAN_TODAY: ${{ inputs.today }}
+      run: |
+        PY=python3; "$PY" -c "" 2>/dev/null || PY=python
+        SCRIPT="$GITHUB_ACTION_PATH/skills/malaysia-gov-web-guidance/scripts/splask_scan.py"
+        REPORT="$RUNNER_TEMP/splask-report.json"
+        ARGS=("$SCAN_URL" --max-pages "$SCAN_MAX" --md-out "$GITHUB_STEP_SUMMARY" --fail-on "$SCAN_FAIL_ON")
+        [ -n "$SCAN_PAGES" ] && ARGS+=(--pages "$SCAN_PAGES")
+        [ -n "$SCAN_TODAY" ] && ARGS+=(--today "$SCAN_TODAY")
+        echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+        set +e
+        "$PY" "$SCRIPT" "${ARGS[@]}" --format json > "$REPORT"; CODE=$?
+        set -e
+        "$PY" - "$REPORT" "$SCRIPT" <<'PY'
+        import json, sys, importlib.util
+        spec = importlib.util.spec_from_file_location('splask_scan', sys.argv[2]); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+        m.report(json.load(open(sys.argv[1], encoding='utf-8')))
+        PY
+        exit $CODE
