@@ -316,6 +316,7 @@ xychart-beta
 | `scan` on 5 live government portals | Real issues found (misspelled tags, tags in HTML comments, stale timestamps); false alarms fixed | <img alt="validated" src="https://img.shields.io/badge/validated-2ea043?style=flat-square"> |
 | Seeded-fault page (chart above) | 25 → 12 fails with the skill; without it, 25 → 17 and two invented tag names | <img alt="-13 fails" src="https://img.shields.io/badge/--13%20fails-2ea043?style=flat-square"> |
 | WordPress child theme, 5 pages, 15 seeded faults | 27 → 11 fails with the skill (all 11 need real council URLs); without it, 27 → 22 and three invented tag names | <img alt="-16 fails" src="https://img.shields.io/badge/--16%20fails-2ea043?style=flat-square"> |
+| [Eval suite](skills/malaysia-gov-web-guidance/evals/BASELINE.md): 13 checks over both seeded-fault tasks | Official tags only, form placement, no invented dates, SEO limits, Criteria URL steps | <img alt="13/13 vs 5/13" src="https://img.shields.io/badge/13%2F13%20vs%205%2F13-2ea043?style=flat-square"> |
 
 See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
@@ -389,7 +390,7 @@ Issues and pull requests are welcome. The most useful contributions:
 > [!TIP]
 > Guides in `guides/gov/` keep an English and a Bahasa Melayu section, cite an official source, and record a `retrieved:` date.
 > Before a pull request, run the tests: `python -m unittest discover -s skills/malaysia-gov-web-guidance/tests`, and check the build with `python tools/build.py --check`.
-> To measure the skill's effect on real tasks, run its eval suite from `skills/malaysia-gov-web-guidance`: `claude plugin eval . --scaffold --allow-tools Write,Edit,Bash`. Each case runs with and without the skill; these are billed model runs.
+> To measure the skill's effect on real tasks, run its eval suite from `skills/malaysia-gov-web-guidance`: `claude plugin eval . --scaffold --allow-tools Write,Edit,Bash`. Each case runs with and without the skill; these are billed model runs. The CLI needs a shell sandbox, so run it on macOS, Linux or WSL (see [`evals/BASELINE.md`](skills/malaysia-gov-web-guidance/evals/BASELINE.md)).
 
 ## Licence&nbsp;<img src="assets/icons/licence.svg" width="22" height="22" align="top" alt="">
 
