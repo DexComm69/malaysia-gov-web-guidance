@@ -243,6 +243,116 @@ class Links(unittest.TestCase):
         self.assertTrue(find(r, 'INFO', 'Active Link', text='--check-links'))
 
 
+class MydsAndA11y(unittest.TestCase):
+    def page(self, head, body, **kw):
+        import tempfile
+        f = os.path.join(tempfile.mkdtemp(), 'index.html')
+        with open(f, 'w', encoding='utf8') as h:
+            h.write(f'<html lang="ms" {kw.get("htmlattr", "")}><head>{head}</head><body>{body}</body></html>')
+        return s.scan_site(f, None, TODAY, myds=True, a11y=True)
+
+    GOOD_HEAD = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&family=Inter">'
+    MASTHEAD = '<div class="masthead">Portal Rasmi Kerajaan Malaysia <button>Kenal pasti begini</button></div>'
+
+    def test_clean_page(self):
+        r = self.page(self.GOOD_HEAD, '<a href="#k">Langkau ke kandungan utama</a>' + self.MASTHEAD +
+                      '<main id="k"><h1>Utama</h1><h2>Berita</h2><label for="q">Cari</label><input id="q" name="q"></main>')
+        self.assertFalse([x for x in r['results'] if x['criterion'].startswith(('MYDS:', 'Accessibility:')) and x['level'] == 'WARN'])
+
+    def test_masthead_problems(self):
+        self.assertTrue(find(self.page('', '<h1>X</h1>'), 'WARN', 'MYDS: masthead', text='no official masthead'))
+        self.assertTrue(find(self.page('', '<h1>X</h1>' + self.MASTHEAD), 'WARN', 'MYDS: masthead', text='after the page heading'))
+        self.assertTrue(find(self.page('', '<div>Portal Rasmi Kerajaan Malaysia</div><h1>X</h1>'), 'WARN', 'MYDS: masthead', text='toggle'))
+
+    def test_fonts_and_dark_mode(self):
+        r = self.page('<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans" rel="stylesheet">', '<h1>X</h1>', htmlattr='class="dark"')
+        self.assertTrue(find(r, 'WARN', 'MYDS: fonts', text='Plus Jakarta Sans'))
+        self.assertTrue(find(r, 'WARN', 'MYDS: colour mode'))
+
+    def test_a11y_problems(self):
+        r = self.page('', '<h1>X</h1><h3>Y</h3><input name="emel" placeholder="E-mel"><button><i class="icon"></i></button>'
+                          '<a href="/x"></a><div id="a"></div><div id="a"></div>')
+        for crit, text in (('Accessibility: form labels', 'emel'), ('Accessibility: names', '2 link'), ('Accessibility: headings', 'h1 to h3'),
+                           ('Accessibility: duplicate ids', 'a'), ('Accessibility: skip link', 'no "skip')):
+            self.assertTrue(find(r, 'WARN', crit, text=text), crit)
+
+    def test_off_by_default(self):
+        r = s.scan_site(SITE, None, TODAY)
+        self.assertFalse([x for x in r['results'] if x['criterion'].startswith(('MYDS:', 'Accessibility:'))])
+
+
+class DueAndCriteria(unittest.TestCase):
+    def test_due_dates(self):
+        r = s.scan_site(SITE, None, TODAY)
+        d = {x['tag']: x for x in r['due']}
+        self.assertEqual(d['splwpk-contact-details']['due'], '2026-12-01')
+        self.assertEqual(d['splwpk-contact-details']['days_left'], 6)
+        self.assertNotIn('splwpk-faq', d)                       # FAQ has no freshness limit
+        self.assertEqual(r['due'], sorted(r['due'], key=lambda x: x['due']))
+
+    def test_due_within_warns(self):
+        r = s.scan_site(SITE, None, TODAY, due_within=7)
+        self.assertTrue(find(r, 'WARN', 'Updated Content: Contact Details', text='goes stale on 2026-12-01'))
+        self.assertFalse(find(r, 'WARN', 'Updated Content: News', text='goes stale'))
+
+    def test_criteria_url_list(self):
+        r = s.scan_site(SITE, 'all', TODAY)
+        self.assertEqual(sorted(c['tag'] for c in r['criteria_urls']), ['splwpk-feedback-form', 'splwpk-sitemap'])
+
+    def test_markdown_sections(self):
+        out = run_cli(SITE, '--today', '2026-11-25', '--pages', 'all', '--format', 'md')[1]
+        self.assertIn('### Freshness due dates', out)
+        self.assertIn('### Criteria URLs to register', out)
+
+
+class Malay(unittest.TestCase):
+    def test_text_report_in_bm(self):
+        out = run_cli(BROKEN, '--today', '2026-11-25', '--lang', 'ms')[1]
+        self.assertIn('Semakan awal SPLaSK 2.0', out)
+        self.assertIn('GAGAL', out)
+        self.assertIn('bukan tag rasmi; mungkin maksud anda `splwpk-search-function`?', out)
+        self.assertIn('Tarikh luput kesegaran', out)
+
+    def test_markdown_in_bm(self):
+        out = run_cli(SITE, '--today', '2026-11-25', '--pages', 'all', '--format', 'md', '--lang', 'ms')[1]
+        self.assertIn('| | Kriteria | Halaman | Dapatan | Cadangan pembetulan |', out)
+        self.assertIn('Criteria URL untuk didaftarkan', out)
+
+    def test_every_criterion_has_a_bm_name(self):
+        import splask_i18n as t
+        self.assertEqual([c for c, *_ in s.TAGS.values() if c not in t.CRITERIA], [])
+
+    def test_json_stays_english(self):
+        r = json.loads(run_cli(SITE, '--today', '2026-11-25', '--format', 'json', '--lang', 'ms')[1])
+        self.assertTrue(any(x['criterion'] == 'Search Function' for x in r['results']))
+
+
+class Render(unittest.TestCase):
+    def test_tags_added_by_javascript(self):
+        import splask_render as rd
+        orig = rd.rendered_html
+        rd.rendered_html = lambda target: '<html><body><div splwpk-multilang="splwpk-multilang"></div><a href="/f" splwpk-faq="splwpk-faq">F</a></body></html>'
+        try:
+            import tempfile
+            f = os.path.join(tempfile.mkdtemp(), 'index.html')
+            with open(f, 'w', encoding='utf8') as h:
+                h.write('<html lang="ms"><body><a href="/f" splwpk-faq="splwpk-faq">F</a></body></html>')
+            r = s.scan_site(f, None, TODAY, render=True)
+            self.assertTrue(find(r, 'FAIL', 'Rendering', text='(the crawler never sees them): splwpk-multilang'))
+        finally:
+            rd.rendered_html = orig
+
+    def test_no_browser_is_a_warning(self):
+        import splask_render as rd
+        orig = rd.rendered_html
+        def boom(target): raise RuntimeError('Playwright is not installed')
+        rd.rendered_html = boom
+        try:
+            self.assertTrue(find(s.scan_site(SITE, None, TODAY, render=True), 'WARN', 'Rendering', text='--render skipped'))
+        finally:
+            rd.rendered_html = orig
+
+
 class Cli(unittest.TestCase):
     def test_fail_on(self):
         self.assertEqual(run_cli(SITE, '--today', '2026-11-25')[0], 0)

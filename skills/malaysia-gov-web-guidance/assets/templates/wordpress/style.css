@@ -1,0 +1,10 @@
+/*
+Theme Name: Agency Child (MYDS + SPLaSK starter)
+Template: TODO-parent-theme-folder
+Version: 1.0.0
+*/
+.masthead > summary { cursor: pointer; list-style: none; }
+.masthead > summary::-webkit-details-marker { display: none; }
+.masthead > summary:focus-visible { outline: 2px solid rgb(var(--fr-primary)); outline-offset: -2px; }
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 100; background: rgb(var(--bg-white)); padding: .5rem 1rem; }

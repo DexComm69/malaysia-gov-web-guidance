@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.0 (26 November 2026)
+
+- **`scan` reports freshness due dates and the Criteria URLs to register.** Each dated item (news, about us, contact, client charter, CIO) shows its last update and the day it goes stale; `--due-within N` turns anything due within N days into a WARN (also an input of the GitHub Action, for weekly reminders).
+- **`scan --myds`**: official masthead wording, its "Kenal pasti begini" toggle and its position; Poppins/Inter (another font is reported as a conflict to raise); light mode by default.
+- **`scan --a11y`**: form fields without labels, links/buttons with no accessible name, skipped heading levels, duplicate ids, and a skip link on the home page.
+- **`scan --fix`**: writes `<page>.fixed.html` with safe mechanical fixes for static HTML: misspelled tags and tag values, tags moved off `<i>` icons and wrapper `<div>`s onto the right `<a>`/`<form>`, the exact MyGov URL, viewport and `lang`. Dates, text and other links are never changed.
+- **`scan --render`**: compares the server HTML with the page after JavaScript runs (Playwright, using the system Edge or Chrome) and fails tags that only JavaScript adds.
+- **`scan --lang ms`**: the text and Markdown reports in Bahasa Melayu (JSON stays English).
+- **Starter templates** (`assets/templates/`): header/footer for plain PHP, WordPress, Joomla, Laravel and Next.js with the masthead, correctly placed tags, real-date timestamps, a W3C control, a skip link, one `<h1>`, and a language switcher shown only when a second language exists. The rendered example has no MYDS or accessibility warnings; PHP files pass `php -l`; tests check every template against the rules.
+- **New guide `mydigital-id`**: sign-in with MyDigital ID (MyID Access, standard OpenID Connect) and identity checks with MyID Verify, summarised from MyDigital ID Sdn. Bhd.'s developer portal, with the decisions to raise (data kept, hashing the IC number, Static vs Live).
+- **New guide `bm-ui-glossary`**: standard BM wording for masthead, navigation, SPLaSK page names, buttons, forms and dates, from MYDS's own Malay strings; notes where MYDS differs from Dewan Bahasa spelling (*kemas kini*, *e-mel*) and its *Modul* mislabel for Modal.
+- 77 unit tests (32 new).
+
 ## 1.8.0 (26 November 2026)
 
 - **New `update-index` command** (`scripts/myds_index.py`): compares `references/myds-index.json` with the live MYDS documentation navigation and reports new, renamed and removed pages. `--write` adds new pages (English and Malay titles, section headings, stub status, and a category taken from the nearest page in the navigation), fixes renamed titles and drops pages only when their URL really returns 404; a page missing from the navigation but still online is reported and kept. `--refresh` re-reads every page; `--fail-on-change` exits 1 for CI. Against the live site: 115 pages, up to date; a full refresh reproduced every title, Malay title and stub status in the index.

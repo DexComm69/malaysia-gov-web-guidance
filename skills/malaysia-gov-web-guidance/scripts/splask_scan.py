@@ -145,7 +145,8 @@ def load(target, base=None):
     if re.match(r'https?://', target):
         html, final, hops, secs, _ = fetch(target)
         return html, final, hops, secs
-    return open(target, encoding='utf8', errors='replace').read(), target, [], None
+    with open(target, encoding='utf8', errors='replace') as fh:
+        return fh.read(), target, [], None
 
 
 def looks_generated(stamps, today):
@@ -183,7 +184,7 @@ def fix_missing(tag):
     return f'<a href="/…" {tag}="{tag}"{ts}>…</a>' + ('  (timestamp = the real date the content last changed)' if ts else '')
 
 
-def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None, is_url=False, check_links_on=False):
+def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None, is_url=False, check_links_on=False, due=None):
     """Run the checks for one page. Home pages get every check; other pages get tag and page-specific checks."""
     tree = Tree(); tree.feed(html); nodes = tree.nodes
     tagged = tags_of(nodes); fresh = {}
@@ -243,6 +244,10 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
                 ok = False; A('FAIL', crit, f'timestamp not in YYYY-MM-DD HH:MM:SS: "{badfmt[0].attrs.get("timestamp")}"', 'timestamp="2026-11-24 09:15:00" (24-hour)')
             if good and days:
                 newest = max(good); age = max(0, (today.date() - newest.date()).days)
+                if due is not None:
+                    due.append({'tag': tag, 'criterion': crit, 'page': page_label, 'last_update': newest.strftime('%Y-%m-%d'),
+                                'limit_days': days, 'due': (newest + dt.timedelta(days=days)).strftime('%Y-%m-%d'),
+                                'days_left': days - age})
                 if age > days:
                     ok = False; A('FAIL', crit, f'newest timestamp {newest:%Y-%m-%d} is {age} days old (limit {days})', f'update the content itself, then set timestamp to that real date (a fake date fails SPLaSK anyway)')
                 elif newest > today + dt.timedelta(days=1):
@@ -525,7 +530,85 @@ def check_links(pages_trees, add, is_url, scope, max_links):
         + (f'; {skipped} more not checked (--max-links)' if skipped else ''))
 
 
-def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=150):
+MASTHEAD_TOGGLE = ('Kenal pasti begini', "Here's how you know", 'Here&#x27;s how you know', 'Here&#39;s how you know')
+
+
+def myds_checks(tree, html, add, page):
+    """--myds: official masthead, Poppins/Inter, light mode by default (MYDS, not scored by SPLaSK)."""
+    nodes = tree.nodes
+    text_nodes = [n for n in nodes if n.text and any(m in ' '.join(n.text) for m in MASTHEAD)]
+    if not text_nodes:
+        add('WARN', 'MYDS: masthead', 'no official masthead ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website") in the server HTML',
+            'add the masthead above the site header (guide: masthead-html)', page)
+    else:
+        first_h1 = next((i for i, n in enumerate(nodes) if n.tag == 'h1'), None)
+        pos = nodes.index(text_nodes[0])
+        if first_h1 is not None and pos > first_h1:
+            add('WARN', 'MYDS: masthead', 'the masthead comes after the page heading; MYDS puts it at the very top, above the site header',
+                'move the masthead markup to the start of <body>', page)
+        elif not any(t in html for t in MASTHEAD_TOGGLE):
+            add('WARN', 'MYDS: masthead', 'masthead found, but without its "Kenal pasti begini" / "Here\'s how you know" toggle',
+                'add the toggle that explains .gov.my and HTTPS (guide: masthead-html)', page)
+        else:
+            add('PASS', 'MYDS: masthead', 'official masthead wording and toggle, above the page heading', None, page)
+    css = ' '.join(n.attrs.get('href', '') for n in nodes if n.tag == 'link') + ' ' + ' '.join(
+        re.findall(r'<style\b[^>]*>(.*?)</style>', html, re.S | re.I)) + ' ' + ' '.join(n.attrs.get('style', '') for n in nodes)
+    fams = set(re.findall(r'family=([A-Za-z+]+)', css))
+    other = sorted(f.replace('+', ' ') for f in fams if f.lower() not in ('poppins', 'inter'))
+    has = {f for f in ('Poppins', 'Inter') if re.search(f, css, re.I)} | ({'Poppins', 'Inter'} if 'myds-style' in css else set())
+    if has >= {'Poppins', 'Inter'}:
+        add('PASS', 'MYDS: fonts', 'Poppins and Inter (or the MYDS stylesheet) are loaded', None, page)
+    elif other:
+        add('WARN', 'MYDS: fonts', f'loads {", ".join(other)} instead of Poppins (headings) and Inter (body)',
+            'MYDS uses Poppins and Inter; if the agency has its own brand fonts, this is a conflict to raise, not to decide silently', page)
+    else:
+        add('INFO', 'MYDS: fonts', 'Poppins/Inter not seen in the server HTML; they may be loaded by an external stylesheet', None, page)
+    html_node = next((n for n in nodes if n.tag == 'html'), None)
+    dark = html_node is not None and ('dark' in html_node.attrs.get('class', '').split() or html_node.attrs.get('data-theme', '') == 'dark')
+    add('WARN' if dark else 'PASS', 'MYDS: colour mode', '<html> starts in dark mode' if dark else 'light mode by default',
+        'start in light mode; offer dark mode as a user choice' if dark else None, page)
+
+
+def a11y_checks(tree, add, page, is_home):
+    """--a11y: basic checks the server HTML can show (not a full WCAG audit)."""
+    nodes = tree.nodes
+    ids = [n.attrs['id'] for n in nodes if n.attrs.get('id')]
+    labelled = {n.attrs.get('for') for n in nodes if n.tag == 'label'}
+    named = lambda n: n.attrs.get('aria-label') or n.attrs.get('aria-labelledby') or n.attrs.get('title')
+    unl = []
+    for n in nodes:
+        if n.tag in ('input', 'select', 'textarea'):
+            if n.tag == 'input' and n.attrs.get('type', 'text').lower() in ('hidden', 'submit', 'button', 'reset', 'image'):
+                continue
+            if (n.attrs.get('id') in labelled) or any(a.tag == 'label' for a in n.ancestors()) or named(n):
+                continue
+            unl.append(n.attrs.get('name') or n.attrs.get('id') or n.tag)
+    add('WARN' if unl else 'PASS', 'Accessibility: form labels',
+        f'{len(unl)} form field(s) without a label (first: {unl[0]})' if unl else 'every form field has a label',
+        '<label for="id">…</label> for each field (a placeholder is not a label)' if unl else None, page)
+    def has_name(n):
+        return n.all_text() or named(n) or any(d.tag == 'img' and d.attrs.get('alt') for d in n.descendants()) \
+            or any(d.tag in ('svg',) and (d.attrs.get('aria-label') or any(t.tag == 'title' for t in d.descendants())) for d in n.descendants())
+    empty = [n for n in nodes if (n.tag == 'button' or (n.tag == 'a' and n.attrs.get('href'))) and not has_name(n)]
+    if empty:
+        e = empty[0]
+        add('WARN', 'Accessibility: names', f'{len(empty)} link(s)/button(s) with no text a screen reader can read (first: <{e.tag}> {e.attrs.get("href", "")[:40]})',
+            'add visible text, or aria-label="…" on icon-only links and buttons', page)
+    levels = [int(n.tag[1]) for n in nodes if re.fullmatch(r'h[1-6]', n.tag)]
+    jump = next(((a, b) for a, b in zip(levels, levels[1:]) if b > a + 1), None)
+    if jump:
+        add('WARN', 'Accessibility: headings', f'heading level jumps from h{jump[0]} to h{jump[1]}', f'use h{jump[0] + 1} (style it with CSS if it should look smaller)', page)
+    dup = sorted({i for i in ids if ids.count(i) > 1})
+    if dup:
+        add('WARN', 'Accessibility: duplicate ids', f'duplicate id(s): {", ".join(dup[:5])}', 'make each id unique (labels and aria references depend on them)', page)
+    if is_home:
+        first = [n for n in nodes if n.tag == 'a' and n.attrs.get('href')][:3]
+        skip = any(n.attrs['href'].startswith('#') and re.search(r'skip|langkau|terus ke', n.all_text(), re.I) for n in first)
+        add('PASS' if skip else 'WARN', 'Accessibility: skip link', 'skip link at the start of the page' if skip else 'no "skip to main content" link at the start of the page',
+            None if skip else '<a class="skip-link" href="#kandungan">Langkau ke kandungan utama</a> as the first link, with <main id="kandungan">', page)
+
+
+def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=150, due_within=None, myds=False, a11y=False, render=False):
     """pages: None (home only) | 'all' | list of names, numbers (1-based, from discover order) or URLs/paths."""
     today = today or dt.datetime.now()
     results = []
@@ -534,8 +617,11 @@ def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=
 
     html, final, hops, secs = load(home)
     is_url = bool(re.match(r'https?://', home))
-    home_tree, home_tags = check_page(html, final, True, today, add, 'home', hops, secs, is_url, bool(links))
+    due = []
+    home_tree, home_tags = check_page(html, final, True, today, add, 'home', hops, secs, is_url, bool(links), due)
     trees = [('home', home_tree, final)]
+    if myds: myds_checks(home_tree, html, add, 'home')
+    if a11y: a11y_checks(home_tree, add, 'home', True)
     found = discover(html, final)
     chosen = []
     if pages:
@@ -559,14 +645,16 @@ def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=
         except Exception as e:
             add('WARN', 'Page fetch', f'could not open {target}: {e.__class__.__name__}', page=name); continue
         start = len(results)
-        ptree, ptags = check_page(phtml, pfinal, False, today, add, name)
+        ptree, ptags = check_page(phtml, pfinal, False, today, add, name, due=due)
         trees.append((name, ptree, pfinal))
+        if a11y: a11y_checks(ptree, add, name, False)
         # shared header/footer: drop findings that repeat the home page word for word
         home_seen = {(x['level'], x['criterion'], x['message']) for x in results[:start] if x['page'] == 'home'}
         results[start:] = [x for x in results[start:] if (x['level'], x['criterion'], x['message']) not in home_seen]
         scanned.append({'name': name, 'url': pfinal if is_url else pfinal.replace(chr(92), '/')}); tags_by_page[name] = ptags
 
     # a tag missing on the home page but present on a scanned page -> SPLaSK only sees it via a Criteria URL
+    criteria_urls = []
     for r in results:
         if r['page'] == 'home' and r['level'] == 'FAIL' and r['message'].startswith('no `splwpk-'):
             tag = re.search(r'`(splwpk-[a-z0-9-]+)`', r['message']).group(1)
@@ -578,10 +666,28 @@ def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=
                 r['level'] = 'WARN'
                 r['message'] = f'`{tag}` is not on the home page but is on "{where[0]}" ({url})'
                 r['fix'] = f'register {url} as a Criteria URL for this tag in the SPLaSK site profile, or also tag it on the home page'
+                criteria_urls.append({'tag': tag, 'criterion': TAGS[tag][0], 'url': url})
+    if render:
+        import splask_render
+        def _tags(h):
+            t = Tree(); t.feed(h); return tags_of(t.nodes)
+        for name, tree_, url in trees:
+            try:
+                splask_render.compare(tags_of(tree_.nodes), splask_render.rendered_html(url if name != 'home' else home), _tags, add, name)
+            except RuntimeError as e:
+                add('WARN', 'Rendering', f'--render skipped: {e}', None, name); break
     if links:
         check_links(trees, add, is_url, links, max_links)
         check_targets(trees, add)
-    return {'target': home, 'final_url': final, 'redirects': len(hops), 'pages': scanned, 'discovered': found, 'results': results}
+    seen_due, due_list = set(), []
+    for d in sorted(due, key=lambda d: (d['due'], d['page'] != 'home')):
+        if (d['tag'], d['last_update']) not in seen_due:
+            seen_due.add((d['tag'], d['last_update'])); due_list.append(d)
+            if due_within is not None and 0 <= d['days_left'] <= due_within:
+                add('WARN', d['criterion'], f"goes stale on {d['due']} ({d['days_left']} days): last updated {d['last_update']}, limit {d['limit_days']} days",
+                    'update the content itself before that date (its timestamp then follows the real change)', d['page'])
+    return {'target': home, 'final_url': final, 'redirects': len(hops), 'pages': scanned, 'discovered': found, 'results': results,
+            'due': due_list, 'criteria_urls': criteria_urls}
 
 
 def scan(target, follow=False, today=None):
@@ -596,34 +702,79 @@ def counts(r):
     return {k: sum(1 for x in r['results'] if x['level'] == k) for k in ORDER}
 
 
-def report(r):
-    rs = sorted(r['results'], key=lambda x: (ORDER[x['level']], x['page'] != 'home', x['page'], x['criterion']))
-    print(f"SPLaSK 2.0 pre-check: {r['target']}\n(final URL {r['final_url']}; unofficial, the SPLaSK assessment is the authority)")
-    print('Pages scanned: ' + ', '.join(f"{p['name']} ({p['url']})" for p in r['pages']) + '\n')
+EN = {
+    'title': 'SPLaSK 2.0 pre-check',
+    'final': 'final URL {url}; unofficial, the SPLaSK assessment is the authority',
+    'pages': 'Pages scanned', 'fix': 'fix',
+    'due_head': 'Freshness due dates (each item fails on its due date unless the content itself is updated):',
+    'due_row': '  {crit:38} last update {last}   due {due}   {left}',
+    'overdue': 'OVERDUE', 'today': 'due today', 'in_days': 'in {n} days',
+    'crit_head': 'Register these pages as Criteria URLs in the SPLaSK site profile:',
+    'totals': '{FAIL} FAIL, {WARN} WARN, {PASS} PASS, {INFO} INFO',
+    'md_title': 'SPLaSK 2.0 pre-check', 'md_totals': '**{FAIL} fail** · {WARN} warn · {PASS} pass · {INFO} info',
+    'md_pages': 'Pages', 'md_cols': '| | Criterion | Page | Finding | Suggested fix |',
+    'md_due': '### Freshness due dates', 'md_due_cols': '| Item | Last update | Due | |',
+    'md_crit': '### Criteria URLs to register in the SPLaSK site profile', 'md_crit_cols': '| Tag | Page |',
+    'md_pass': '{n} passing checks', 'md_foot': '_Unofficial pre-check; the SPLaSK assessment is the authority._',
+    'md_days': '{n} days', 'md_overdue': '❌ overdue', 'md_today': '⚠️ today',
+}
+
+
+def _localise(r, lang):
+    """(labels, results, due) for the report language; findings are translated only for display."""
+    if lang != 'ms':
+        return EN, r['results'], r.get('due') or [], (lambda lv: lv)
+    import splask_i18n as t
+    due = [dict(d, criterion=t.CRITERIA.get(d['criterion'], d['criterion'])) for d in r.get('due') or []]
+    return t.LABELS, [t.translate_result(x) for x in r['results']], due, (lambda lv: t.LEVEL.get(lv, lv))
+
+
+def report(r, lang='en'):
+    L, res, due, lvl = _localise(r, lang)
+    rs = sorted(res, key=lambda x: (ORDER[x['level']], x['page'] != 'home', x['page'], x['criterion']))
+    print(f"{L['title']}: {r['target']}\n(" + L['final'].format(url=r['final_url']) + ')')
+    print(L['pages'] + ': ' + ', '.join(f"{p['name']} ({p['url']})" for p in r['pages']) + '\n')
     multi = len(r['pages']) > 1
     for x in rs:
         where = f"[{x['page']}] " if multi and x['page'] != 'home' else ''
-        print(f"{x['level']:5} {x['criterion']:38} {where}{x['message']}")
+        print(f"{lvl(x['level']):6} {x['criterion']:38} {where}{x['message']}")
         if x.get('fix') and x['level'] in ('FAIL', 'WARN'):
-            print(f"{'':44}-> fix: {x['fix']}")
-    c = counts(r)
-    print(f"\n{c['FAIL']} FAIL, {c['WARN']} WARN, {c['PASS']} PASS, {c['INFO']} INFO")
+            print(f"{'':45}-> {L['fix']}: {x['fix']}")
+    if due:
+        print('\n' + L['due_head'])
+        for d in due:
+            left = L['overdue'] if d['days_left'] < 0 else (L['today'] if d['days_left'] == 0 else L['in_days'].format(n=d['days_left']))
+            print(L['due_row'].format(crit=d['criterion'], last=d['last_update'], due=d['due'], left=left))
+    if r.get('criteria_urls'):
+        print('\n' + L['crit_head'])
+        for c_ in r['criteria_urls']:
+            print(f"  {c_['tag']:32} {c_['url']}")
+    print('\n' + L['totals'].format(**counts(r)))
 
 
-def report_md(r):
+def report_md(r, lang='en'):
+    L, res, due, _ = _localise(r, lang)
     c = counts(r)
     icon = {'FAIL': '❌', 'WARN': '⚠️', 'INFO': 'ℹ️', 'PASS': '✅'}
-    out = [f"## SPLaSK 2.0 pre-check: `{r['final_url']}`", '',
-           f"**{c['FAIL']} fail** · {c['WARN']} warn · {c['PASS']} pass · {c['INFO']} info  ",
-           'Pages: ' + ', '.join(f"`{p['name']}`" for p in r['pages']), '',
-           '| | Criterion | Page | Finding | Suggested fix |', '|---|---|---|---|---|']
+    out = [f"## {L['md_title']}: `{r['final_url']}`", '', L['md_totals'].format(**c) + '  ',
+           L['md_pages'] + ': ' + ', '.join(f"`{p['name']}`" for p in r['pages']), '',
+           L['md_cols'], '|---|---|---|---|---|']
     esc = lambda s: (s or '').replace('|', '\\|').replace('\n', ' ')
-    for x in sorted(r['results'], key=lambda x: (ORDER[x['level']], x['page'] != 'home', x['criterion'])):
+    for x in sorted(res, key=lambda x: (ORDER[x['level']], x['page'] != 'home', x['criterion'])):
         if x['level'] == 'PASS': continue
         out.append(f"| {icon[x['level']]} | {esc(x['criterion'])} | {esc(x['page'])} | {esc(x['message'])} | {('`' + esc(x['fix']) + '`') if x.get('fix') else ''} |")
-    out += ['', f"<details><summary>{c['PASS']} passing checks</summary>", '']
-    out += [f"- {esc(x['criterion'])} ({x['page']}): {esc(x['message'])}" for x in r['results'] if x['level'] == 'PASS']
-    out += ['', '</details>', '', '_Unofficial pre-check; the SPLaSK assessment is the authority._']
+    if due:
+        out += ['', L['md_due'], '', L['md_due_cols'], '|---|---|---|---|']
+        for d in due:
+            n = d['days_left']
+            left = L['md_overdue'] if n < 0 else (L['md_today'] if n == 0 else ('⚠️ ' if n <= 7 else '') + L['md_days'].format(n=n))
+            out.append(f"| {esc(d['criterion'])} | {d['last_update']} | {d['due']} | {left} |")
+    if r.get('criteria_urls'):
+        out += ['', L['md_crit'], '', L['md_crit_cols'], '|---|---|']
+        out += [f"| `{c_['tag']}` | {esc(c_['url'])} |" for c_ in r['criteria_urls']]
+    out += ['', f"<details><summary>{L['md_pass'].format(n=c['PASS'])}</summary>", '']
+    out += [f"- {esc(x['criterion'])} ({x['page']}): {esc(x['message'])}" for x in res if x['level'] == 'PASS']
+    out += ['', '</details>', '', L['md_foot']]
     print('\n'.join(out))
 
 
@@ -651,6 +802,12 @@ def main(argv=None):
                     help='check every link on the scanned pages for the Active Link criterion (site = same site, the default; all = external too), '
                          'and compare data.gov.my dataset titles and GAMMA app names with the tagged link text')
     ap.add_argument('--max-links', type=int, default=150)
+    ap.add_argument('--lang', choices=['en', 'ms'], default='en', help='report language: en (default) or ms (Bahasa Melayu)')
+    ap.add_argument('--fix', action='store_true', help='write <page>.fixed.html with safe mechanical fixes (local .html files only)')
+    ap.add_argument('--render', action='store_true', help='compare with the page after JavaScript runs (needs Playwright + Edge/Chrome)')
+    ap.add_argument('--myds', action='store_true', help='also check the MYDS masthead, fonts and light mode (not scored by SPLaSK)')
+    ap.add_argument('--a11y', action='store_true', help='also run basic accessibility checks (labels, names, headings, skip link)')
+    ap.add_argument('--due-within', type=int, default=None, metavar='DAYS', help='WARN for timestamped items that go stale within DAYS days')
     ap.add_argument('--format', choices=['text', 'json', 'md'], default='text')
     ap.add_argument('--json', action='store_true', help='same as --format json')
     ap.add_argument('--fail-on', choices=['never', 'fail', 'warn'], default='never', help='exit code 1 on FAIL (or WARN)')
@@ -661,15 +818,29 @@ def main(argv=None):
         list_pages(a.target); return 0
     today = dt.datetime.strptime(a.today, '%Y-%m-%d') if a.today else None
     pages = a.pages or ('privacy' if a.follow else None)
-    r = scan_site(a.target, pages, today, a.max_pages, a.check_links, a.max_links)
+    r = scan_site(a.target, pages, today, a.max_pages, a.check_links, a.max_links, a.due_within, a.myds, a.a11y, a.render)
     fmt = 'json' if a.json else a.format
     if fmt == 'json': print(json.dumps(r, ensure_ascii=False, indent=1))
-    elif fmt == 'md': report_md(r)
-    else: report(r)
+    elif fmt == 'md': report_md(r, a.lang)
+    else: report(r, a.lang)
+    if a.fix:
+        import splask_fix
+        for pg in r['pages']:
+            path = pg['url'] if pg['name'] != 'home' else a.target
+            if re.match(r'https?://', path) or not re.search(r'\.html?$', path, re.I) or not os.path.isfile(path):
+                print(f"\n--fix: skipped {pg['name']} ({path}): only local .html files can be fixed; fix the template that produces it"); continue
+            src = open(path, encoding='utf-8', errors='replace').read()
+            out, changes = splask_fix.fix_html(src, set(TAGS))
+            if not changes:
+                print(f"\n--fix: {path}: nothing to fix automatically"); continue
+            dest = re.sub(r'(\.html?)$', r'.fixed\1', path, flags=re.I)
+            with open(dest, 'w', encoding='utf-8', newline='') as f: f.write(out)
+            print(f"\n--fix: wrote {dest} ({len(changes)} change(s); dates, text and links other than MyGov are never changed):")
+            for c_ in changes: print('  - ' + c_)
     if a.md_out:
         import contextlib, io
         buf = io.StringIO()
-        with contextlib.redirect_stdout(buf): report_md(r)
+        with contextlib.redirect_stdout(buf): report_md(r, a.lang)
         with open(a.md_out, 'a', encoding='utf-8') as f: f.write(buf.getvalue() + '\n')
     c = counts(r)
     return 1 if (a.fail_on == 'fail' and c['FAIL']) or (a.fail_on == 'warn' and (c['FAIL'] or c['WARN'])) else 0

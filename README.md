@@ -79,7 +79,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
   <tr>
     <td align="center" valign="top" width="20%"><h2>25</h2>SPLaSK 2.0 criteria</td>
     <td align="center" valign="top" width="20%"><h2>~115</h2>MYDS pages, read live</td>
-    <td align="center" valign="top" width="20%"><h2>10</h2>hand-written guides</td>
+    <td align="center" valign="top" width="20%"><h2>12</h2>hand-written guides</td>
     <td align="center" valign="top" width="20%"><h2>18 / 18</h2>trigger tests passed</td>
     <td align="center" valign="top" width="20%"><h2>BM · EN</h2>bilingual throughout</td>
   </tr>
@@ -203,12 +203,14 @@ python scripts/mgwg.py scan https://www.example.gov.my --pages all --check-links
 
 | Command | What it does |
 |---|---|
-| **`scan`** `<url-or-file> [--list-pages] [--pages …] [--check-links [all]] [--format text\|json\|md] [--fail-on fail\|warn]` | SPLaSK 2.0 pre-check of the home page and the pages you choose: `all`, numbers, names (`privacy,sitemap`) or URLs. `--check-links` tests every link for broken ones (Active Link) and compares open-data and app links with their real titles on data.gov.my and GAMMA. Every FAIL comes with a fix |
+| **`scan`** `<url-or-file> [--list-pages] [--pages …] [--check-links [all]] [--myds] [--a11y] [--fix] [--render] [--lang ms] [--due-within N] [--format text\|json\|md] [--fail-on fail\|warn]` | SPLaSK 2.0 pre-check of the home page and the pages you choose: `all`, numbers, names (`privacy,sitemap`) or URLs. `--check-links` tests every link for broken ones (Active Link) and compares open-data and app links with their real titles on data.gov.my and GAMMA. Every FAIL comes with a fix |
 | **`search`** `"<query>"` | Rank guides for a task (English or Malay) |
 | **`retrieve`** `<id>[,<id>] [--lang en\|ms\|both]` | Print guides; MYDS pages are fetched live |
 | **`list`** `[--category <name>]` | List all guides |
 | **`check-classes`** `<files> [--css <file>]` | Find CSS classes not defined by MYDS 1.0.0 |
 | **`tokens`** `[--filter <prefix>]` | List MYDS theme tokens with light and dark values |
+| **`scan … --fix`** | Write `<page>.fixed.html` with safe mechanical fixes (tag spelling/placement, MyGov URL, viewport) |
+| **`scan … --lang ms`** | The whole report in Bahasa Melayu |
 | **`update-index`** `[--write] [--refresh] [--fail-on-change]` | Compare the MYDS page index with the live docs navigation: new, renamed and removed pages |
 | **`prefetch`** `all\|<category>\|<ids>` | Cache MYDS pages for slow or offline use |
 
@@ -278,6 +280,9 @@ jobs:
 #### Review and MYDS docs&nbsp;<img src="assets/icons/myds.svg" width="18" height="18" align="top" alt="">
 - `audit-checklist`: reviewing an existing site
 - `cms-wordpress-joomla`: tags and masthead on WordPress and Joomla
+- `mydigital-id`: sign-in with MyDigital ID (OIDC) and MyID Verify
+- `bm-ui-glossary`: standard BM interface wording
+- `assets/templates/`: tested starter header/footer for plain PHP, WordPress, Joomla, Laravel and Next.js
 - `design-*`: ~40 MYDS design pages
 - `develop-*`: ~75 MYDS development pages, read live from design.digital.gov.my
 
@@ -345,7 +350,8 @@ flowchart TB
         v16["<b>v1.6</b><br/>Broken-link check,<br/>eval suite,<br/>one-source build"]
         v17["<b>v1.7</b><br/>data.gov.my and<br/>GAMMA title checks"]
         v18["<b>v1.8</b><br/>update-index for<br/>new MYDS pages"]
-        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17 --> v18
+        v19["<b>v1.9</b><br/>Templates, --fix, BM output,<br/>MyDigital ID, MYDS + a11y checks"]
+        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17 --> v18 --> v19
     end
 
     subgraph next ["Next"]
@@ -357,9 +363,9 @@ flowchart TB
 
     subgraph later ["Later"]
         direction LR
-        idm["MyDigital ID<br/>sign-in"]
-        bm["BM interface<br/>glossary"]
-        idm ~~~ bm
+        evalci["Eval-suite runs<br/>on Linux CI"]
+        more["More stacks<br/>(e.g. Drupal)"]
+        evalci ~~~ more
     end
 
     shipped --> next --> later
@@ -367,9 +373,9 @@ flowchart TB
     classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
     classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
     classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
-    class v10,v11,v12,v13,v14,v15,v16,v17,v18 done
+    class v10,v11,v12,v13,v14,v15,v16,v17,v18,v19 done
     class cal,mcp nxt
-    class idm,bm plan
+    class evalci,more plan
     style shipped fill:transparent,stroke:#16a34a,stroke-width:2px
     style next fill:transparent,stroke:#ca8a04,stroke-width:2px
     style later fill:transparent,stroke:#4f46e5,stroke-width:1px,stroke-dasharray:4 3
@@ -413,7 +419,7 @@ Laman web rasmi sektor awam perlu mematuhi **MYDS** (*masthead* rasmi, token war
 
 ### Ciri utama&nbsp;<img src="assets/icons/features.svg" width="20" height="20" align="top" alt="">
 
-- Panduan dalam BM dan BI: kira-kira 115 halaman MYDS (dibaca terus dari laman rasmi) dan 10 panduan SPLaSK, corak laman kerajaan serta WordPress/Joomla.
+- Panduan dalam BM dan BI: kira-kira 115 halaman MYDS (dibaca terus dari laman rasmi) dan 12 panduan SPLaSK, corak laman kerajaan serta WordPress/Joomla.
 - Peraturan SPLaSK berdasarkan *Manual Tagging SPLaSK V2.0* dan manual pengguna SPLaSK (JDN).
 - Arahan `scan`: semakan awal SPLaSK 2.0 bagi halaman utama dan halaman yang anda pilih (`--pages all`, nombor, nama atau URL), dengan cadangan pembetulan bagi setiap FAIL. Boleh dijalankan sebagai GitHub Action.
 - Sokongan PHP / HTML / Blade dan React / Next.js.

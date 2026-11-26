@@ -20,6 +20,10 @@ inputs:
     description: 'Upper limit on extra pages'
     required: false
     default: '15'
+  due-within:
+    description: 'Warn about timestamped items (news, about us, contact...) that go stale within this many days. Empty = off.'
+    required: false
+    default: ''
   today:
     description: 'Date used for freshness checks (YYYY-MM-DD). Empty = today.'
     required: false
@@ -39,6 +43,7 @@ runs:
         SCAN_FAIL_ON: ${{ inputs.fail-on }}
         SCAN_MAX: ${{ inputs.max-pages }}
         SCAN_TODAY: ${{ inputs.today }}
+        SCAN_DUE: ${{ inputs.due-within }}
       run: |
         PY=python3; "$PY" -c "" 2>/dev/null || PY=python
         SCRIPT="$GITHUB_ACTION_PATH/skills/malaysia-gov-web-guidance/scripts/splask_scan.py"
@@ -46,6 +51,7 @@ runs:
         ARGS=("$SCAN_URL" --max-pages "$SCAN_MAX" --md-out "$GITHUB_STEP_SUMMARY" --fail-on "$SCAN_FAIL_ON")
         [ -n "$SCAN_PAGES" ] && ARGS+=(--pages "$SCAN_PAGES")
         [ -n "$SCAN_TODAY" ] && ARGS+=(--today "$SCAN_TODAY")
+        [ -n "$SCAN_DUE" ] && ARGS+=(--due-within "$SCAN_DUE")
         echo "report=$REPORT" >> "$GITHUB_OUTPUT"
         set +e
         "$PY" "$SCRIPT" "${ARGS[@]}" --format json > "$REPORT"; CODE=$?

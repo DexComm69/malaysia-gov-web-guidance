@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laman Utama | Majlis Daerah Contoh Jaya</title>
+  <meta name="description" content="Portal rasmi Majlis Daerah Contoh Jaya: perkhidmatan, berita dan maklumat untuk penduduk.">   <!-- 1-159 characters on the home page -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govtechmy/myds-style@1.0.0/dist/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+</head>
+<body class="font-body">
+<a class="skip-link" href="#kandungan">Langkau ke kandungan utama</a>
+<details id="masthead" class="masthead bg-bg-washed print:hidden" data-nosnippet>
+  <summary class="mx-auto flex max-w-screen-xl items-center gap-2 px-4.5 py-2 md:px-6 text-body-sm text-txt-black-700">
+    <img src="/assets/img/malaysia-flag.svg" width="32" height="16" alt="" aria-hidden="true">
+    <span>Portal Rasmi Kerajaan Malaysia</span>
+    <span class="text-txt-primary">Kenal pasti begini</span>
+  </summary>
+  <div class="mx-auto grid max-w-screen-xl gap-4.5 px-4.5 pb-6 pt-3 md:px-6 sm:grid-cols-2">
+    <div>
+      <p class="text-body-sm font-medium text-txt-black-900">Pautan portal rasmi berakhir dengan .gov.my</p>
+      <p class="text-body-sm text-txt-black-700">Sekiranya anda melihat pautan selain .gov.my, segera tutupkan halaman itu walaupun ia menyerupai portal rasmi!</p>
+    </div>
+    <div>
+      <p class="text-body-sm font-medium text-txt-black-900">Portal yang selamat menggunakan HTTPS</p>
+      <p class="text-body-sm text-txt-black-700">Periksa ikon kunci mangga (🔒) atau https:// di depan pautan. Sekiranya tiada, tinggalkan laman sesawang serta merta.</p>
+    </div>
+  </div>
+</details>
+<header class="site-header">
+  <a class="site-name" href="/">Majlis Daerah Contoh Jaya</a>
+
+  <form action="/carian" method="get" role="search" splwpk-search-function="splwpk-search-function">
+    <label for="carian">Carian</label>
+    <input id="carian" name="q" type="search">
+    <button type="submit">Cari</button>
+  </form>
+  <a href="/carian-terperinci">Carian terperinci</a>
+  <!-- The advanced-search page's <form> carries splwpk-advanced-search-function; register that page as a Criteria URL. -->
+
+  <div role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
+    <button type="button" data-size="-1">A-</button>
+    <button type="button" data-size="0">A</button>
+    <button type="button" data-size="1">A+</button>
+  </div>
+
+    <div class="lang-switch" splwpk-multilang="splwpk-multilang">
+          <a href="?lang=ms" lang="ms" hreflang="ms" aria-current="true">BM</a>
+          <a href="?lang=en" lang="en" hreflang="en">EN</a>
+      </div>
+  
+  <nav aria-label="Menu utama">
+          <a href="/tentang-kami" splwpk-about-us="splwpk-about-us" timestamp="2026-11-03 09:12:44">Tentang Kami</a>
+          <a href="/berita" splwpk-news="splwpk-news" timestamp="2026-11-20 08:05:31">Berita</a>
+          <a href="/soalan-lazim" splwpk-faq="splwpk-faq" timestamp="2026-10-01 15:02:10">Soalan Lazim</a>
+          <a href="/hubungi-kami" splwpk-contact-details="splwpk-contact-details" timestamp="2026-11-12 11:30:05">Hubungi Kami</a>
+      </nav>
+</header>
+<main id="kandungan">
+<h1>Majlis Daerah Contoh Jaya</h1>
+<p>Selamat datang.</p>
+</main>
+<footer class="site-footer">
+  <nav aria-label="Pautan kaki">
+          <a href="/dasar-privasi" splwpk-privacy-policy="splwpk-privacy-policy">Dasar Privasi</a>
+          <a href="/peta-laman" splwpk-sitemap="splwpk-sitemap">Peta Laman</a>
+          <a href="/maklum-balas">Maklum Balas</a>
+        <a href="https://www.malaysia.gov.my">MyGov</a>
+  </nav>
+  <p>&copy; 2026 Majlis Daerah Contoh Jaya. Hak Cipta Terpelihara.</p>
+</footer>
+<script>
+/* Text-size control for splwpk-w3c: the tag is in the server HTML; this only adds the behaviour. */
+document.querySelectorAll('[splwpk-w3c] [data-size]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var step = parseInt(b.dataset.size, 10);
+    document.documentElement.style.fontSize = step === 0 ? '' : (100 + step * 12.5) + '%';
+  });
+});
+</script>
+</body>
+</html>
