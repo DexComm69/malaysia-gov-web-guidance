@@ -80,7 +80,7 @@ SPLaSK rules often need real-world facts: dataset URLs and titles on data.gov.my
 - Hand-written guides carry `sources`, `status` and `retrieved` in their frontmatter. MYDS pages are always the live official text.
 - `status: stub`: the source page is a placeholder. Say so, and fall back to the design page or general best practice.
 - The SPLaSK guides (`splask-tagging`, `splask-criteria-checklist`, `splask-operations`) follow JDN's official *Manual Tagging SPLaSK V2.0* and SPLaSK user manuals. Tags the manual doesn't list (`splwpk-pdpa`, `seo-h1`) are marked as such. If the user has a newer manual, it wins.
-- If the user reports a newer MYDS release or SPLaSK change, trust them and say the hand-written guide may be out of date.
+- If the user reports a newer MYDS release or SPLaSK change, trust them and say the hand-written guide may be out of date. If `retrieve` can't find a MYDS page the user names, or a page seems missing, run `python ".../mgwg.py" update-index` to compare the index with the live MYDS navigation (`--write` updates it).
 
 ## Step 4: Disclose
 

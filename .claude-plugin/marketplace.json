@@ -7,7 +7,7 @@
       "name": "malaysia-gov-web-guidance",
       "source": "./",
       "description": "MYDS components, tokens and patterns, plus SPLaSK criteria and splwpk-* tagging, in English and Bahasa Melayu.",
-      "version": "1.7.1",
+      "version": "1.8.0",
       "license": "MIT"
     }
   ]

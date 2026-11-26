@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.0 (26 November 2026)
+
+- **New `update-index` command** (`scripts/myds_index.py`): compares `references/myds-index.json` with the live MYDS documentation navigation and reports new, renamed and removed pages. `--write` adds new pages (English and Malay titles, section headings, stub status, and a category taken from the nearest page in the navigation), fixes renamed titles and drops pages only when their URL really returns 404; a page missing from the navigation but still online is reported and kept. `--refresh` re-reads every page; `--fail-on-change` exits 1 for CI. Against the live site: 115 pages, up to date; a full refresh reproduced every title, Malay title and stub status in the index.
+- **Weekly CI check** (`.github/workflows/myds-index.yml`): fails when MYDS has changed, so the index never silently ages.
+- 45 unit tests (5 new, with a stand-in MYDS site).
+
 ## 1.7.1 (26 November 2026)
 
 - **`scan` fixes:**

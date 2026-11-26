@@ -33,5 +33,5 @@ These are summarised in this skill's own words. They are not redistributed: ask 
 
 ## Updating
 
-- MYDS pages need no update, because they are always read live. If MYDS adds or renames pages, regenerate `references/myds-index.json` (id, category, EN/MS titles, URLs, section headings) from the docs navigation.
+- MYDS pages need no update, because they are always read live. When MYDS adds, renames or removes pages, run `python scripts/mgwg.py update-index` to see the changes and `--write` to apply them to `references/myds-index.json` (`--refresh --write` also re-reads every page's titles, headings and stub status). A weekly CI job runs it with `--fail-on-change`.
 - Hand-written guides: edit `guides/gov/*.md`, keep both language sections, and bump `retrieved`.

@@ -13,6 +13,8 @@ and the hand-written SPLaSK / MYDS guides bundled with this skill.
                     [--format text|json|md] [--fail-on never|fail|warn]
                                                 SPLaSK 2.0 + MYDS pre-check of a site, with a fix for every FAIL
                                                 (no JavaScript, like the crawler; see splask_scan.py --help)
+  python mgwg.py update-index [--write] [--refresh] [--fail-on-change]
+                                                compare the MYDS page index with the live docs navigation
   python mgwg.py check-classes <file>... [--css my.css] [--myds-css path]
                                                 find classes the MYDS 1.0.0 stylesheet doesn't define
 
@@ -425,6 +427,9 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'scan':   # all scan options live in splask_scan.py
         sys.path.insert(0, HERE); import splask_scan
         sys.exit(splask_scan.main(sys.argv[2:]))
+    if len(sys.argv) > 1 and sys.argv[1] == 'update-index':   # options live in myds_index.py
+        sys.path.insert(0, HERE); import myds_index
+        sys.exit(myds_index.main(sys.argv[2:]))
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest='cmd', required=True)
     s = sp.add_parser('search'); s.add_argument('query'); s.add_argument('--limit', type=int, default=8)
@@ -434,6 +439,7 @@ if __name__ == '__main__':
     pf = sp.add_parser('prefetch'); pf.add_argument('ids', help="comma-separated ids, a category name, or 'all'"); pf.add_argument('--lang', default='both')
     tk = sp.add_parser('tokens'); tk.add_argument('--filter', default=''); tk.add_argument('--myds-css', default='')
     sp.add_parser('scan', help='SPLaSK pre-check (options: python mgwg.py scan --help)')
+    sp.add_parser('update-index', help='check the MYDS page index against the live site (options: python mgwg.py update-index --help)')
     a = ap.parse_args()
     if a.cmd == 'tokens': tokens(a.filter, a.myds_css); sys.exit()
     if a.cmd == 'search': search(a.query, a.limit)

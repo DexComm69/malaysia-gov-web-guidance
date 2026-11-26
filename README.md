@@ -209,6 +209,7 @@ python scripts/mgwg.py scan https://www.example.gov.my --pages all --check-links
 | **`list`** `[--category <name>]` | List all guides |
 | **`check-classes`** `<files> [--css <file>]` | Find CSS classes not defined by MYDS 1.0.0 |
 | **`tokens`** `[--filter <prefix>]` | List MYDS theme tokens with light and dark values |
+| **`update-index`** `[--write] [--refresh] [--fail-on-change]` | Compare the MYDS page index with the live docs navigation: new, renamed and removed pages |
 | **`prefetch`** `all\|<category>\|<ids>` | Cache MYDS pages for slow or offline use |
 
 <details>
@@ -326,7 +327,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 > - `scan` is a **pre-check**. It hasn't yet been calibrated against an official SPLaSK on-demand assessment, which remains the only authoritative score.
 > - `scan` only follows links from the home page (or the URLs you give it) and doesn't run JavaScript.
 > - The GOS (online service) criteria come from the older criteria diagram on malaysia.gov.my, not from the v2.0 tagging manual.
-> - The MYDS page index reflects the documentation as of November 2026.
+> - The MYDS page index reflects the documentation as of November 2026. `update-index` (also run weekly in CI) reports new, renamed and removed pages.
 > - A few terse manual rules are interpreted conservatively (for example "under 70 characters" for titles).
 
 ## Roadmap&nbsp;<img src="assets/icons/roadmap.svg" width="22" height="22" align="top" alt="">
@@ -343,7 +344,8 @@ flowchart TB
         v15["<b>v1.5</b><br/>Multi-page scan, fixes,<br/>GitHub Action, CI tests,<br/>WordPress & Joomla"]
         v16["<b>v1.6</b><br/>Broken-link check,<br/>eval suite,<br/>one-source build"]
         v17["<b>v1.7</b><br/>data.gov.my and<br/>GAMMA title checks"]
-        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17
+        v18["<b>v1.8</b><br/>update-index for<br/>new MYDS pages"]
+        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17 --> v18
     end
 
     subgraph next ["Next"]
@@ -355,10 +357,9 @@ flowchart TB
 
     subgraph later ["Later"]
         direction LR
-        upd["update-index for<br/>new MYDS pages"]
         idm["MyDigital ID<br/>sign-in"]
         bm["BM interface<br/>glossary"]
-        upd ~~~ idm ~~~ bm
+        idm ~~~ bm
     end
 
     shipped --> next --> later
@@ -366,9 +367,9 @@ flowchart TB
     classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
     classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
     classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
-    class v10,v11,v12,v13,v14,v15,v16,v17 done
+    class v10,v11,v12,v13,v14,v15,v16,v17,v18 done
     class cal,mcp nxt
-    class upd,idm,bm plan
+    class idm,bm plan
     style shipped fill:transparent,stroke:#16a34a,stroke-width:2px
     style next fill:transparent,stroke:#ca8a04,stroke-width:2px
     style later fill:transparent,stroke:#4f46e5,stroke-width:1px,stroke-dasharray:4 3
