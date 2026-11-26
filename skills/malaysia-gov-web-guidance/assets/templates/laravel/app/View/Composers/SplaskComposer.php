@@ -8,8 +8,7 @@ use Illuminate\View\View;
 
 /**
  * Gives the header and footer partials their SPLaSK links on EVERY page, with timestamps from the
- * records' real updated_at (never now()). Register it in a service provider's boot():
- *   View::composer(['partials.header', 'partials.footer'], \App\View\Composers\SplaskComposer::class);
+ * records' real updated_at (never now()). App\Providers\SplaskServiceProvider registers it.
  * Adjust the model names and columns to the app.
  */
 class SplaskComposer

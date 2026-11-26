@@ -14,7 +14,7 @@ Ready-made header and footer code for five setups. Each one gives the same resul
 | `plain-php/` | Plain PHP / HTML (e.g. XAMPP) | `config.php` (site name, page URLs, where the dates come from, `base` for sub-folders), then `header.php` / `footer.php`; see **Plain PHP: before you start** below |
 | `wordpress/` | WordPress child theme | `functions.php`; set CSS classes `splask-about`, `splask-news`, `splask-faq`, `splask-contact`, `splask-sitemap`, `splask-privacy` on menu items |
 | `joomla/` | Joomla 4/5 child template | `index.php`, `helper/splask.php`; set the same values as menu items' **Link Class** |
-| `laravel/` | Laravel + Blade | `config/splask.php`, register `SplaskComposer` for `partials.header` and `partials.footer` |
+| `laravel/` | Laravel 11/12 + Blade | `config/splask.php`, `SplaskServiceProvider` (registers `SplaskComposer`), `routes/splask.php`; see **Laravel: before you start** |
 | `mydigital-id-login/` | Sign-in with MyDigital ID (plain PHP, no Composer) | its own README; tested against a mock OpenID Connect provider |
 | `nextjs/` | Next.js App Router | `lib/splask.ts`, `app/[lang]/layout.tsx`, `proxy.ts` (`middleware.ts` before Next.js 16: BM by default, `x-pathname` for the language switch); add `types/splask.d.ts` |
 
@@ -26,6 +26,30 @@ Ready-made header and footer code for five setups. Each one gives the same resul
 4. **Local testing:** `php -S 127.0.0.1:8080 -t . router.php`. The built-in server ignores `.htaccess`; the router gives the same pretty URLs and blocks settings and data files. **Keep databases outside the web root** in production.
 5. `assets/site.css` hides the skip link until focused, tidies the masthead, sets the 12-8-4 container and uses a darker input border than MYDS's (MYDS's is below WCAG's 3:1; a choice to confirm with the agency).
 
+### WordPress: before you start
+
+1. Use a **classic parent theme** that calls `wp_body_open()` (tested on Twenty Twenty-One). Block themes have no `header.php`, so this child theme doesn't fit them.
+2. Set each menu item's CSS class (Appearance > Menus > Screen Options > CSS Classes). The menu item must be a Page, or the `berita` category for news, so the theme can read its real modified date.
+3. **Privacy:** choose the page in Settings > Privacy. It then uses `privacy-page.php`, whose `<h1>` carries the tag.
+4. **Meta description:** an SEO plugin (Yoast, Rank Math) prints it. Without one, the theme uses the tagline (Settings > General) on the front page. Keep it between 1 and 159 characters.
+5. Set the timezone to Kuala Lumpur in Settings > General, so timestamps are in Malaysia time.
+
+### Joomla: before you start
+
+1. Copy the folder to `templates/` (rename it and `<name>` in `templateDetails.xml`). Install it with System > Discover, or `php cli/joomla.php extension:discover` then `extension:discover:install`. Then make its style the default in System > Site Template Styles.
+2. Put the main menu module in position `menu`, the footer menu in `footer` and Smart Search in `search`. Set each menu item's **Link Class** (`splask-about`, `splask-privacy`, ...).
+3. **Website Time Zone:** set System > Global Configuration > Server to Kuala Lumpur (or run `php cli/joomla.php config:set offset=Asia/Kuala_Lumpur`). Joomla's default is UTC, which makes every timestamp 8 hours behind.
+4. Set the **Site Meta Description** (Global Configuration > Site).
+5. **Test with Apache** (XAMPP) and Joomla's `.htaccess` (copy `htaccess.txt`). PHP's built-in server breaks Joomla's search-engine-friendly URLs: every page renders the home page.
+
+### Laravel: before you start
+
+1. Copy the folders into the project. Add `App\Providers\SplaskServiceProvider::class` to `bootstrap/providers.php`. Add `require __DIR__ . '/splask.php';` at the **end** of `routes/web.php`, because its last route is a catch-all for content pages.
+2. Run `php artisan migrate` (the `pages` and `news` tables). To try it with sample content and real dates, run `php artisan db:seed --class=SplaskDemoSeeder`.
+3. Keep `APP_TIMEZONE` at UTC (Laravel's default). The composer converts `updated_at` to Malaysia time. Set `APP_NAME` and `APP_LOCALE=ms` in `.env`.
+4. **Pages included** (`resources/views/pages/`): home, content page (the privacy page's heading is tagged), news, search, advanced search (tagged `<form>`), and feedback (tagged `<form>`, Laravel validation, `@csrf`, Post/Redirect/Get, a reference number).
+5. The layout loads the app's Vite assets only after `npm run build` (or while `npm run dev` runs), so a fresh install works without Node.
+
 **Everything marked TODO needs a real value from the agency** (URLs, the source of each date, agency name, description). Pages without a real URL are simply not printed: a placeholder link would fail Active Link.
 
 After adapting a template, check the result with:
@@ -34,4 +58,4 @@ After adapting a template, check the result with:
 python scripts/mgwg.py scan <your-home-page-url> --pages all --check-links --myds --a11y
 ```
 
-`example.html` scores no warnings on the MYDS and accessibility checks; its remaining SPLaSK fails are the pages a real agency still has to supply (archive, open data, mobile app, and so on). The PHP files pass `php -l`; the Blade and TSX files are checked for the rules above by the skill's tests but are not compiled.
+`example.html` scores no warnings on the MYDS and accessibility checks; its remaining SPLaSK fails are the pages a real agency still has to supply (archive, open data, mobile app, and so on). The PHP files pass `php -l`. The WordPress, Joomla, Laravel, plain-PHP and Next.js templates have each been installed for real and scanned live (stress-test rounds 8 and 9). The only fails left were content an agency must supply, and HTTPS.

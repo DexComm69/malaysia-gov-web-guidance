@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.11.0 (27 November 2026)
+
+- **Stress test round 9: the WordPress, Joomla and Laravel templates were installed for real.** WordPress 6 (SQLite), Joomla 5 (Apache + MariaDB) and Laravel 12 (SQLite). Each was seeded with pages, news and menus with real dates, then scanned live (`--pages all --check-links --myds --a11y`). All three are left with only content gaps and HTTPS, plus Criteria URL reminders. Fixes found by running them:
+  - **WordPress:** the front page had no `<h1>` (the site name is now the `<h1>` there); new `privacy-page.php` tags the privacy heading (Settings > Privacy); meta description falls back to the tagline when no SEO plugin is active.
+  - **Joomla:** added the missing `templateDetails.xml` (the template could not be installed without it); an article override tags the privacy page's heading, rendering Joomla's own layout unchanged; README covers the Website Time Zone (Joomla's UTC default puts timestamps 8 hours behind) and testing on Apache (PHP's built-in server breaks SEF URLs).
+  - **Laravel:** `@vite` is guarded, so a fresh install without `npm run build` no longer answers every page with HTTP 500. New `SplaskServiceProvider`, `routes/splask.php`, `Page`/`News` models and migration, and a `SplaskDemoSeeder`. New starter pages: home, content page with the tagged privacy heading, news, search, advanced search (tagged `<form>`, linked from the header), and feedback (Laravel validation, `@csrf`, Post/Redirect/Get, reference number). Text-size button labels are now translated.
+  - **Scanner:** the masthead toggle check now decodes HTML entities, so PHP's `&#039;` escaping in "Here's how you know" is no longer reported as missing.
+- Templates README: "before you start" steps for WordPress, Joomla and Laravel.
+- 86 unit tests (new: form tags on `<form>`, privacy heading in every stack, guarded Vite, a link to the advanced-search page).
+
 ## 1.10.0 (26 November 2026)
 
 - **MyDigital ID login starter** (`assets/templates/mydigital-id-login/`): dependency-free plain PHP (XAMPP: curl + openssl) OpenID Connect client with `state`, `nonce`, PKCE, RS256 signature check against the provider's JWKS, `iss`/`aud`/`exp`/`iat`/`nonce` checks, session regeneration, CSRF-protected logout and IC-number masking/hashing. Tested end to end against a mock provider (`tests/mock_oidc.mjs`): login, logout, code replay, forged state, and six kinds of bad ID token, all rejected.

@@ -534,6 +534,7 @@ MASTHEAD_TOGGLE = ('Kenal pasti begini', "Here's how you know", 'Here&#x27;s how
 
 
 def myds_checks(tree, html, add, page):
+    import html as _html
     """--myds: official masthead, Poppins/Inter, light mode by default (MYDS, not scored by SPLaSK)."""
     nodes = tree.nodes
     text_nodes = [n for n in nodes if n.text and any(m in ' '.join(n.text) for m in MASTHEAD)]
@@ -546,7 +547,7 @@ def myds_checks(tree, html, add, page):
         if first_h1 is not None and pos > first_h1:
             add('WARN', 'MYDS: masthead', 'the masthead comes after the page heading; MYDS puts it at the very top, above the site header',
                 'move the masthead markup to the start of <body>', page)
-        elif not any(t in html for t in MASTHEAD_TOGGLE):
+        elif not any(t in _html.unescape(html) for t in MASTHEAD_TOGGLE):
             add('WARN', 'MYDS: masthead', 'masthead found, but without its "Kenal pasti begini" / "Here\'s how you know" toggle',
                 'add the toggle that explains .gov.my and HTTPS (guide: masthead-html)', page)
         else:

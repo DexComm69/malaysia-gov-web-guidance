@@ -31,10 +31,26 @@ class Templates(unittest.TestCase):
         for f, t in CODE.items():
             self.assertIsNone(re.search(r'(x-bind|v-bind)?:splwpk-', t), f)
 
-    def test_search_tag_on_form(self):
+    def test_form_tags_on_form(self):
         for f, t in CODE.items():
-            for m in re.finditer(r'<(\w+)\b[^>]*splwpk-search-function=', t):
-                self.assertEqual(m.group(1), 'form', f)
+            for m in re.finditer(r'<(\w+)\b[^>]*(splwpk-search-function|splwpk-advanced-search-function|splwpk-feedback-form)=', t):
+                self.assertEqual(m.group(1), 'form', f'{f}: {m.group(2)}')
+
+    def test_privacy_heading_tagged_in_every_stack(self):
+        # SPLaSK Privacy Policy, part 2 (found missing in real WordPress and Joomla installs, round 9)
+        for d in ('plain-php', 'wordpress', 'joomla', 'laravel'):
+            texts = [t for f, t in CODE.items() if os.sep + d + os.sep in f]
+            self.assertTrue(any(re.search(r'<h[12]\b[^\n]*splwpk-privacy-policy|<\$1 splwpk-privacy-policy', t) for t in texts), d)
+
+    def test_laravel_vite_guarded(self):
+        # a fresh install without `npm run build` must not answer every page with HTTP 500 (round 9)
+        t = SRC[os.path.join(T, 'laravel', 'resources', 'views', 'layouts', 'app.blade.php')]
+        self.assertRegex(t, r"@if \(file_exists\(public_path\('build/manifest\.json'\)\)[^\n]*\n\s*@vite")
+
+    def test_advanced_search_page_linked(self):
+        # the scanner (and people) find the advanced-search page only through a link (round 9)
+        for f in ('plain-php/header.php', 'laravel/resources/views/partials/header.blade.php'):
+            self.assertIn('/carian-terperinci', SRC[os.path.join(T, *f.split('/'))], f)
 
     def test_masthead_wording(self):
         for d in ('plain-php/masthead.php', 'wordpress/parts/masthead.php', 'joomla/masthead.php',

@@ -7,9 +7,11 @@
         <input id="carian" name="q" type="search" value="{{ request('q') }}">
         <button type="submit">{{ $lang === 'en' ? 'Search' : 'Cari' }}</button>
     </form>
+    {{-- The advanced-search page's <form> carries splwpk-advanced-search-function; register that page as a Criteria URL. --}}
+    <a href="/carian-terperinci">{{ $lang === 'en' ? 'Advanced search' : 'Carian terperinci' }}</a>
 
     <div role="group" aria-label="{{ $lang === 'en' ? 'Text size' : 'Saiz tulisan' }}" splwpk-w3c="splwpk-w3c">
-        <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>
+        <button type="button" data-fs="0.875" aria-label="{{ $lang === 'en' ? 'Smaller text' : 'Kecilkan tulisan' }}" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="{{ $lang === 'en' ? 'Normal text size' : 'Saiz tulisan biasa' }}" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="{{ $lang === 'en' ? 'Larger text' : 'Besarkan tulisan' }}" aria-pressed="false">A+</button>
     </div>
 
     @if (count($splaskLanguages) > 1)

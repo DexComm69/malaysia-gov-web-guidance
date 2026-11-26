@@ -333,6 +333,7 @@ xychart-beta
 | `scan` on 5 live government portals | Real issues found (misspelled tags, tags in HTML comments, stale timestamps); false alarms fixed | <img alt="validated" src="https://img.shields.io/badge/validated-2ea043?style=flat-square"> |
 | Seeded-fault page (chart above) | 25 → 12 fails with the skill; without it, 25 → 17 and two invented tag names | <img alt="-13 fails" src="https://img.shields.io/badge/--13%20fails-2ea043?style=flat-square"> |
 | WordPress child theme, 5 pages, 15 seeded faults | 27 → 11 fails with the skill (all 11 need real council URLs); without it, 27 → 22 and three invented tag names | <img alt="-16 fails" src="https://img.shields.io/badge/--16%20fails-2ea043?style=flat-square"> |
+| Starter templates installed for real: WordPress 6, Joomla 5, Laravel 12, plain PHP, Next.js 16 | Each site seeded, served and scanned live. Only fails left: content an agency must supply, and HTTPS. 0 MYDS or accessibility warnings | <img alt="5/5" src="https://img.shields.io/badge/5%2F5-2ea043?style=flat-square"> |
 | [Eval suite](skills/malaysia-gov-web-guidance/evals/BASELINE.md): 27 checks over four seeded-fault tasks (plain HTML, WordPress, Joomla, Laravel), plus the Laravel task in BM | Official tags only, form placement, no invented dates, SEO limits, Criteria URL steps | <img alt="27/27 vs 12/27" src="https://img.shields.io/badge/27%2F27%20vs%2012%2F27-2ea043?style=flat-square"> |
 
 See [`CHANGELOG.md`](CHANGELOG.md) for details.

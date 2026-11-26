@@ -60,3 +60,22 @@ add_filter('get_search_form', fn($form) => preg_replace('/<form\b/', '<form splw
 function splask_languages(): array {
     return function_exists('pll_languages_list') ? (array) pll_languages_list() : ['ms'];
 }
+
+// Meta description fallback: SPLaSK needs 1-159 characters on the home page. An SEO plugin (Yoast,
+// Rank Math) normally prints it; without one, use the tagline (Settings > General) on the front page.
+add_action('wp_head', function () {
+    if (defined('WPSEO_VERSION') || class_exists('RankMath') || !is_front_page()) return;
+    $d = trim(get_bloginfo('description'));
+    if ($d !== '') echo '<meta name="description" content="' . esc_attr(mb_substr($d, 0, 159)) . '">' . "\n";
+}, 1);
+
+// The privacy page (Settings > Privacy) uses privacy-page.php, whose <h1> carries splwpk-privacy-policy
+// (SPLaSK Privacy Policy, part 2; part 1 is the tagged footer link on every page).
+add_filter('template_include', function ($template) {
+    $privacy = (int) get_option('wp_page_for_privacy_policy');
+    if ($privacy && is_page($privacy)) {
+        $t = locate_template('privacy-page.php');
+        if ($t) return $t;
+    }
+    return $template;
+});

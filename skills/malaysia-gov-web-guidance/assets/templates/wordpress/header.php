@@ -9,8 +9,11 @@
 <body <?php body_class('font-body'); ?>>
 <?php wp_body_open(); /* skip link + masthead, from functions.php */ ?>
 <header class="site-header">
-  <a class="site-name" href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
-  <?php /* one <h1> per page: the page title in the content, not the site name here */ ?>
+  <?php if (is_front_page()): /* many themes hide the page title on the front page: the agency name is its one <h1> */ ?>
+    <h1 class="site-name"><a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a></h1>
+  <?php else: /* other pages: their own title is the <h1>, printed by the theme */ ?>
+    <a class="site-name" href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
+  <?php endif; ?>
   <?php get_search_form(); ?>
 
   <div role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
