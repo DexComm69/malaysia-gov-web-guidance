@@ -3,3 +3,5 @@ __pycache__/
 *.skill
 .DS_Store
 STRESS-TEST.md
+dist/
+skills/malaysia-gov-web-guidance/evals/results/

@@ -1,0 +1,14 @@
+schema_version: "1.1"
+name: fix-wordpress-child-theme
+expected_outcome: |
+  The child theme is fixed in theme code, not page content: the fake "always now" About Us timestamp is
+  replaced by the page's real modified date; the hard-coded stale news date comes from the newest post;
+  search and feedback tags are on the <form> elements (not a wrapper <div> or an <i> icon); the
+  splwpk-sitemaps typo is fixed; the multilang switcher is printed by PHP instead of lang.js; contact
+  details get a timestamp; the privacy page heading is tagged; the viewport meta and logo alt are added;
+  there is one <h1>; the MyGov link is exact. NOTES.md lists the WP-admin steps (Yoast title and
+  description, menu classes, Elementor) and the SPLaSK-profile Criteria URL for pages tagged off the
+  home page. No invented tag names. Baseline from stress-test round 5: 27 scan fails before; 11 with
+  the skill (all needing real council URLs), 22 without (three invented tags).
+context:
+  scaffold_script: place-files.sh

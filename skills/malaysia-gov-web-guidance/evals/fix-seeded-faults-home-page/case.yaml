@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: fix-seeded-faults-home-page
+expected_outcome: |
+  index.html is corrected for SPLaSK 2.0 using only tag names from JDN's Manual Tagging SPLaSK V2.0:
+  the misspelled search tag is renamed, the feedback tag moves off the <i> onto the feedback <form>,
+  tags inside HTML comments are restored or moved to live markup, the title is under 70 characters,
+  there is exactly one <h1>, every <img> has alt, deprecated tags are gone, the MyGov link is exactly
+  https://www.malaysia.gov.my, and stale timestamps are not replaced with invented dates (TODOs instead).
+  Baseline from stress-test round 4: 25 scan fails before; 12 with the skill, 17 without (two invented tags).
+context:
+  scaffold_script: place-files.sh

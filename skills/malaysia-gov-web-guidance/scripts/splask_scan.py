@@ -7,7 +7,9 @@
   python splask_scan.py <home> --pages 1,3                     home + pages by number (from --list-pages)
   python splask_scan.py <home> --pages privacy,sitemap         home + pages by name
   python splask_scan.py <home> --pages /dasar-privasi,https://site.gov.my/peta-laman
-  options: --format text|json|md   --fail-on never|fail|warn   --max-pages N   --md-out FILE   --today YYYY-MM-DD
+  python splask_scan.py <home> --pages all --check-links     also check every same-site link (Active Link)
+  options: --format text|json|md   --fail-on never|fail|warn   --max-pages N   --check-links [site|all]   --max-links N
+           --md-out FILE   --today YYYY-MM-DD
 
 Reads the HTML the server sends (like the SPLaSK crawler, it does NOT run JavaScript) and checks
 the rules in JDN's Manual Tagging SPLaSK V2.0: tag names and spelling, tag placement (<form>, not
@@ -18,7 +20,7 @@ Every FAIL comes with a suggested fix.
 It is a PRE-CHECK, not SPLaSK. Some criteria can only be judged by SPLaSK itself (Google top-10
 via SerpAPI, uptime, SPLaSK's own load-time measurement). Standard library only. Unofficial.
 """
-import argparse, datetime as dt, difflib, json, os, re, sys, time, urllib.parse, urllib.request
+import argparse, datetime as dt, difflib, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
 from html.parser import HTMLParser
 
 UA = 'Mozilla/5.0 (compatible; mgwg-splask-scan/1.1; unofficial pre-check)'
@@ -181,7 +183,7 @@ def fix_missing(tag):
     return f'<a href="/…" {tag}="{tag}"{ts}>…</a>' + ('  (timestamp = the real date the content last changed)' if ts else '')
 
 
-def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None, is_url=False):
+def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None, is_url=False, check_links_on=False):
     """Run the checks for one page. Home pages get every check; other pages get tag and page-specific checks."""
     tree = Tree(); tree.feed(html); nodes = tree.nodes
     tagged = tags_of(nodes); fresh = {}
@@ -302,7 +304,8 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
         elif mygov: A('WARN', 'Link to MyGov Portal', f'MyGov link is not exactly https://www.malaysia.gov.my: {mygov[0]}', '<a href="https://www.malaysia.gov.my">MyGov</a>')
         else: A('FAIL', 'Link to MyGov Portal', 'no link to https://www.malaysia.gov.my', '<a href="https://www.malaysia.gov.my">MyGov</a> (usually in the footer)')
         A('INFO', 'Find Website Using Search Tool', 'checked by SPLaSK via Google/SerpAPI (needs the SerpAPI token in the SPLaSK profile)')
-        A('INFO', 'Active Link / Downtime', 'checked by the SPLaSK crawler over time; not testable from one page load')
+        A('INFO', 'Downtime', 'checked by the SPLaSK crawler over time; not testable from one page load')
+        if not check_links_on: A('INFO', 'Active Link', 'links not checked; add --check-links to test every link on the scanned pages')
         page_text = ' '.join(n.all_text() for n in tree.root.children)
         if any(m in page_text for m in MASTHEAD): A('PASS', 'MYDS masthead (not SPLaSK)', 'official masthead wording found in the server HTML')
         elif any(m in html for m in MASTHEAD): A('INFO', 'MYDS masthead (not SPLaSK)', 'masthead wording exists only inside a <script> (built by JavaScript)')
@@ -364,7 +367,76 @@ def discover(home_html, home_url):
     return found
 
 
-def scan_site(home, pages=None, today=None, max_pages=15):
+def link_targets(tree, page_url, is_url, scope):
+    """(target, link text) for every <a href> worth checking. scope 'site' = same site only, 'all' = external too."""
+    host = urllib.parse.urlparse(page_url).netloc if is_url else None
+    out = []
+    for n in tree.nodes:
+        h = (n.attrs.get('href') or '').strip() if n.tag == 'a' else ''
+        if not h or h.startswith(('#', 'mailto:', 'tel:', 'javascript:', 'data:')): continue
+        if is_url:
+            u = urllib.parse.urljoin(page_url, h).split('#')[0]
+            if not u.startswith(('http://', 'https://')): continue
+            if scope != 'all' and urllib.parse.urlparse(u).netloc != host: continue
+        elif re.match(r'https?://', h):
+            if scope != 'all': continue
+            u = h.split('#')[0]
+        else:
+            rel = urllib.parse.unquote(h.split('#')[0].split('?')[0])
+            if not rel: continue
+            u = os.path.normpath(os.path.join(os.path.dirname(page_url), rel.lstrip('/')))
+        out.append((u, ' '.join(n.all_text().split())[:40]))
+    return out
+
+
+def check_link(u):
+    """-> (state, detail): state is 'ok', 'broken' or 'unreachable'."""
+    if not re.match(r'https?://', u):
+        ok = os.path.isfile(u) or os.path.isfile(os.path.join(u, 'index.html'))
+        return ('ok', 'file') if ok else ('broken', 'file not found')
+    last = ('unreachable', 'no response')
+    for method in ('HEAD', 'GET'):
+        try:
+            r = urllib.request.urlopen(urllib.request.Request(u, method=method, headers={'User-Agent': UA}), timeout=15)
+            return 'ok', str(r.status)
+        except urllib.error.HTTPError as e:
+            if method == 'HEAD' and (e.code in (401, 403, 405, 429, 501) or e.code >= 500):
+                last = ('broken', f'HTTP {e.code}'); continue          # some servers refuse HEAD: retry with GET
+            if e.code in (401, 403, 429): return 'unreachable', f'HTTP {e.code} (blocked or rate-limited)'
+            return 'broken', f'HTTP {e.code}'
+        except Exception as e:
+            last = ('unreachable', e.__class__.__name__)
+    return last
+
+
+def check_links(pages_trees, add, is_url, scope, max_links):
+    import concurrent.futures as cf
+    seen, order = {}, []
+    for name, tree, url in pages_trees:
+        for u, text in link_targets(tree, url, is_url, scope):
+            if u not in seen:
+                seen[u] = (name, text); order.append(u)
+    skipped = max(0, len(order) - max_links); order = order[:max_links]
+    with cf.ThreadPoolExecutor(4) as ex:
+        states = dict(zip(order, ex.map(check_link, order)))
+    for u in [u for u in order if states[u][0] == 'unreachable']:   # second chance, one at a time
+        time.sleep(1); states[u] = check_link(u)
+    shown = lambda u: u.replace(chr(92), '/')
+    broken = [u for u in order if states[u][0] == 'broken']
+    for u in broken:
+        page, text = seen[u]
+        add('FAIL', 'Active Link', f'broken link {shown(u)} ({states[u][1]})' + (f', link text "{text}"' if text else ''),
+            'fix the link or remove it; if the page moved, redirect the old URL to the new one', page)
+    for u in order:
+        if states[u][0] == 'unreachable':
+            add('WARN', 'Active Link', f'could not check {shown(u)} ({states[u][1]}); try again later', None, seen[u][0])
+    scope_txt = 'same site' if scope != 'all' else 'including external'
+    unchecked = sum(1 for u in order if states[u][0] == 'unreachable')
+    add('PASS' if not broken and not unchecked else 'INFO', 'Active Link', f'{len(order)} unique link(s) tried ({scope_txt}): {len(broken)} broken, {unchecked} could not be checked'
+        + (f'; {skipped} more not checked (--max-links)' if skipped else ''))
+
+
+def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=150):
     """pages: None (home only) | 'all' | list of names, numbers (1-based, from discover order) or URLs/paths."""
     today = today or dt.datetime.now()
     results = []
@@ -373,7 +445,8 @@ def scan_site(home, pages=None, today=None, max_pages=15):
 
     html, final, hops, secs = load(home)
     is_url = bool(re.match(r'https?://', home))
-    _, home_tags = check_page(html, final, True, today, add, 'home', hops, secs, is_url)
+    home_tree, home_tags = check_page(html, final, True, today, add, 'home', hops, secs, is_url, bool(links))
+    trees = [('home', home_tree, final)]
     found = discover(html, final)
     chosen = []
     if pages:
@@ -397,7 +470,8 @@ def scan_site(home, pages=None, today=None, max_pages=15):
         except Exception as e:
             add('WARN', 'Page fetch', f'could not open {target}: {e.__class__.__name__}', page=name); continue
         start = len(results)
-        _, ptags = check_page(phtml, pfinal, False, today, add, name)
+        ptree, ptags = check_page(phtml, pfinal, False, today, add, name)
+        trees.append((name, ptree, pfinal))
         # shared header/footer: drop findings that repeat the home page word for word
         home_seen = {(x['level'], x['criterion'], x['message']) for x in results[:start] if x['page'] == 'home'}
         results[start:] = [x for x in results[start:] if (x['level'], x['criterion'], x['message']) not in home_seen]
@@ -413,6 +487,8 @@ def scan_site(home, pages=None, today=None, max_pages=15):
                 r['level'] = 'WARN'
                 r['message'] = f'`{tag}` is not on the home page but is on "{where[0]}" ({url})'
                 r['fix'] = f'register {url} as a Criteria URL for this tag in the SPLaSK site profile, or also tag it on the home page'
+    if links:
+        check_links(trees, add, is_url, links, max_links)
     return {'target': home, 'final_url': final, 'redirects': len(hops), 'pages': scanned, 'discovered': found, 'results': results}
 
 
@@ -479,6 +555,9 @@ def main(argv=None):
     ap.add_argument('--list-pages', action='store_true', help='list the pages that can be scanned, then exit')
     ap.add_argument('--follow', action='store_true', help='shortcut for --pages privacy')
     ap.add_argument('--max-pages', type=int, default=15)
+    ap.add_argument('--check-links', nargs='?', const='site', choices=['site', 'all'], default=None,
+                    help='check every link on the scanned pages for the Active Link criterion (site = same site, the default; all = external too)')
+    ap.add_argument('--max-links', type=int, default=150)
     ap.add_argument('--format', choices=['text', 'json', 'md'], default='text')
     ap.add_argument('--json', action='store_true', help='same as --format json')
     ap.add_argument('--fail-on', choices=['never', 'fail', 'warn'], default='never', help='exit code 1 on FAIL (or WARN)')
@@ -489,7 +568,7 @@ def main(argv=None):
         list_pages(a.target); return 0
     today = dt.datetime.strptime(a.today, '%Y-%m-%d') if a.today else None
     pages = a.pages or ('privacy' if a.follow else None)
-    r = scan_site(a.target, pages, today, a.max_pages)
+    r = scan_site(a.target, pages, today, a.max_pages, a.check_links, a.max_links)
     fmt = 'json' if a.json else a.format
     if fmt == 'json': print(json.dumps(r, ensure_ascii=False, indent=1))
     elif fmt == 'md': report_md(r)

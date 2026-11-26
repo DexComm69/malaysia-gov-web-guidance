@@ -29,6 +29,7 @@ INDEX = os.path.join(ROOT, 'references', 'myds-index.json')
 CACHE = os.path.join(tempfile.gettempdir(), 'mgwg-cache')
 CACHE_DAYS = 7
 MYDS_CSS_URL = 'https://cdn.jsdelivr.net/npm/@govtechmy/myds-style@1.0.0/dist/index.css'
+BUNDLED_CSS = os.path.join(ROOT, 'assets', 'tokens', 'myds-style-1.0.0.css')  # present in offline builds only
 UA = 'mgwg/1.0 (unofficial Malaysian gov web guidance skill)'
 
 # Malay -> English query expansion, plus a few English synonyms.
@@ -92,7 +93,9 @@ def load():
                 meta.update(_path=os.path.join(dp, f), _body=body, _kind='local')
                 meta.setdefault('id', f[:-3])
                 docs.append(meta)
+    local_ids = {d['id'] for d in docs}
     for p in json.load(open(INDEX, encoding='utf8'))['pages']:
+        if p['id'] in local_ids: continue   # offline builds bundle the page itself
         d = dict(p)
         d.update(_kind='myds', _body=' '.join(p.get('sections', [])),
                  description=('[STUB at source] ' if p['status'] == 'stub' else '') + 'MYDS: ' + p['title'] + ' (' + p['category'] + ')')
@@ -253,6 +256,7 @@ def prefetch(sel, lang):
 
 def tokens(flt, myds_css):
     """List MYDS theme tokens (bg-/txt-/otl-/fr-) with resolved light and dark hex values."""
+    if not myds_css and os.path.exists(BUNDLED_CSS): myds_css = BUNDLED_CSS
     if not myds_css:
         try:
             fetch(MYDS_CSS_URL); myds_css = cache_path(MYDS_CSS_URL)
@@ -388,6 +392,7 @@ def class_tokens(val, outer_quote):
 
 
 def check_classes(files, extra_css, myds_css):
+    if not myds_css and os.path.exists(BUNDLED_CSS): myds_css = BUNDLED_CSS
     if not myds_css:
         try:
             fetch(MYDS_CSS_URL)

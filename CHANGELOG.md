@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 (26 November 2026)
+
+- **`scan --check-links`:** tests every link on the scanned pages for SPLaSK's Active Link criterion (no broken links). Same-site links by default; `--check-links all` adds external links. A broken link is a FAIL naming the page and link text; a link that can't be reached right now is a WARN. Checks run 4 at a time, retry with GET when a server refuses HEAD, and retry unreachable links once more one by one. `--max-links` caps the run (default 150). On jdn.gov.my: 58 links, none broken.
+- **Eval suite** (`skills/malaysia-gov-web-guidance/evals/`): stress-test rounds 4 and 5 as `claude plugin eval` cases, with their input files and 13 graders (official tag names only, form placement, no invented dates, no fake "now" timestamps, SEO limits, Criteria URL steps). Run with `claude plugin eval . --scaffold --allow-tools Write,Edit,Bash` from the skill folder.
+- **One-source build** (`tools/build.py`): builds the `.skill` file from this repository, and can layer a private overlay (extra files plus exact text patches) for an internal edition. A patch whose text no longer matches stops the build, so editions can't drift apart. CI runs `python tools/build.py --check`.
+- **`mgwg.py`:** uses MYDS pages and the MYDS stylesheet bundled with the skill when they are present, before fetching them.
+- 24 unit tests (3 new for links).
+
 ## 1.5.1 (26 November 2026)
 
 - **Stress test round 5** (WordPress child theme, 5 pages, 15 seeded faults): with the skill, 27 → 11 fails, all 11 needing real council URLs; without it, 27 → 22 and three invented tag names. The trigger test, rerun with 18 prompts, scored 18/18.

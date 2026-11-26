@@ -83,6 +83,27 @@ class Timestamps(unittest.TestCase):
         self.assertFalse(find(s.scan_site(SITE, None, TODAY), 'WARN', text='scan date/time'))
 
 
+class Links(unittest.TestCase):
+    LINKS = os.path.join(HERE, 'fixtures', 'links', 'index.html')
+
+    def test_broken_link_found(self):
+        r = s.scan_site(self.LINKS, None, TODAY, links='site')
+        fails = find(r, 'FAIL', 'Active Link')
+        self.assertEqual(len(fails), 1)
+        self.assertIn('tiada.html', fails[0]['message'])
+        self.assertTrue(fails[0]['fix'])
+
+    def test_same_site_only_by_default(self):
+        # ok.html, tiada.html and folder/ (index.html); anchors, mailto and the external MyGov link are skipped
+        r = s.scan_site(self.LINKS, None, TODAY, links='site')
+        self.assertTrue(find(r, 'INFO', 'Active Link', text='3 unique link(s) tried (same site): 1 broken'))
+
+    def test_off_by_default(self):
+        r = s.scan_site(self.LINKS, None, TODAY)
+        self.assertFalse(find(r, 'FAIL', 'Active Link'))
+        self.assertTrue(find(r, 'INFO', 'Active Link', text='--check-links'))
+
+
 class Cli(unittest.TestCase):
     def test_fail_on(self):
         self.assertEqual(run_cli(SITE, '--today', '2026-11-25')[0], 0)
