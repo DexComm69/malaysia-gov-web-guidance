@@ -262,7 +262,7 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
             if not any('data.gov.my' in h for h in links):
                 ok = False; A('FAIL', crit, 'open-data tag must link to a dataset on data.gov.my (link text = dataset title)', fix_missing(tag))
             else:
-                A('INFO', crit, 'check by hand that the link text equals the dataset title on data.gov.my')
+                if not check_links_on: A('INFO', crit, 'link text must equal the dataset title on data.gov.my; add --check-links to compare it')
         if tag == 'splwpk-privacy-policy' and is_home and not any(e.tag == 'a' and e.attrs.get('href') for e in els) \
                 and not any(re.fullmatch(r'h[1-6]', e.tag) for e in els):
             ok = False; A('FAIL', crit, '`splwpk-privacy-policy` must be on the link (<a href>) to the privacy page, on every page',
@@ -419,6 +419,79 @@ def check_link(u):
     return last
 
 
+def get_page(url):
+    """-> (status, html). status 0 = no response. Replaceable in tests."""
+    try:
+        r = urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA, 'Accept-Language': 'ms,en'}), timeout=30)
+        cs = r.headers.get_content_charset() or 'utf-8'
+        return r.status, r.read().decode(cs, 'replace')
+    except urllib.error.HTTPError as e:
+        return e.code, ''
+    except Exception:
+        return 0, ''
+
+
+def norm_title(t):
+    import html as _h
+    return re.sub(r'[\s"\'\u2018\u2019\u201c\u201d.,:;()\-]+', ' ', _h.unescape(t or '')).strip().casefold()
+
+
+def datagov_titles(url):
+    """Dataset titles (English and Malay) for a data.gov.my link -> ('ok'|'missing'|'unreachable', [titles])."""
+    parts = urllib.parse.urlparse(url)
+    path = re.sub(r'^/(ms-MY|en-GB)(?=/)', '', parts.path)
+    titles, states = [], []
+    for prefix in ('', '/ms-MY'):
+        st, html = get_page(f'{parts.scheme}://{parts.netloc}{prefix}{path}')
+        states.append(st)
+        m = re.search(r'<title>(.*?)</title>', html, re.S | re.I)
+        t = re.sub(r'\s*\|\s*data\.gov\.my\s*$', '', ' '.join(m.group(1).split())) if m else ''
+        if st == 200 and t and not t.lower().startswith('oops'):
+            titles.append(t)
+    if titles: return 'ok', titles
+    return ('missing' if 404 in states else 'unreachable'), []
+
+
+def gamma_name(url):
+    """App name on a GAMMA app page -> ('ok'|'missing'|'unreachable', [name])."""
+    st, html = get_page(url)
+    if st == 404: return 'missing', []
+    if st != 200: return 'unreachable', []
+    t = Tree(); t.feed(html)
+    for n in t.nodes:
+        if n.tag == 'div' and 'product-info' in n.attrs.get('class', '').split():
+            h = next((d for d in n.descendants() if d.tag == 'h2'), None)
+            if h and h.all_text(): return 'ok', [' '.join(h.all_text().split())]
+    return 'missing', []
+
+
+def check_targets(pages_trees, add):
+    """--check-links: data.gov.my dataset titles and GAMMA app names must match the tagged link text."""
+    jobs = []
+    for name, tree, url in pages_trees:
+        for tag, host, crit, lookup, what in (('splwpk-open-data', 'data.gov.my', 'Presence of Datasets', datagov_titles, 'dataset title'),
+                                             ('splwpk-mobile-apps', 'gamma.malaysia.gov.my', 'Mobile Apps', gamma_name, 'app name')):
+            for e in [n for n in tree.nodes if tag in n.attrs]:
+                for a in [e] + list(e.descendants()):
+                    href = a.attrs.get('href', '') if a.tag == 'a' else ''
+                    if host in href:
+                        jobs.append((name, crit, what, lookup, href, ' '.join(a.all_text().split())))
+    seen = set()
+    for name, crit, what, lookup, href, text in jobs:
+        if (href, text) in seen: continue
+        seen.add((href, text))
+        state, titles = lookup(href)
+        if state == 'missing':
+            add('FAIL', crit, f'{href} does not exist ({what} not found)', f'link to a real {"dataset on data.gov.my" if "Datasets" in crit else "app page on GAMMA"}', name)
+        elif state == 'unreachable':
+            add('WARN', crit, f'could not open {href} to compare the {what}; try again later', None, name)
+        elif norm_title(text) in {norm_title(t) for t in titles}:
+            add('PASS', crit, f'link text "{text}" matches the {what} on {urllib.parse.urlparse(href).netloc}', None, name)
+        else:
+            add('FAIL', crit, f'link text "{text}" does not match the {what}: ' + ' / '.join(f'"{t}"' for t in titles),
+                f'use the exact {what} as the link text: {titles[0]}', name)
+
+
 def check_links(pages_trees, add, is_url, scope, max_links):
     import concurrent.futures as cf
     seen, order = {}, []
@@ -499,6 +572,7 @@ def scan_site(home, pages=None, today=None, max_pages=15, links=None, max_links=
                 r['fix'] = f'register {url} as a Criteria URL for this tag in the SPLaSK site profile, or also tag it on the home page'
     if links:
         check_links(trees, add, is_url, links, max_links)
+        check_targets(trees, add)
     return {'target': home, 'final_url': final, 'redirects': len(hops), 'pages': scanned, 'discovered': found, 'results': results}
 
 
@@ -566,7 +640,8 @@ def main(argv=None):
     ap.add_argument('--follow', action='store_true', help='shortcut for --pages privacy')
     ap.add_argument('--max-pages', type=int, default=15)
     ap.add_argument('--check-links', nargs='?', const='site', choices=['site', 'all'], default=None,
-                    help='check every link on the scanned pages for the Active Link criterion (site = same site, the default; all = external too)')
+                    help='check every link on the scanned pages for the Active Link criterion (site = same site, the default; all = external too), '
+                         'and compare data.gov.my dataset titles and GAMMA app names with the tagged link text')
     ap.add_argument('--max-links', type=int, default=150)
     ap.add_argument('--format', choices=['text', 'json', 'md'], default='text')
     ap.add_argument('--json', action='store_true', help='same as --format json')

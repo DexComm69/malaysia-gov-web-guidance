@@ -131,6 +131,61 @@ class Frameworks(unittest.TestCase):
         self.assertEqual(len(find(r, None, 'Feedback Form')), 1)
 
 
+class Targets(unittest.TestCase):
+    """data.gov.my titles and GAMMA names, with a fake fetcher (no network). The stand-in pages copy
+    only the structure the scanner reads: data.gov.my puts "<title> | data.gov.my" in <title> (BM under
+    /ms-MY/, 404 for an unknown id); GAMMA puts the name in div.product-info h2 and returns 200 without
+    that block for an unknown id."""
+    PAGES = {
+        'https://data.gov.my/data-catalogue/air_pollution': (200, '<title>Monthly Air Pollution | data.gov.my</title>'),
+        'https://data.gov.my/ms-MY/data-catalogue/air_pollution': (200, '<title>Pencemaran Udara Bulanan | data.gov.my</title>'),
+        'https://data.gov.my/data-catalogue/nope': (404, ''),
+        'https://data.gov.my/ms-MY/data-catalogue/nope': (404, ''),
+        'https://gamma.malaysia.gov.my/app-details/77': (200, '<div class="product-info"><h2 class="title">GAMMA.my</h2></div>'),
+        'https://gamma.malaysia.gov.my/app-details/0': (200, '<h2 class="title">Statistik Terkini</h2>'),
+    }
+
+    def setUp(self):
+        self._get = s.get_page
+        s.get_page = lambda u: self.PAGES.get(u, (0, ''))
+
+    def tearDown(self):
+        s.get_page = self._get
+
+    def scan(self, links):
+        import tempfile
+        f = os.path.join(tempfile.mkdtemp(), 'index.html')
+        with open(f, 'w', encoding='utf8') as h:
+            h.write('<html lang="ms"><body>' + links + '</body></html>')
+        return s.scan_site(f, None, TODAY, links='site')
+
+    def test_dataset_title_en_and_bm(self):
+        for text in ('Monthly Air Pollution', 'Pencemaran Udara Bulanan', 'monthly air pollution'):
+            r = self.scan(f'<a splwpk-open-data="splwpk-open-data" href="https://data.gov.my/data-catalogue/air_pollution">{text}</a>')
+            self.assertTrue(find(r, 'PASS', 'Presence of Datasets', text='matches'), text)
+
+    def test_dataset_title_mismatch(self):
+        r = self.scan('<a splwpk-open-data="splwpk-open-data" href="https://data.gov.my/data-catalogue/air_pollution">Data Udara</a>')
+        f = find(r, 'FAIL', 'Presence of Datasets', text='does not match')
+        self.assertTrue(f and 'Monthly Air Pollution' in f[0]['fix'])
+
+    def test_dataset_missing(self):
+        r = self.scan('<a splwpk-open-data="splwpk-open-data" href="https://data.gov.my/data-catalogue/nope">Rekaan</a>')
+        self.assertTrue(find(r, 'FAIL', 'Presence of Datasets', text='does not exist'))
+
+    def test_gamma_name(self):
+        ok = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/77">GAMMA.my</a>')
+        self.assertTrue(find(ok, 'PASS', 'Mobile Apps', text='matches'))
+        bad = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/77">Aplikasi JDN</a>')
+        self.assertTrue(find(bad, 'FAIL', 'Mobile Apps', text='"GAMMA.my"'))
+        gone = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/0">Lama</a>')
+        self.assertTrue(find(gone, 'FAIL', 'Mobile Apps', text='does not exist'))
+
+    def test_unreachable_is_warn(self):
+        r = self.scan('<a splwpk-mobile-apps="splwpk-mobile-apps" href="https://gamma.malaysia.gov.my/app-details/5">X</a>')
+        self.assertTrue(find(r, 'WARN', 'Mobile Apps', text='could not open'))
+
+
 class Links(unittest.TestCase):
     LINKS = os.path.join(HERE, 'fixtures', 'links', 'index.html')
 

@@ -203,7 +203,7 @@ python scripts/mgwg.py scan https://www.example.gov.my --pages all --check-links
 
 | Command | What it does |
 |---|---|
-| **`scan`** `<url-or-file> [--list-pages] [--pages …] [--check-links [all]] [--format text\|json\|md] [--fail-on fail\|warn]` | SPLaSK 2.0 pre-check of the home page and the pages you choose: `all`, numbers, names (`privacy,sitemap`) or URLs. `--check-links` tests every link for broken ones (Active Link). Every FAIL comes with a fix |
+| **`scan`** `<url-or-file> [--list-pages] [--pages …] [--check-links [all]] [--format text\|json\|md] [--fail-on fail\|warn]` | SPLaSK 2.0 pre-check of the home page and the pages you choose: `all`, numbers, names (`privacy,sitemap`) or URLs. `--check-links` tests every link for broken ones (Active Link) and compares open-data and app links with their real titles on data.gov.my and GAMMA. Every FAIL comes with a fix |
 | **`search`** `"<query>"` | Rank guides for a task (English or Malay) |
 | **`retrieve`** `<id>[,<id>] [--lang en\|ms\|both]` | Print guides; MYDS pages are fetched live |
 | **`list`** `[--category <name>]` | List all guides |
@@ -243,7 +243,7 @@ jobs:
   splask:
     runs-on: ubuntu-latest
     steps:
-      - uses: DexComm69/malaysia-gov-web-guidance@v1.6.2
+      - uses: DexComm69/malaysia-gov-web-guidance@v1.7.0
         with:
           url: https://www.example.gov.my
           pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only
@@ -324,7 +324,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
 > [!WARNING]
 > - `scan` is a **pre-check**. It hasn't yet been calibrated against an official SPLaSK on-demand assessment, which remains the only authoritative score.
-> - `scan` only follows links from the home page (or the URLs you give it) and doesn't run JavaScript. It doesn't yet check data.gov.my dataset titles or GAMMA app names.
+> - `scan` only follows links from the home page (or the URLs you give it) and doesn't run JavaScript.
 > - The GOS (online service) criteria come from the older criteria diagram on malaysia.gov.my, not from the v2.0 tagging manual.
 > - The MYDS page index reflects the documentation as of November 2026.
 > - A few terse manual rules are interpreted conservatively (for example "under 70 characters" for titles).
@@ -342,14 +342,15 @@ flowchart TB
         v14["<b>v1.4</b><br/>scan command"]
         v15["<b>v1.5</b><br/>Multi-page scan, fixes,<br/>GitHub Action, CI tests,<br/>WordPress & Joomla"]
         v16["<b>v1.6</b><br/>Broken-link check,<br/>eval suite,<br/>one-source build"]
-        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16
+        v17["<b>v1.7</b><br/>data.gov.my and<br/>GAMMA title checks"]
+        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17
     end
 
     subgraph next ["Next"]
         direction LR
         cal["Calibrate scan against<br/>an official SPLaSK assessment"]
-        scanplus["scan: data.gov.my titles,<br/>GAMMA app names"]
-        cal ~~~ scanplus
+        mcp["MCP server version<br/>for other AI tools"]
+        cal ~~~ mcp
     end
 
     subgraph later ["Later"]
@@ -365,8 +366,8 @@ flowchart TB
     classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
     classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
     classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
-    class v10,v11,v12,v13,v14,v15,v16 done
-    class cal,scanplus nxt
+    class v10,v11,v12,v13,v14,v15,v16,v17 done
+    class cal,mcp nxt
     class upd,idm,bm plan
     style shipped fill:transparent,stroke:#16a34a,stroke-width:2px
     style next fill:transparent,stroke:#ca8a04,stroke-width:2px

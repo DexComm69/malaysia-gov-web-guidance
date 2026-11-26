@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.0 (26 November 2026)
+
+- **`scan --check-links` checks the data.gov.my and GAMMA links:** for every link tagged `splwpk-open-data`, it opens the dataset on data.gov.my and compares the link text with the dataset's English and Malay titles; for every `splwpk-mobile-apps` link, it reads the app's name from its GAMMA page. A wrong title is a FAIL whose fix gives the exact title; a dataset or app that doesn't exist is a FAIL; a site that can't be reached is a WARN. Matching ignores case, spacing and punctuation. Tested live: jdn.gov.my's GAMMA link matches ("GAMMA.my"); a real dataset passes with either its English or Malay title and fails with a paraphrase.
+- 36 unit tests (5 new, offline, with stand-in pages).
+
 ## 1.6.2 (26 November 2026)
 
 - **Stress test round 7** (Laravel 11 + Blade + Alpine.js, 5 pages, 15 seeded faults), run in English with and without the skill and once entirely in Bahasa Melayu: with the skill 27 → 11 scan fails in both languages (all 11 need real council URLs); without it 27 → 17. Two new eval cases, `fix-laravel-blade-app` and `fix-laravel-blade-app-bm` (with a check that the report is in formal BM). Eval baseline: 27/27 with the skill, 12/27 without; the BM case 8/8.

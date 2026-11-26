@@ -46,7 +46,7 @@ Render the timestamp from the content's real `updated_at`, never a hard-coded va
 | Multi-Language for Content (Accessibility) | `splwpk-multilang` | On the language switcher (manual example: a `<div>` wrapping the BM/EN links). Content available in BM and English |
 | Sitemap (Accessibility) | `splwpk-sitemap` | Tag not on an `<i>` element |
 | Mobile Apps (Accessibility) | `splwpk-mobile-apps` | On a link to the app's page in **GAMMA** (gamma.malaysia.gov.my). Link text = the app's name in GAMMA. At least one app |
-| Presence of Datasets (Quality of Content) | `splwpk-open-data` | At least one link to a dataset that **exists on data.gov.my**. Link text = the dataset's **exact title** there |
+| Presence of Datasets (Quality of Content) | `splwpk-open-data` | At least one link to a dataset that **exists on data.gov.my**. Link text = the dataset's **exact title** there (English or the Malay title under `/ms-MY/`); `scan --check-links` compares them |
 | Publication (Quality of Content) | `splwpk-publication` | Publications offered as an eBook or a download |
 | Updated Content: Broadcast | `splwpk-broadcast` + `timestamp` | Announcements updated within the last **30 days** |
 | Updated Content: About Us | `splwpk-about-us` + `timestamp` | Within **30 days**; changes to the Minister, Deputy Minister or senior management must be updated **immediately** |
