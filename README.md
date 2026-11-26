@@ -80,7 +80,7 @@ Neither standard is well represented in general-purpose AI models. Without guida
     <td align="center" valign="top" width="20%"><h2>25</h2>SPLaSK 2.0 criteria</td>
     <td align="center" valign="top" width="20%"><h2>~115</h2>MYDS pages, read live</td>
     <td align="center" valign="top" width="20%"><h2>10</h2>hand-written guides</td>
-    <td align="center" valign="top" width="20%"><h2>16 / 16</h2>trigger tests passed</td>
+    <td align="center" valign="top" width="20%"><h2>18 / 18</h2>trigger tests passed</td>
     <td align="center" valign="top" width="20%"><h2>BM · EN</h2>bilingual throughout</td>
   </tr>
 </table>
@@ -242,7 +242,7 @@ jobs:
   splask:
     runs-on: ubuntu-latest
     steps:
-      - uses: DexComm69/malaysia-gov-web-guidance@v1.5.0
+      - uses: DexComm69/malaysia-gov-web-guidance@v1.5.1
         with:
           url: https://www.example.gov.my
           pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only
@@ -308,12 +308,13 @@ xychart-beta
 
 | Test | Result | |
 |---|---|---|
-| Trigger test: 16 prompts in English, BM and Manglish | Activated for all 8 government tasks, none of the 8 near-misses | <img alt="16/16" src="https://img.shields.io/badge/16%2F16-2ea043?style=flat-square"> |
+| Trigger test: 18 prompts in English, BM and Manglish | Activated for all 9 government tasks, none of the 9 near-misses | <img alt="18/18" src="https://img.shields.io/badge/18%2F18-2ea043?style=flat-square"> |
 | Next.js page with MYDS React components | All 11 imports matched the published `@govtechmy/myds-react` exports | <img alt="11/11" src="https://img.shields.io/badge/11%2F11-2ea043?style=flat-square"> |
 | Public PHP application form, built from scratch | Exact masthead wording, correct tags, accessible validation | <img alt="passed" src="https://img.shields.io/badge/passed-2ea043?style=flat-square"> |
 | Review of a 7-role staff system | 63 page and role combinations covered; skill issues fixed in 1.1.0 | <img alt="passed" src="https://img.shields.io/badge/passed-2ea043?style=flat-square"> |
 | `scan` on 5 live government portals | Real issues found (misspelled tags, tags in HTML comments, stale timestamps); false alarms fixed | <img alt="validated" src="https://img.shields.io/badge/validated-2ea043?style=flat-square"> |
 | Seeded-fault page (chart above) | 25 → 12 fails with the skill; without it, 25 → 17 and two invented tag names | <img alt="-13 fails" src="https://img.shields.io/badge/--13%20fails-2ea043?style=flat-square"> |
+| WordPress child theme, 5 pages, 15 seeded faults | 27 → 11 fails with the skill (all 11 need real council URLs); without it, 27 → 22 and three invented tag names | <img alt="-16 fails" src="https://img.shields.io/badge/--16%20fails-2ea043?style=flat-square"> |
 
 See [`CHANGELOG.md`](CHANGELOG.md) for details.
 

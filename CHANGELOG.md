@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.1 (26 November 2026)
+
+- **Stress test round 5** (WordPress child theme, 5 pages, 15 seeded faults): with the skill, 27 → 11 fails, all 11 needing real council URLs; without it, 27 → 22 and three invented tag names. The trigger test, rerun with 18 prompts, scored 18/18.
+- **`scan` warns about generated timestamps:** a timestamp equal to the scan date/time usually means the theme prints the current time instead of the real update date.
+- **`scan`:** no "very little server HTML" warning on small pages that carry tags; Windows paths shown with forward slashes.
+- **One `<h1>` rule made consistent** across the guides and the scanner: a site name repeated in the header should be a `<p>` or `<a>`, so each page's title is its one `<h1>`.
+- **`cms-wordpress-joomla`:** tagging an Elementor Pro form with `elementor/widget/render_content`, multilang needs a real second language, and removing fake "now" timestamps.
+
 ## 1.5.0 (26 November 2026)
 
 - **Multi-page `scan`:** choose which pages to check, or check them all.

@@ -73,6 +73,16 @@ class Site(unittest.TestCase):
         self.assertEqual([p['name'] for p in s.scan(SITE, True, TODAY)['pages']], ['home', 'privacy'])
 
 
+class Timestamps(unittest.TestCase):
+    def test_generated_at_request_time(self):
+        import tempfile
+        f = os.path.join(tempfile.mkdtemp(), 'index.html')
+        with open(f, 'w', encoding='utf8') as h:
+            h.write('<html lang="ms"><body><a href="/t" splwpk-about-us="splwpk-about-us" timestamp="2026-11-25 08:14:02">Tentang Kami</a></body></html>')
+        self.assertTrue(find(s.scan_site(f, None, TODAY), 'WARN', 'Updated Content: About Us', text='scan date/time'))
+        self.assertFalse(find(s.scan_site(SITE, None, TODAY), 'WARN', text='scan date/time'))
+
+
 class Cli(unittest.TestCase):
     def test_fail_on(self):
         self.assertEqual(run_cli(SITE, '--today', '2026-11-25')[0], 0)

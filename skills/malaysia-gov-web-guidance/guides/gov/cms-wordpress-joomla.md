@@ -51,11 +51,13 @@ After any change, check what the crawler sees with `python scripts/mgwg.py scan 
    add_filter('get_search_form', fn($form) => preg_replace('/<form\b/', '<form splwpk-search-function="splwpk-search-function"', $form, 1));
    ```
    If the site uses a search plugin, check its rendered `<form>` with `scan`; some plugins render the form with JavaScript.
-5. **Feedback form:** form plugins (Contact Form 7, WPForms, Gravity Forms, Fluent Forms) each render their own `<form>`. Use the plugin's own attribute or HTML-output filter, or wrap the shortcode in a template where you control the `<form>`. Confirm the tag lands on the `<form>` element, not a wrapper `<div>`.
+5. **Feedback form:** form plugins (Contact Form 7, WPForms, Gravity Forms, Fluent Forms, Elementor Pro Form) each render their own `<form>`. Use the plugin's own attribute or HTML-output filter, or wrap the shortcode in a template where you control the `<form>`. For an Elementor Pro Form widget, the `elementor/widget/render_content` filter receives the widget's HTML, so you can add the tag to its `<form` for the widget named as the feedback form (check `$widget->get_name() === 'form'` and the form name setting). Confirm the tag lands on the `<form>` element, not a wrapper `<div>`, and clear Elementor's cache before checking.
 6. **Why tags vanish from content:** post content is filtered by KSES. Users without the `unfiltered_html` capability (Authors, Editors on multisite, and every user on multisite except Super Admins) lose unknown attributes on save. Don't hand out `unfiltered_html` to fix this; either move the tag into theme code (preferred) or allow just the `splwpk-*` attributes with the `wp_kses_allowed_html` filter for the elements you need.
 7. **Page builders:** Elementor Pro has *Advanced → Attributes* (`key|value`, one per line, e.g. `splwpk-faq|splwpk-faq`). It puts attributes on the widget wrapper, which is fine for link-type tags only if the wrapper contains the link; for search and feedback the attribute must reach the `<form>` itself. Run `scan` to confirm. Free Elementor and the block editor don't offer custom attributes on most blocks.
-8. **SEO plugins** (Yoast, Rank Math) set the `<title>` and meta description. SPLaSK's home-page limits are stricter than the plugins' green lights: title under 70 characters, description 1–159 characters, exactly one `<h1>`. Many themes print the site name as `<h1>` in the header *and* the page title as another `<h1>`; fix the header to use a non-heading element on the home page.
-9. **Caching:** after changing tags, purge the page cache (plugin, host or Cloudflare) before scanning; SPLaSK sees the cached HTML.
+8. **SEO plugins** (Yoast, Rank Math) set the `<title>` and meta description. SPLaSK's home-page limits are stricter than the plugins' green lights: title under 70 characters, description 1–159 characters, exactly one `<h1>`. Many themes print the site name as `<h1>` in the header *and* the page title as another `<h1>`. Make the header's site name a `<p>` or `<a>` on every page, so each page's own title is its one `<h1>`; on the home page, consider titling the front page with the agency name so that `<h1>` names the agency.
+9. **Language switcher:** `splwpk-multilang` only counts if the other language really exists. Without a translation plugin (Polylang, WPML, TranslatePress) or separate English pages, `?lang=en` usually shows the same Malay page. Print the switcher from the theme, and point it at real URLs.
+10. **Fake timestamps:** some themes set `timestamp` to the current time (`date('Y-m-d H:i:s')`, `current_time()`) "so SPLaSK passes". Remove it: the date must be when the content really changed. `scan` warns when a timestamp equals the time of the scan.
+11. **Caching:** after changing tags, purge the page cache (plugin, host or Cloudflare) before scanning; SPLaSK sees the cached HTML.
 
 ### Joomla (4 and 5)
 
@@ -77,6 +79,7 @@ After any change, check what the crawler sees with `python scripts/mgwg.py scan 
 ### Both CMSs: checklist
 
 - [ ] Tags live in child theme/template code, not in page content.
+- [ ] The language switcher points at real pages in the other language.
 - [ ] Every timestamp comes from the CMS's real modified date, never a hard-coded or "today" value (a fake date is a compliance problem, and the content must actually be updated within the window).
 - [ ] Search, advanced search and feedback tags are on the `<form>`.
 - [ ] No tag on an icon `<i>` inside a menu item.
@@ -97,9 +100,11 @@ Selepas setiap perubahan, semak apa yang dilihat oleh perangkak dengan `python s
 4. **Carian:** tag mesti pada `<form>`; gunakan penapis `get_search_form` atau `searchform.php` dalam tema anak.
 5. **Borang maklum balas:** pastikan tag berada pada elemen `<form>` yang dijana oleh plugin borang, bukan pada `<div>` pembalut.
 6. **Tag hilang daripada kandungan:** KSES membuang atribut bagi pengguna tanpa keupayaan `unfiltered_html`. Jangan beri keupayaan itu secara meluas; pindahkan tag ke kod tema, atau benarkan atribut `splwpk-*` sahaja melalui penapis `wp_kses_allowed_html`.
-7. **Pembina halaman:** Elementor Pro (*Advanced → Attributes*, `kunci|nilai`) meletakkan atribut pada pembalut widget. Untuk carian dan maklum balas, atribut mesti sampai ke `<form>`. Sahkan dengan `scan`.
-8. **Plugin SEO:** had SPLaSK lebih ketat: tajuk kurang daripada 70 aksara, penerangan 1–159 aksara, satu `<h1>` sahaja di halaman utama.
-9. Kosongkan *cache* sebelum mengimbas.
+7. **Pembina halaman:** Elementor Pro (*Advanced → Attributes*, `kunci|nilai`) meletakkan atribut pada pembalut widget. Untuk carian dan maklum balas, atribut mesti sampai ke `<form>` (contohnya melalui penapis `elementor/widget/render_content`). Sahkan dengan `scan`.
+8. **Plugin SEO:** had SPLaSK lebih ketat: tajuk kurang daripada 70 aksara, penerangan 1–159 aksara, satu `<h1>` sahaja di halaman utama. Jadikan nama laman dalam pengepala `<p>` atau `<a>`, bukan `<h1>`.
+9. **Penukar bahasa:** `splwpk-multilang` hanya bermakna jika versi bahasa lain benar-benar wujud (plugin terjemahan atau halaman BI berasingan).
+10. **Timestamp palsu:** buang kod yang menetapkan `timestamp` kepada masa semasa. Tarikh mesti tarikh kandungan sebenar dikemas kini.
+11. Kosongkan *cache* sebelum mengimbas.
 
 ### Joomla (4 dan 5)
 1. Gunakan **templat anak** atau *template override*; jangan ubah fail teras.

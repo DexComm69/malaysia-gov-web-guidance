@@ -146,6 +146,14 @@ def load(target, base=None):
     return open(target, encoding='utf8', errors='replace').read(), target, [], None
 
 
+def looks_generated(stamps, today):
+    """A timestamp within 15 minutes of now (live scan), or dated the scan day when --today is given."""
+    now = dt.datetime.now()
+    if today.date() == now.date():
+        return any(abs((t - now).total_seconds()) < 900 for t in stamps)
+    return any(t.date() == today.date() for t in stamps)
+
+
 def parse_ts(v):
     try: return dt.datetime.strptime(v.strip(), '%Y-%m-%d %H:%M:%S')
     except Exception: return None
@@ -234,6 +242,9 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
                 elif newest > today + dt.timedelta(days=1):
                     ok = False; A('WARN', crit, f'timestamp {newest:%Y-%m-%d} is in the future', 'use the real last-updated date')
                 else: fresh[tag] = f'; newest timestamp {newest:%Y-%m-%d}, {age} days old (limit {days})'
+            if good and looks_generated(good, today):
+                A('WARN', crit, f'`{tag}` timestamp is the scan date/time ({max(good):%Y-%m-%d %H:%M}): check it is the real date the content changed, not the time the page was generated',
+                  "take it from the CMS's modified date (e.g. WordPress get_the_modified_date('Y-m-d H:i:s', $id)); never date('Y-m-d H:i:s') or now()")
             elif good:
                 fresh[tag] = f'; newest timestamp {max(good):%Y-%m-%d} (no freshness limit)'
         if 'href' in extra and not any(e.attrs.get('href') or any(d.tag == 'a' and d.attrs.get('href') for d in e.descendants()) for e in els):
@@ -275,7 +286,7 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
           None if 0 < len(d) < 160 else '<meta name="description" content="One-sentence summary of the site (under 160 characters)">')
         h1 = [n for n in nodes if n.tag == 'h1']
         A('PASS' if len(h1) == 1 else 'FAIL', 'SEO', f'{len(h1)} <h1> on the page (must be exactly 1)',
-          None if len(h1) == 1 else ('keep one <h1> for the page\'s main subject (usually the agency name); change the others to <h2>' if h1 else 'add one <h1> with the agency name or page subject'))
+          None if len(h1) == 1 else ('keep one <h1> (the agency name or the page title, not both); make a site name repeated in the header a <p> or <a>, and other headings <h2>' if h1 else 'add one <h1> with the agency name or page subject'))
         noalt = [n for n in nodes if n.tag == 'img' and 'alt' not in n.attrs]
         A('PASS' if not noalt else 'FAIL', 'SEO', f'{len(noalt)} <img> without alt' + (f' (first: {noalt[0].attrs.get("src", "")[:60]})' if noalt else ''),
           None if not noalt else 'add alt="what the image shows" (or alt="" for purely decorative images)')
@@ -298,7 +309,7 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
         else: A('INFO', 'MYDS masthead (not SPLaSK)', 'no official masthead wording ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website")')
         lang = next((n.attrs.get('lang', '') for n in nodes if n.tag == 'html'), '')
         A('PASS' if lang else 'WARN', 'Language', f'<html lang="{lang}">' if lang else '<html> has no lang attribute', None if lang else '<html lang="ms">')
-        if len(nodes) < 40 or (not tagged and re.search(r'id="(root|app|__next)"', html)):
+        if (len(nodes) < 40 and len(set(tagged) & set(TAGS)) < 3) or (not tagged and re.search(r'id="(root|app|__next)"', html)):
             A('WARN', 'Rendering', 'very little server HTML: if the site renders with JavaScript, the crawler may not see its content or tags',
               'render the page (or at least its tags) on the server')
         official = len(set(tagged) & set(TAGS))
@@ -390,7 +401,7 @@ def scan_site(home, pages=None, today=None, max_pages=15):
         # shared header/footer: drop findings that repeat the home page word for word
         home_seen = {(x['level'], x['criterion'], x['message']) for x in results[:start] if x['page'] == 'home'}
         results[start:] = [x for x in results[start:] if (x['level'], x['criterion'], x['message']) not in home_seen]
-        scanned.append({'name': name, 'url': pfinal}); tags_by_page[name] = ptags
+        scanned.append({'name': name, 'url': pfinal if is_url else pfinal.replace(chr(92), '/')}); tags_by_page[name] = ptags
 
     # a tag missing on the home page but present on a scanned page -> SPLaSK only sees it via a Criteria URL
     for r in results:
@@ -454,7 +465,7 @@ def list_pages(home):
     print(f'Pages linked from {final} that a SPLaSK review can include:\n')
     if not found: print('  (none found; pass page URLs to --pages directly)')
     for i, (name, url) in enumerate(found.items(), 1):
-        print(f'  {i:2}. {name:16} {url}')
+        print(f'  {i:2}. {name:16} {url.replace(chr(92), "/")}')
     print('\nScan them with --pages all, by number (--pages 1,3), by name (--pages privacy,sitemap) or by URL.')
     return found
 
