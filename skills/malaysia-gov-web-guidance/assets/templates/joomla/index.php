@@ -30,7 +30,7 @@ $en = str_starts_with($this->language, 'en');
     <a class="site-name" href="<?php echo $this->baseurl; ?>/"><?php echo $sitename; ?></a>
     <jdoc:include type="modules" name="search" style="none" />
     <div role="group" aria-label="<?php echo $en ? 'Text size' : 'Saiz tulisan'; ?>" splwpk-w3c="splwpk-w3c">
-      <button type="button" data-size="-1">A-</button><button type="button" data-size="0">A</button><button type="button" data-size="1">A+</button>
+      <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>
     </div>
     <jdoc:include type="modules" name="topbar" style="none" />   <!-- the Language Switcher module (override in html/mod_languages) -->
     <nav aria-label="<?php echo $en ? 'Main menu' : 'Menu utama'; ?>"><jdoc:include type="modules" name="menu" style="none" /></nav>
@@ -44,12 +44,18 @@ $en = str_starts_with($this->language, 'en');
     <p>&copy; <?php echo Factory::getDate()->format('Y'); ?> <?php echo $sitename; ?>. <?php echo $en ? 'All Rights Reserved' : 'Hak Cipta Terpelihara'; ?>.</p>
   </footer>
   <script>
-  document.querySelectorAll('[splwpk-w3c] [data-size]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var s = parseInt(b.dataset.size, 10);
-      document.documentElement.style.fontSize = s === 0 ? '' : (100 + s * 12.5) + '%';
-    });
+  (function () {
+  /* Text-size control for splwpk-w3c: the tag is in the server HTML; this adds the behaviour and remembers the choice. */
+  var buttons = document.querySelectorAll('[splwpk-w3c] [data-fs]');
+  function set(v) {
+    document.documentElement.style.fontSize = (16 * parseFloat(v)) + 'px';
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.fs === String(v))); });
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.fs); try { localStorage.setItem('fs', b.dataset.fs); } catch (e) {} });
   });
+  try { var saved = localStorage.getItem('fs'); if (saved) set(saved); } catch (e) {}
+})();
   </script>
 </body>
 </html>

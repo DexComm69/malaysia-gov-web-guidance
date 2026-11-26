@@ -7,7 +7,9 @@
   <meta name="description" content="Portal rasmi Majlis Daerah Contoh Jaya: perkhidmatan, berita dan maklumat untuk penduduk.">   <!-- 1-159 characters on the home page -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govtechmy/myds-style@1.0.0/dist/index.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/assets/site.css">
 </head>
 <body class="font-body">
 <a class="skip-link" href="#kandungan">Langkau ke kandungan utama</a>
@@ -40,15 +42,8 @@
   <!-- The advanced-search page's <form> carries splwpk-advanced-search-function; register that page as a Criteria URL. -->
 
   <div role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
-    <button type="button" data-size="-1">A-</button>
-    <button type="button" data-size="0">A</button>
-    <button type="button" data-size="1">A+</button>
-  </div>
+    <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>  </div>
 
-    <div class="lang-switch" splwpk-multilang="splwpk-multilang">
-          <a href="?lang=ms" lang="ms" hreflang="ms" aria-current="true">BM</a>
-          <a href="?lang=en" lang="en" hreflang="en">EN</a>
-      </div>
   
   <nav aria-label="Menu utama">
           <a href="/tentang-kami" splwpk-about-us="splwpk-about-us" timestamp="2026-11-03 09:12:44">Tentang Kami</a>
@@ -71,13 +66,18 @@
   <p>&copy; 2026 Majlis Daerah Contoh Jaya. Hak Cipta Terpelihara.</p>
 </footer>
 <script>
-/* Text-size control for splwpk-w3c: the tag is in the server HTML; this only adds the behaviour. */
-document.querySelectorAll('[splwpk-w3c] [data-size]').forEach(function (b) {
-  b.addEventListener('click', function () {
-    var step = parseInt(b.dataset.size, 10);
-    document.documentElement.style.fontSize = step === 0 ? '' : (100 + step * 12.5) + '%';
+(function () {
+  /* Text-size control for splwpk-w3c: the tag is in the server HTML; this adds the behaviour and remembers the choice. */
+  var buttons = document.querySelectorAll('[splwpk-w3c] [data-fs]');
+  function set(v) {
+    document.documentElement.style.fontSize = (16 * parseFloat(v)) + 'px';
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.fs === String(v))); });
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.fs); try { localStorage.setItem('fs', b.dataset.fs); } catch (e) {} });
   });
-});
+  try { var saved = localStorage.getItem('fs'); if (saved) set(saved); } catch (e) {}
+})();
 </script>
 </body>
 </html>

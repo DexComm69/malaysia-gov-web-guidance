@@ -1,0 +1,21 @@
+# Apache (XAMPP): pretty URLs (/tentang-kami -> tentang-kami.php), no directory listings,
+# and no direct access to settings, includes or data files.
+Options -Indexes
+RewriteEngine On
+
+# If the site is in a sub-folder (http://localhost/mdcj/), set RewriteBase to that folder and
+# SITE_BASE in config.php (or the environment) to the same value.
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ 404.php [L]
+
+<FilesMatch "^(config|header|footer|masthead|demo|router)\.php$|\.(sqlite|sqlite3|db|ini|log|env)$">
+  Require all denied
+</FilesMatch>

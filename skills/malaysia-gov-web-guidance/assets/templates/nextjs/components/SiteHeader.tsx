@@ -17,7 +17,7 @@ export async function SiteHeader({ lang, path }: { lang: Lang; path: string }) {
         <button type="submit">{en ? 'Search' : 'Cari'}</button>
       </form>
 
-      <TextSize label={en ? 'Text size' : 'Saiz tulisan'} />
+      <TextSize label={en ? 'Text size' : 'Saiz tulisan'} lang={lang} />
 
       {LANGUAGES.length > 1 && (
         <nav aria-label={en ? 'Language' : 'Bahasa'} splwpk-multilang="splwpk-multilang">

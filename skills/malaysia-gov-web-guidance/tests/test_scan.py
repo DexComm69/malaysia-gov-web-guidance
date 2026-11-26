@@ -322,6 +322,27 @@ class Malay(unittest.TestCase):
         import splask_i18n as t
         self.assertEqual([c for c, *_ in s.TAGS.values() if c not in t.CRITERIA], [])
 
+    def test_every_finding_translates(self):
+        """Every message and fix the checks produce has a BM version (code snippets and <html lang> excepted)."""
+        import glob, splask_i18n as t, splask_render as rd
+        orig = rd.rendered_html
+        rd.rendered_html = lambda target: '<html><body><div splwpk-w3c="splwpk-w3c"></div></body></html>'
+        targets = [BROKEN, SITE, os.path.join(HERE, 'fixtures', 'links', 'index.html')] + \
+            glob.glob(os.path.join(HERE, '..', 'evals', '*', 'files', 'rendered', 'index.html'))
+        missing = set()
+        try:
+            for tg in targets:
+                r = s.scan_site(tg, 'all', TODAY, links='site', due_within=60, myds=True, a11y=True, render=True)
+                for x in r['results']:
+                    y = t.translate_result(x)
+                    if y['message'] == x['message'] and not x['message'].startswith('<html lang'):
+                        missing.add('message: ' + x['message'][:90])
+                    if x.get('fix') and y['fix'] == x['fix'] and not x['fix'].lstrip().startswith('<'):
+                        missing.add('fix: ' + x['fix'][:90])
+        finally:
+            rd.rendered_html = orig
+        self.assertEqual(sorted(missing), [])
+
     def test_json_stays_english(self):
         r = json.loads(run_cli(SITE, '--today', '2026-11-25', '--format', 'json', '--lang', 'ms')[1])
         self.assertTrue(any(x['criterion'] == 'Search Function' for x in r['results']))

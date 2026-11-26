@@ -15,7 +15,7 @@ $m = [
 ?>
 <details id="masthead" class="masthead bg-bg-washed print:hidden" data-nosnippet>
   <summary class="mx-auto flex max-w-screen-xl items-center gap-2 px-4.5 py-2 md:px-6 text-body-sm text-txt-black-700">
-    <img src="/assets/img/malaysia-flag.svg" width="32" height="16" alt="" aria-hidden="true">
+    <img src="<?= e(url('/assets/img/malaysia-flag.svg')) ?>" width="32" height="16" alt="" aria-hidden="true">
     <span><?= e($m['title']) ?></span>
     <span class="text-txt-primary"><?= e($m['how']) ?></span>
   </summary>

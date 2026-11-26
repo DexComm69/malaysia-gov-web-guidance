@@ -12,6 +12,8 @@ $SITE = [
     // splwpk-multilang is printed only when there is more than one language.
     'languages' => ['ms'],
     'mygov'    => 'https://www.malaysia.gov.my',   // exact URL required by SPLaSK
+    // Path the site lives under: '' at the web root, '/mdcj' for http://localhost/mdcj/ on XAMPP.
+    'base'     => rtrim((string) (getenv('SITE_BASE') ?: ''), '/'),
 ];
 
 /**
@@ -32,7 +34,7 @@ $FOOTER_LINKS = [
     // tag                        url               label (ms)        label (en)
     ['splwpk-privacy-policy',  '/dasar-privasi', 'Dasar Privasi',  'Privacy Policy'],
     ['splwpk-sitemap',         '/peta-laman',    'Peta Laman',     'Sitemap'],
-    ['splwpk-feedback-form',   null,             'Maklum Balas',   'Feedback'],   // link only; the TAG goes on the <form> of the feedback page
+    ['splwpk-feedback-form',   '/maklum-balas',  'Maklum Balas',   'Feedback'],   // link only; the TAG goes on the <form> in maklum-balas.php
     ['splwpk-publication',     null,             'Penerbitan',     'Publications'],     // TODO url
     ['splwpk-electronic-archive', null,          'Arkib',          'Archive'],          // TODO url
     ['splwpk-procurement',     null,             'Tender dan Sebut Harga', 'Tenders and Quotations'],   // TODO url
@@ -44,6 +46,12 @@ function lang(): string {
     global $SITE;
     $l = $_GET['lang'] ?? 'ms';
     return in_array($l, $SITE['languages'], true) ? $l : 'ms';
+}
+
+/** Site URL for a root-relative path, so the site also works in a sub-folder. */
+function url(string $path): string {
+    global $SITE;
+    return $SITE['base'] . '/' . ltrim($path, '/');
 }
 
 function e(?string $s): string {

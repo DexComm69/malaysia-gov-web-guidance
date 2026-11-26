@@ -71,16 +71,23 @@ Render the timestamp from the content's real `updated_at`, never a hard-coded va
 
 ```html
 <div class="a11y-tools" role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
-  <button type="button" data-fs="0.875">A-</button>
-  <button type="button" data-fs="1">A</button>
-  <button type="button" data-fs="1.25">A+</button>
+  <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button>
+  <button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button>
+  <button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>
 </div>
 <script>
-  document.querySelectorAll('[data-fs]').forEach(b => b.addEventListener('click', () => {
-    document.documentElement.style.fontSize = (16 * b.dataset.fs) + 'px';
-    localStorage.setItem('fs', b.dataset.fs);
-  }));
-  if (localStorage.getItem('fs')) document.documentElement.style.fontSize = (16 * localStorage.getItem('fs')) + 'px';
+(function () {
+  /* Text-size control for splwpk-w3c: the tag is in the server HTML; this adds the behaviour and remembers the choice. */
+  var buttons = document.querySelectorAll('[splwpk-w3c] [data-fs]');
+  function set(v) {
+    document.documentElement.style.fontSize = (16 * parseFloat(v)) + 'px';
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.fs === String(v))); });
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.fs); try { localStorage.setItem('fs', b.dataset.fs); } catch (e) {} });
+  });
+  try { var saved = localStorage.getItem('fs'); if (saved) set(saved); } catch (e) {}
+})();
 </script>
 ```
 

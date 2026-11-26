@@ -218,18 +218,27 @@ python scripts/mgwg.py scan https://www.example.gov.my --pages all --check-links
 <summary><b>Example <code>scan</code> output</b></summary>
 
 ```text
-FAIL  Tag spelling            `splwpk-search-funtion` is not an official tag; did you mean `splwpk-search-function`?
-FAIL  Feedback Form           `splwpk-feedback-form` is on an <i> element (1x); tag the link/element itself
-FAIL  Commented-out tags      tags that exist only inside HTML comments <!-- --> (switched off): splwpk-sitemap
-FAIL  Updated Content: News   newest timestamp 2024-11-02 is 752 days old (limit 30)
-FAIL  SEO                     <title> is 94 characters (must be under 70)
-                              -> fix: <title>Agency name, short (under 70 characters)</title>
-FAIL  Privacy Policy          [privacy] privacy page heading is not tagged
-                              -> fix: <h1 splwpk-privacy-policy="splwpk-privacy-policy">Dasar Privasi</h1>
-WARN  Sitemap                 `splwpk-sitemap` is not on the home page but is on "sitemap" (https://…/peta-laman)
-                              -> fix: register https://…/peta-laman as a Criteria URL for this tag in the SPLaSK site profile
-PASS  Updated Content: About Us  `splwpk-about-us` found (1x); newest timestamp 2026-11-10, 14 days old (limit 30)
+FAIL   Tag spelling                           `splwpk-sitemaps` is not an official tag; did you mean `splwpk-sitemap`?
+                                             -> fix: rename to splwpk-sitemap="splwpk-sitemap"
+FAIL   Feedback Form                          `splwpk-feedback-form` is on an <i> element (1x)
+                                             -> fix: move splwpk-feedback-form="splwpk-feedback-form" from the <i> icon to its <a> link or <form>
+FAIL   Updated Content: News                  newest timestamp 2025-12-01 is 359 days old (limit 30)
+                                             -> fix: update the content itself, then set timestamp to that real date (a fake date fails SPLaSK anyway)
+WARN   Search Function                        `splwpk-search-function` is on a <div> around (or inside) the form, not on the <form> itself
+                                             -> fix: move splwpk-search-function="splwpk-search-function" onto the <form> element
+WARN   Updated Content: About Us              `splwpk-about-us` timestamp is the scan date/time (2026-11-25 08:14): check it is the real date
+                                             -> fix: take it from the CMS's modified date (...); never the current time
+WARN   MYDS: masthead                         no official masthead ("Portal Rasmi Kerajaan Malaysia" / "Official Malaysia Government Website")
+
+Freshness due dates (each item fails on its due date unless the content itself is updated):
+  Updated Content: News                  last update 2025-12-01   due 2025-12-31   OVERDUE
+  Updated Content: Contact Details       last update 2026-11-12   due 2026-12-12   in 17 days
+
+Register these pages as Criteria URLs in the SPLaSK site profile:
+  splwpk-feedback-form             https://…/maklum-balas
 ```
+
+<sub>Excerpt from a run on a test WordPress site (`--pages all --myds`). Add `--lang ms` for the same report in Bahasa Melayu, and `--fix` to write a copy with the mechanical problems fixed.</sub>
 
 </details>
 
@@ -251,6 +260,8 @@ jobs:
           url: https://www.example.gov.my
           pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only
           fail-on: fail         # fail | warn | never
+          due-within: '14'      # warn two weeks before news, about us, contact... go stale
+          extra-args: '--myds --a11y --check-links'   # optional; add --lang ms for a BM report
 ```
 
 ## Coverage&nbsp;<img src="assets/icons/coverage.svg" width="22" height="22" align="top" alt="">
@@ -282,7 +293,7 @@ jobs:
 - `cms-wordpress-joomla`: tags and masthead on WordPress and Joomla
 - `mydigital-id`: sign-in with MyDigital ID (OIDC) and MyID Verify
 - `bm-ui-glossary`: standard BM interface wording
-- `assets/templates/`: tested starter header/footer for plain PHP, WordPress, Joomla, Laravel and Next.js
+- `assets/templates/`: tested starter header/footer for plain PHP, WordPress, Joomla, Laravel and Next.js, plus a MyDigital ID login starter
 - `design-*`: ~40 MYDS design pages
 - `develop-*`: ~75 MYDS development pages, read live from design.digital.gov.my
 
@@ -330,7 +341,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for details.
 
 > [!WARNING]
 > - `scan` is a **pre-check**. It hasn't yet been calibrated against an official SPLaSK on-demand assessment, which remains the only authoritative score.
-> - `scan` only follows links from the home page (or the URLs you give it) and doesn't run JavaScript.
+> - `scan` only follows links from the home page (or the URLs you give it). It reads the server HTML, as the SPLaSK crawler does; `--render` adds a comparison with the page after JavaScript runs (needs Playwright).
 > - The GOS (online service) criteria come from the older criteria diagram on malaysia.gov.my, not from the v2.0 tagging manual.
 > - The MYDS page index reflects the documentation as of November 2026. `update-index` (also run weekly in CI) reports new, renamed and removed pages.
 > - A few terse manual rules are interpreted conservatively (for example "under 70 characters" for titles).
@@ -351,7 +362,8 @@ flowchart TB
         v17["<b>v1.7</b><br/>data.gov.my and<br/>GAMMA title checks"]
         v18["<b>v1.8</b><br/>update-index for<br/>new MYDS pages"]
         v19["<b>v1.9</b><br/>Templates, --fix, BM output,<br/>MyDigital ID, MYDS + a11y checks"]
-        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17 --> v18 --> v19
+        v110["<b>v1.10</b><br/>MyDigital ID login starter,<br/>templates run for real"]
+        v10 --> v11 --> v12 --> v13 --> v14 --> v15 --> v16 --> v17 --> v18 --> v19 --> v110
     end
 
     subgraph next ["Next"]
@@ -373,7 +385,7 @@ flowchart TB
     classDef done fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:2px
     classDef nxt fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:2px
     classDef plan fill:#e0e7ff,stroke:#4f46e5,color:#1e1b4b,stroke-width:1px,stroke-dasharray:4 3
-    class v10,v11,v12,v13,v14,v15,v16,v17,v18,v19 done
+    class v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v110 done
     class cal,mcp nxt
     class evalci,more plan
     style shipped fill:transparent,stroke:#16a34a,stroke-width:2px

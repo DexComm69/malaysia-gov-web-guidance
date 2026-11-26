@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.10.0 (26 November 2026)
+
+- **MyDigital ID login starter** (`assets/templates/mydigital-id-login/`): dependency-free plain PHP (XAMPP: curl + openssl) OpenID Connect client with `state`, `nonce`, PKCE, RS256 signature check against the provider's JWKS, `iss`/`aud`/`exp`/`iat`/`nonce` checks, session regeneration, CSRF-protected logout and IC-number masking/hashing. Tested end to end against a mock provider (`tests/mock_oidc.mjs`): login, logout, code replay, forged state, and six kinds of bad ID token, all rejected.
+- **Stress test round 8: the templates were built and run for real.** Plain PHP (an 8-page site, scanned live) and Next.js 16 (compiled, type-checked, served, scanned). Fixes: the MYDS stylesheet import (`@govtechmy/myds-style/full.css`), `proxy.ts` for Next.js 16, sub-folder support and pretty URLs for XAMPP (`url()`, `.htaccess`, `router.php`, `404.php`), new starter pages (search, advanced search, feedback, privacy, sitemap), `site.css`, one accessible text-size control everywhere, an honest BM-only demo, and a variable clash that switched pages to English.
+- **BM report covers `--render`**, with a test that every finding from every test site has a BM translation.
+- **GitHub Action `extra-args`** input (allow-listed: `--myds --a11y --check-links --render --lang ms`); the job log follows `--lang ms`.
+- **SKILL.md trimmed:** the full `scan` option list moved to `references/scan-options.md`. Trigger test still 18/18.
+- README: current example output, Action example with `due-within` and `extra-args`, limitations updated for `--render`.
+- 83 unit tests.
+
 ## 1.9.0 (26 November 2026)
 
 - **`scan` reports freshness due dates and the Criteria URLs to register.** Each dated item (news, about us, contact, client charter, CIO) shows its last update and the day it goes stale; `--due-within N` turns anything due within N days into a WARN (also an input of the GitHub Action, for weekly reminders).

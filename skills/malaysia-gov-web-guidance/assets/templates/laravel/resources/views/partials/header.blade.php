@@ -9,7 +9,7 @@
     </form>
 
     <div role="group" aria-label="{{ $lang === 'en' ? 'Text size' : 'Saiz tulisan' }}" splwpk-w3c="splwpk-w3c">
-        <button type="button" data-size="-1">A-</button><button type="button" data-size="0">A</button><button type="button" data-size="1">A+</button>
+        <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>
     </div>
 
     @if (count($splaskLanguages) > 1)

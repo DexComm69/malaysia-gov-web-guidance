@@ -2,7 +2,7 @@
 // One <h1> per page: each page renders its own heading; the site name in SiteHeader is a link.
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import '@govtechmy/myds-style/dist/index.css';
+import '@govtechmy/myds-style/full.css';   // the package only exports full.css, color.css, light.css, dark.css
 import { Masthead } from '@/components/Masthead';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';

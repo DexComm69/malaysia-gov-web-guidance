@@ -1,0 +1,39 @@
+/* Minimal site CSS for the starter: everything else comes from @govtechmy/myds-style. Colours use MYDS tokens. */
+body { margin: 0; font-family: Inter, system-ui, sans-serif; color: rgb(var(--txt-black-900)); background: rgb(var(--bg-white)); }
+h1, h2, h3 { font-family: Poppins, Inter, system-ui, sans-serif; }
+
+/* Skip link: hidden until focused */
+.skip-link { position: absolute; left: -9999px; top: 0; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 100; padding: .5rem 1rem; background: rgb(var(--bg-white)); outline: 2px solid rgb(var(--fr-primary)); }
+
+/* Masthead (<details>): no default marker, visible focus */
+.masthead > summary { cursor: pointer; list-style: none; }
+.masthead > summary::-webkit-details-marker { display: none; }
+.masthead > summary:focus-visible { outline: 2px solid rgb(var(--fr-primary)); outline-offset: -2px; }
+
+/* 12-8-4 grid container (MYDS: 4 columns < 768px, 8 from 768px, 12 from 1024px), max width 1280px */
+.site-header, main, .site-footer { box-sizing: border-box; max-width: 1280px; margin: 0 auto; padding: 1rem 18px; }
+@media (min-width: 768px) { .site-header, main, .site-footer { padding-left: 24px; padding-right: 24px; } }
+
+.site-header { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; border-bottom: 1px solid rgb(var(--otl-gray-200)); }
+.site-header nav, .site-footer nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+.site-name { font-family: Poppins, Inter, sans-serif; font-weight: 600; font-size: 1.25rem; color: inherit; text-decoration: none; }
+.site-footer { border-top: 1px solid rgb(var(--otl-gray-200)); font-size: .875rem; }
+
+a { color: rgb(var(--txt-primary)); }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid rgb(var(--fr-primary)); outline-offset: 2px; }
+
+/* W3C text-size control */
+[splwpk-w3c] { display: inline-flex; gap: .25rem; }
+[splwpk-w3c] button { min-width: 44px; min-height: 44px; }
+[splwpk-w3c] button[aria-pressed="true"] { font-weight: 600; text-decoration: underline; }
+
+/* Forms: MYDS's own input border (otl-gray-200) is below WCAG 1.4.11's 3:1 against white, so this
+   starter uses a darker border. That's a deliberate choice to raise with the agency (see guide myds-plain-html-php). */
+label { display: block; font-weight: 500; margin-top: 1rem; }
+input, textarea, select { box-sizing: border-box; width: 100%; max-width: 32rem; padding: .5rem .75rem; font: inherit;
+  border: 1px solid rgb(var(--otl-gray-400, 113 113 122)); border-radius: 6px; }
+[aria-invalid="true"] { border-color: rgb(var(--otl-danger-600, 220 38 38)); }
+.field-error { color: rgb(var(--txt-danger, 220 38 38)); margin: .25rem 0 0; }
+.error-summary { border: 2px solid rgb(var(--otl-danger-600, 220 38 38)); padding: 1rem; margin: 1rem 0; }
+button[type="submit"] { margin-top: 1rem; padding: .5rem 1rem; min-height: 44px; font: inherit; }

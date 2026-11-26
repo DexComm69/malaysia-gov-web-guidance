@@ -34,6 +34,8 @@ There are two separate products:
 
 **Endpoints** follow the usual Keycloak-style OpenID Connect pattern, under the host and realm you are given: `https://<host>/realms/<realm>/protocol/openid-connect/` + `auth`, `token`, `userinfo`, `logout`. Use the provider's discovery document (`.well-known/openid-configuration` under the realm) if it is available, rather than hard-coding them.
 
+**Starter code:** `assets/templates/mydigital-id-login/` is a tested, dependency-free plain-PHP client (XAMPP: needs only the curl and openssl extensions) that does all of the checks below; read its README first. With Composer or a framework, a maintained OIDC library is equally good if it makes the same checks.
+
 **Build it like any careful OIDC client:**
 - Use a maintained OIDC library for your stack instead of hand-written token handling. Check `state` (and `nonce`), validate the ID token's signature, issuer, audience and expiry.
 - Use PKCE for public clients (SPAs, mobile) if the provider supports it; confirm with MyDigital ID.
@@ -67,6 +69,8 @@ What an integration involves (details are in the official guides):
 ## Bahasa Melayu
 
 MyDigital ID ialah identiti digital nasional yang dikendalikan oleh **MyDigital ID Sdn. Bhd.** Panduan integrasi rasmi ada di https://developer.digital-id.my (tab *Documentation*). Halaman ini hanya ringkasan; rujuk dokumen rasmi. **Client ID, host, realm dan kunci API diberikan oleh MyDigital ID semasa agensi didaftarkan: jangan reka; tinggalkan TODO.**
+
+**Kod permulaan:** `assets/templates/mydigital-id-login/` (PHP biasa, untuk XAMPP, telah diuji).
 
 **MyID Access (log masuk):** OpenID Connect biasa (*authorization code flow*, `scope=openid`). Pengguna mengimbas kod QR atau membuka aplikasi MyDigital ID, mengesahkan dengan PIN/biometrik, dan sistem anda menerima **nama dan nombor kad pengenalan**. Daftarkan *client* (jenis *confidential* untuk aplikasi pelayan seperti PHP/Laravel; *public* untuk SPA dan aplikasi mudah alih) dan *redirect URI* HTTPS yang tepat. Gunakan pustaka OIDC yang diselenggara; semak `state`/`nonce` dan tandatangan token. Untuk aplikasi mudah alih, panduan rasmi meminta *embedded webview* dan semakan sama ada aplikasi MyDigital ID dipasang (`mydigitalid://`), atau notis sebelum log masuk.
 

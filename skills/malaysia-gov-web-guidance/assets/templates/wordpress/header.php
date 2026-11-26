@@ -14,7 +14,7 @@
   <?php get_search_form(); ?>
 
   <div role="group" aria-label="Saiz tulisan" splwpk-w3c="splwpk-w3c">
-    <button type="button" data-size="-1">A-</button><button type="button" data-size="0">A</button><button type="button" data-size="1">A+</button>
+    <button type="button" data-fs="0.875" aria-label="Kecilkan tulisan" aria-pressed="false">A-</button><button type="button" data-fs="1" aria-label="Saiz tulisan biasa" aria-pressed="true">A</button><button type="button" data-fs="1.25" aria-label="Besarkan tulisan" aria-pressed="false">A+</button>
   </div>
 
   <?php if (count(splask_languages()) > 1 && function_exists('pll_the_languages')): ?>

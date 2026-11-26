@@ -24,6 +24,10 @@ inputs:
     description: 'Warn about timestamped items (news, about us, contact...) that go stale within this many days. Empty = off.'
     required: false
     default: ''
+  extra-args:
+    description: "More scan options, space-separated, e.g. '--myds --a11y --check-links --lang ms'"
+    required: false
+    default: ''
   today:
     description: 'Date used for freshness checks (YYYY-MM-DD). Empty = today.'
     required: false
@@ -44,6 +48,7 @@ runs:
         SCAN_MAX: ${{ inputs.max-pages }}
         SCAN_TODAY: ${{ inputs.today }}
         SCAN_DUE: ${{ inputs.due-within }}
+        SCAN_EXTRA: ${{ inputs.extra-args }}
       run: |
         PY=python3; "$PY" -c "" 2>/dev/null || PY=python
         SCRIPT="$GITHUB_ACTION_PATH/skills/malaysia-gov-web-guidance/scripts/splask_scan.py"
@@ -52,13 +57,19 @@ runs:
         [ -n "$SCAN_PAGES" ] && ARGS+=(--pages "$SCAN_PAGES")
         [ -n "$SCAN_TODAY" ] && ARGS+=(--today "$SCAN_TODAY")
         [ -n "$SCAN_DUE" ] && ARGS+=(--due-within "$SCAN_DUE")
+        if [ -n "$SCAN_EXTRA" ]; then
+          for opt in $SCAN_EXTRA; do
+            case "$opt" in --myds|--a11y|--check-links|--lang|ms|en|all|site|--render|--max-links|[0-9]*) ARGS+=("$opt");;
+              *) echo "::error::extra-args: '$opt' is not allowed here"; exit 2;; esac
+          done
+        fi
         echo "report=$REPORT" >> "$GITHUB_OUTPUT"
         set +e
         "$PY" "$SCRIPT" "${ARGS[@]}" --format json > "$REPORT"; CODE=$?
         set -e
         "$PY" - "$REPORT" "$SCRIPT" <<'PY'
-        import json, sys, importlib.util
+        import json, os, sys, importlib.util; sys.path.insert(0, os.path.dirname(sys.argv[2]))
         spec = importlib.util.spec_from_file_location('splask_scan', sys.argv[2]); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-        m.report(json.load(open(sys.argv[1], encoding='utf-8')))
+        import os; m.report(json.load(open(sys.argv[1], encoding='utf-8')), 'ms' if '--lang ms' in os.environ.get('SCAN_EXTRA', '') else 'en')
         PY
         exit $CODE

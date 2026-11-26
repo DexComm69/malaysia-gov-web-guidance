@@ -164,6 +164,9 @@ MESSAGES = [
     (r'only (?P<n>\d+) official tag\(s\) here: this may be a splash/landing page.*?; try scanning (?P<u>\S+)', 'hanya {n} tag rasmi di sini: ini mungkin halaman pembuka; cuba imbas {u}'),
     (r'page "(?P<p>[^"]+)" was not found on the home page.*', 'halaman "{p}" tidak dijumpai di halaman utama (jalankan --list-pages untuk melihat pilihan)'),
     (r'could not open (?P<u>\S+): (?P<e>\w+)', 'tidak dapat membuka {u}: {e}'),
+    (r'tags that exist only after JavaScript runs \(the crawler never sees them\): (?P<t>.+)', 'tag yang hanya wujud selepas JavaScript dijalankan (crawler tidak melihatnya): {t}'),
+    (r'the rendered page adds no tags that the server HTML lacks', 'halaman yang dipaparkan tidak menambah tag yang tiada dalam HTML pelayan'),
+    (r'--render skipped: (?P<e>.+)', '--render dilangkau: {e}'),
 ]
 
 FIXES = [
@@ -203,6 +206,7 @@ FIXES = [
     (r'render the page \(or at least its tags\) on the server', 'paparkan halaman (sekurang-kurangnya tagnya) dari pelayan'),
     (r'link to https://data\.gov\.my/data-catalogue/<dataset-id>.*', 'pautkan ke https://data.gov.my/data-catalogue/<id-set-data>, dengan tajuk set data sebagai teks pautan'),
     (r'link to a real (?P<w>.+)', 'pautkan ke set data atau aplikasi yang sebenar'),
+    (r'print these attributes in the server HTML \(template code\), not with JavaScript', 'cetak atribut ini dalam HTML pelayan (kod templat), bukan dengan JavaScript'),
 ]
 
 
