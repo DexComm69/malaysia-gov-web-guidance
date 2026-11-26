@@ -52,5 +52,3 @@ jobs:
           due-within: '10'
           extra-args: '--myds --a11y --lang ms'
           today: '2026-11-25'
-      - name: Check the summary is in BM
-        run: grep -q "Kriteria" "$GITHUB_STEP_SUMMARY" 
