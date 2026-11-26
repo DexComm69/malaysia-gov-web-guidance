@@ -1,0 +1,6 @@
+pages:    tentang-kami (updated_at 2026-11-03 09:12:44), soalan-lazim (2026-10-01 15:02:10),
+          hubungi-kami (2026-11-12 11:30:05), dasar-privasi (2026-06-02 10:00:00), peta-laman (2026-09-14 08:45:00)
+news:     newest: "Notis penutupan jalan sementara" published_at 2026-11-20 08:00:00, updated_at 2026-11-20 08:05:31
+settings.footer_html:
+  <a href="/dasar-privasi" splwpk-privacy-polisy="splwpk-privacy-polisy">Dasar Privasi</a> |
+  <a href="https://malaysia.gov.my">MyGov</a>

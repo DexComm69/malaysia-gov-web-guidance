@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="utf-8">
+    <title>Maklum Balas | Majlis Daerah Contoh Jaya - Portal Rasmi Pihak Berkuasa Tempatan</title>
+    <meta name="description" content="Hantar maklum balas kepada Majlis Daerah Contoh Jaya.">
+    <link rel="stylesheet" href="build/assets/app-4f2a9c1e.css">
+    <script type="module" src="build/assets/app-9b1d22aa.js"></script>
+</head>
+<body>
+    <header class="site-header">
+    <div class="banner"><img src="img/banner-utama.jpg" width="1200" height="300"></div>
+    <h1 class="brand">Majlis Daerah Contoh Jaya</h1>
+    <div class="search-box" splwpk-search-function="splwpk-search-function">
+    <form action="carian.html" method="get" role="search">
+        <label for="q" class="sr-only">Carian</label>
+        <input id="q" name="q" type="search">
+        <button type="submit">Cari</button>
+    </form>
+</div>
+    <div x-data="{ langs: ['ms', 'en'] }" x-bind:splwpk-multilang="'splwpk-multilang'">
+        <a href="?lang=ms">BM</a> | <a href="?lang=en">EN</a>
+    </div>
+    <nav>
+        <a href="tentang-kami.html" splwpk-about-us="splwpk-about-us" timestamp="2026-11-25 10:42:17">Tentang Kami</a>
+        <a href="soalan-lazim.html">Soalan Lazim</a>
+        <a href="hubungi-kami.html" splwpk-contact-details="splwpk-contact-details">Hubungi Kami</a>
+        <a href="maklum-balas.html">Maklum Balas</a>
+    </nav>
+            <a href="berita.html" splwpk-news="splwpk-news" timestamp="20/11/2026">Berita Terkini</a>
+    </header>
+    <main>
+    <h1>Maklum Balas</h1>
+    <form action="maklum-balas.html" method="post">
+        <input type="hidden" name="_token" value="(csrf)">
+        <label for="mesej">Mesej</label>
+        <textarea id="mesej" name="mesej"></textarea>
+        <button type="submit"><i class="icon-send" splwpk-feedback-form="splwpk-feedback-form"></i> Hantar</button>
+    </form>
+</main>
+    <footer class="site-footer">
+    <a href="dasar-privasi.html" splwpk-privacy-polisy="splwpk-privacy-polisy">Dasar Privasi</a> |
+  <a href="https://malaysia.gov.my">MyGov</a>
+        <p>&copy; 2026 Majlis Daerah Contoh Jaya</p>
+</footer>
+</body>
+</html>

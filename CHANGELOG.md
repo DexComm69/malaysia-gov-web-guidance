@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.2 (26 November 2026)
+
+- **Stress test round 7** (Laravel 11 + Blade + Alpine.js, 5 pages, 15 seeded faults), run in English with and without the skill and once entirely in Bahasa Melayu: with the skill 27 → 11 scan fails in both languages (all 11 need real council URLs); without it 27 → 17. Two new eval cases, `fix-laravel-blade-app` and `fix-laravel-blade-app-bm` (with a check that the report is in formal BM). Eval baseline: 27/27 with the skill, 12/27 without; the BM case 8/8.
+- **`scan` catches tags bound by JavaScript frameworks** (Alpine.js `x-bind:splwpk-*`, Vue `:splwpk-*`) as a FAIL, and no longer repeats a tag-on-`<i>` finding as a wrapper warning.
+- **`splask-tagging`:** Alpine/Vue bindings and Blade `{{-- --}}` comments hide tags from the crawler; keep tags in templates rather than admin-editable HTML; add `splwpk-multilang` only when the site really has both languages (both with-skill runs showed an EN switch on a BM-only site, though they flagged it; the run without the skill hid it, which is better).
+- 31 unit tests (3 new).
+
 ## 1.6.1 (26 November 2026)
 
 - **Stress test round 6** (Joomla 5 Cassiopeia child template, 5 pages, 15 seeded faults): with the skill, 25 → 8 scan fails (7 of them date-only placeholders in its sample pages, 1 needing an admin switch); without it, 25 → 22, with an invented `splwpk-multi-language` tag and date-only timestamps. A third eval case, `fix-joomla-child-template`, joins the suite: 20/20 checks with the skill, 7/20 without.

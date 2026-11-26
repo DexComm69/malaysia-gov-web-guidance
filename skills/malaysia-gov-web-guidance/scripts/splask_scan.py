@@ -226,7 +226,7 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
         if 'form' in extra:
             if not any(e.tag == 'form' or any(a.tag == 'form' for a in e.ancestors()) or any(d.tag == 'form' for d in e.descendants()) for e in els):
                 ok = False; A('FAIL', crit, f'`{tag}` must be on a real <form>', fix_missing(tag))
-            elif not any(e.tag == 'form' for e in els):
+            elif not any(e.tag == 'form' for e in els) and not on_i:
                 wrap = next(e for e in els if e.tag != 'form')
                 A('WARN', crit, f'`{tag}` is on a <{wrap.tag}> around (or inside) the form, not on the <form> itself; the manual puts it on the <form>',
                   f'move {tag}="{tag}" onto the <form> element (in a CMS, in the form module template override)')
@@ -327,6 +327,12 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
               + (f'; try scanning {urllib.parse.urljoin(final, homes[0])}' if homes else ''))
 
     js_tags = sorted(set(re.findall(r'splwpk-[a-z0-9-]+', ' '.join(re.findall(r'<script\b[^>]*>(.*?)</script>', html, re.S | re.I)))) - set(tagged))
+    bound = sorted({k.split(':', 1)[1] for n in nodes for k in n.attrs
+                    if re.match(r'(x-bind|v-bind)?:splwpk-[a-z0-9-]+$', k)} - set(tagged))
+    if bound:
+        A('FAIL', 'Rendering', f'tags bound by JavaScript (Alpine.js / Vue `x-bind:` or `:` attributes), so the crawler never sees them: {", ".join(bound[:8])}',
+          'write the plain attribute in the server HTML, e.g. splwpk-multilang="splwpk-multilang" (not x-bind:splwpk-multilang)')
+    js_tags = sorted(set(js_tags) - set(bound))
     if js_tags:
         A('WARN', 'Rendering', f'tags that appear only inside <script> (added by JavaScript, may be invisible to the crawler): {", ".join(js_tags[:8])}',
           'output these attributes in the server HTML instead of adding them with JavaScript')

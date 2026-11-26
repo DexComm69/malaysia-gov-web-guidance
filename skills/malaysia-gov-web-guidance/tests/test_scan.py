@@ -111,6 +111,26 @@ class Placement(unittest.TestCase):
         self.assertTrue(find(r, 'FAIL', 'Updated Content: Contact Details', text='not in YYYY-MM-DD HH:MM:SS'))
 
 
+class Frameworks(unittest.TestCase):
+    def page(self, body):
+        import tempfile
+        f = os.path.join(tempfile.mkdtemp(), 'index.html')
+        with open(f, 'w', encoding='utf8') as h:
+            h.write('<html lang="ms"><body>' + body + '</body></html>')
+        return s.scan_site(f, None, TODAY)
+
+    def test_alpine_bound_tag(self):
+        r = self.page('<div x-data="{}" x-bind:splwpk-multilang="ml"><a href="?lang=en">EN</a></div>')
+        self.assertTrue(find(r, 'FAIL', 'Rendering', text='splwpk-multilang'))
+
+    def test_vue_shorthand_bound_tag(self):
+        self.assertTrue(find(self.page('<div :splwpk-w3c="x">A+</div>'), 'FAIL', 'Rendering', text='splwpk-w3c'))
+
+    def test_icon_reported_once(self):
+        r = self.page('<form action="/m"><button><i splwpk-feedback-form="splwpk-feedback-form"></i> Hantar</button></form>')
+        self.assertEqual(len(find(r, None, 'Feedback Form')), 1)
+
+
 class Links(unittest.TestCase):
     LINKS = os.path.join(HERE, 'fixtures', 'links', 'index.html')
 
