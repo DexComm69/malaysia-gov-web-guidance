@@ -243,7 +243,7 @@ jobs:
   splask:
     runs-on: ubuntu-latest
     steps:
-      - uses: DexComm69/malaysia-gov-web-guidance@v1.6.0
+      - uses: DexComm69/malaysia-gov-web-guidance@v1.6.1
         with:
           url: https://www.example.gov.my
           pages: all            # or privacy,sitemap / 1,3 / URLs; empty = home page only
@@ -316,7 +316,7 @@ xychart-beta
 | `scan` on 5 live government portals | Real issues found (misspelled tags, tags in HTML comments, stale timestamps); false alarms fixed | <img alt="validated" src="https://img.shields.io/badge/validated-2ea043?style=flat-square"> |
 | Seeded-fault page (chart above) | 25 → 12 fails with the skill; without it, 25 → 17 and two invented tag names | <img alt="-13 fails" src="https://img.shields.io/badge/--13%20fails-2ea043?style=flat-square"> |
 | WordPress child theme, 5 pages, 15 seeded faults | 27 → 11 fails with the skill (all 11 need real council URLs); without it, 27 → 22 and three invented tag names | <img alt="-16 fails" src="https://img.shields.io/badge/--16%20fails-2ea043?style=flat-square"> |
-| [Eval suite](skills/malaysia-gov-web-guidance/evals/BASELINE.md): 13 checks over both seeded-fault tasks | Official tags only, form placement, no invented dates, SEO limits, Criteria URL steps | <img alt="13/13 vs 5/13" src="https://img.shields.io/badge/13%2F13%20vs%205%2F13-2ea043?style=flat-square"> |
+| [Eval suite](skills/malaysia-gov-web-guidance/evals/BASELINE.md): 20 checks over three seeded-fault tasks (plain HTML, WordPress, Joomla) | Official tags only, form placement, no invented dates, SEO limits, Criteria URL steps | <img alt="20/20 vs 7/20" src="https://img.shields.io/badge/20%2F20%20vs%207%2F20-2ea043?style=flat-square"> |
 
 See [`CHANGELOG.md`](CHANGELOG.md) for details.
 

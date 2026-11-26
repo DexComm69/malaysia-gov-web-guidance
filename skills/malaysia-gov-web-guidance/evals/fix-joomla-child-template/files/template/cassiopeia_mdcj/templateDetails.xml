@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="template" client="site" method="upgrade">
+  <name>cassiopeia_mdcj</name>
+  <version>1.1</version>
+  <inheritable>0</inheritable>
+  <parent>cassiopeia</parent>
+  <files>
+    <filename>index.php</filename>
+    <filename>templateDetails.xml</filename>
+    <folder>html</folder>
+  </files>
+  <positions>
+    <position>topbar</position><position>banner</position><position>menu</position>
+    <position>search</position><position>sidebar-right</position><position>footer</position>
+  </positions>
+</extension>

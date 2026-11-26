@@ -1,0 +1,13 @@
+Global Configuration
+  Site Name: Majlis Daerah Contoh Jaya
+  Site Meta Description: (empty)
+  Include Site Name in Page Titles: After
+  Text Filters: Default (Editor group = Default Filter List)
+Menu item "Utama" (Home, Featured Articles)
+  Browser Page Title: Utama - Portal Rasmi Majlis Daerah Contoh Jaya, Negeri Contoh
+  Show Page Heading: Yes  (Page Heading: Utama)
+Module "Pautan Pantas" (Custom, position sidebar-right): typed in JCE
+Module "Banner Utama" (Custom, position banner): an image inserted in JCE without alt text
+Module "Bahasa" (Language Switcher, position topbar): shows BM | EN text links
+Module "Borang Maklum Balas" (Convert Forms, page Maklum Balas)
+  Advanced > Module Tag: div, Header Class: -, "Custom HTML attributes": splwpk-feedback-form="splwpk-feedback-form"

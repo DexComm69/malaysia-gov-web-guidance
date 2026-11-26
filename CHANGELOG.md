@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.1 (26 November 2026)
+
+- **Stress test round 6** (Joomla 5 Cassiopeia child template, 5 pages, 15 seeded faults): with the skill, 25 → 8 scan fails (7 of them date-only placeholders in its sample pages, 1 needing an admin switch); without it, 25 → 22, with an invented `splwpk-multi-language` tag and date-only timestamps. A third eval case, `fix-joomla-child-template`, joins the suite: 20/20 checks with the skill, 7/20 without.
+- **Fixed a `scan` bug from 1.5.1:** PASS lines for timestamped tags said "no freshness limit" even where the limit is 30 days (stale dates were still caught). Found by the with-skill agent in round 6.
+- **`scan` warns when search or feedback tags sit on a wrapper** (`<div>` around the form) instead of the `<form>` itself, as the manual requires. Age is never shown as negative.
+- **`splask-tagging`:** a timestamp is always the full `YYYY-MM-DD HH:MM:SS`; in sample HTML use `00:00:00` when only the date is known, never `TODO` inside the attribute.
+- **`cms-wordpress-joomla` (Joomla):** tag the language switcher through a `mod_languages` override, form extensions put "custom attributes" on the module wrapper, remove `Factory::getDate('now')` timestamps, one `<h1>`.
+- 28 unit tests (4 new).
+
 ## 1.6.0 (26 November 2026)
 
 - **`scan --check-links`:** tests every link on the scanned pages for SPLaSK's Active Link criterion (no broken links). Same-site links by default; `--check-links all` adds external links. A broken link is a FAIL naming the page and link text; a link that can't be reached right now is a WARN. Checks run 4 at a time, retry with GET when a server refuses HEAD, and retry unreachable links once more one by one. `--max-links` caps the run (default 150). On jdn.gov.my: 58 links, none broken.

@@ -74,7 +74,11 @@ After any change, check what the crawler sees with `python scripts/mgwg.py scan 
 4. **Search:** Smart Search (`com_finder` / `mod_finder`) renders the form. Override `html/mod_finder/default.php` and put `splwpk-search-function="splwpk-search-function"` on the `<form>`. The advanced search form (`com_finder` with *Show Advanced Search*) gets `splwpk-advanced-search-function` the same way, in an override of the component's search layout.
 5. **Why tags vanish from articles and Custom modules:** *Global Configuration → Text Filters* strips attributes for most groups, and TinyMCE or JCE may also clean the HTML. Prefer template code. If an editor must add a tag in content, set *No Filtering* only for a small trusted group (such as Super Users) and allow custom attributes in the editor's settings, then re-check with `scan`.
 6. **SEO:** *Global Configuration → Site → Site Meta Description* and the menu item's *Page Display → Browser Page Title* control the home page. The same SPLaSK limits apply. Joomla's *Site Name in Page Titles* option adds characters, so count the final `<title>`.
-7. **Caching:** clear *System → Clear Cache* (and any CDN) before scanning.
+7. **Language switcher:** Joomla's own multilingual setup (Language Filter plugin + *Language Switcher* module) gives real BM and EN content. Override `html/mod_languages/default.php` and put `splwpk-multilang="splwpk-multilang"` on the switcher's wrapper.
+8. **Form extensions** (Convert Forms, RSForm, ChronoForms): "custom attributes" fields in the module's *Advanced* tab land on the module wrapper `<div>`, not on the `<form>`. Override the extension's form layout (or `html/mod_<extension>/default.php`) and add the tag to the `<form>` itself; `scan` warns when the tag is on a wrapper.
+9. **Fake "now" timestamps:** remove code such as `Factory::getDate('now')->format('Y-m-d H:i:s')` used as a `timestamp`. Use the item's `modified` value instead; for news, the newest article's `modified` (or `publish_up`) in the news category.
+10. **One `<h1>`:** many child templates print the site name as `<h1>` in the header, and the article or featured view prints the page heading as another `<h1>`. Make the header site name a `<p>` or `<a>`.
+11. **Caching:** clear *System → Clear Cache* (and any CDN) before scanning.
 
 ### Both CMSs: checklist
 
@@ -113,7 +117,11 @@ Selepas setiap perubahan, semak apa yang dilihat oleh perangkak dengan `python s
 4. **Carian:** *override* `mod_finder` dan letakkan tag pada `<form>`.
 5. **Tag hilang:** *Global Configuration → Text Filters* dan editor (TinyMCE/JCE) membuang atribut. Utamakan kod templat; jika perlu, benarkan *No Filtering* untuk kumpulan kecil yang dipercayai sahaja.
 6. **SEO:** kira panjang `<title>` akhir, termasuk nama laman jika pilihan *Site Name in Page Titles* dihidupkan.
-7. Kosongkan *cache* sebelum mengimbas.
+7. **Penukar bahasa:** *override* `mod_languages` dan letakkan `splwpk-multilang` pada pembalut penukar bahasa.
+8. **Sambungan borang** (Convert Forms, RSForm): atribut tersuai dalam tab *Advanced* modul jatuh pada `<div>` pembalut, bukan `<form>`. Buat *override* susun atur borang dan letakkan tag pada `<form>`.
+9. **Timestamp palsu:** buang kod seperti `Factory::getDate('now')` yang dijadikan `timestamp`; gunakan nilai `modified` item.
+10. **Satu `<h1>`:** jadikan nama laman dalam pengepala `<p>` atau `<a>`.
+11. Kosongkan *cache* sebelum mengimbas.
 
 ### Senarai semak
 - [ ] Tag dalam kod tema/templat, bukan kandungan.

@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: fix-joomla-child-template
+expected_outcome: |
+  The Cassiopeia child template and its overrides are fixed in template code, not JCE content: the
+  "always now" news timestamp (Factory::getDate('now')) is replaced by a real modified date; the
+  contact tag moves off the <i> icon onto the link with a full YYYY-MM-DD HH:MM:SS timestamp; the
+  search and feedback tags move from wrapper <div>s onto the <form> elements (template overrides for
+  mod_finder and the form extension); the splwpk-electronic-archieve typo is fixed; the commented-out
+  sitemap link is restored; the language switcher gets splwpk-multilang through a mod_languages
+  override; the privacy page heading is tagged; the MyGov link is exactly https://www.malaysia.gov.my;
+  there is one <h1>. NOTES.md covers the administrator steps (Browser Page Title / site name in
+  titles, meta description, banner alt text, menu Link Classes) and explains why the FAQ tag typed
+  in JCE disappeared (text filters). No invented tag names. Baseline from stress-test round 6:
+  25 scan fails before; 8 with the skill (7 of them date-only placeholders in its sample pages),
+  22 without (invented splwpk-multi-language, date-only timestamps).
+context:
+  scaffold_script: place-files.sh

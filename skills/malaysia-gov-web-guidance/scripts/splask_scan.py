@@ -226,6 +226,10 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
         if 'form' in extra:
             if not any(e.tag == 'form' or any(a.tag == 'form' for a in e.ancestors()) or any(d.tag == 'form' for d in e.descendants()) for e in els):
                 ok = False; A('FAIL', crit, f'`{tag}` must be on a real <form>', fix_missing(tag))
+            elif not any(e.tag == 'form' for e in els):
+                wrap = next(e for e in els if e.tag != 'form')
+                A('WARN', crit, f'`{tag}` is on a <{wrap.tag}> around (or inside) the form, not on the <form> itself; the manual puts it on the <form>',
+                  f'move {tag}="{tag}" onto the <form> element (in a CMS, in the form module template override)')
         if 'ts' in extra:
             stamps = [(e, parse_ts(e.attrs.get('timestamp', ''))) for e in els]
             missing = [e for e, t in stamps if not e.attrs.get('timestamp')]
@@ -238,17 +242,17 @@ def check_page(html, final, is_home, today, add, page_label, hops=(), secs=None,
             if badfmt:
                 ok = False; A('FAIL', crit, f'timestamp not in YYYY-MM-DD HH:MM:SS: "{badfmt[0].attrs.get("timestamp")}"', 'timestamp="2026-11-24 09:15:00" (24-hour)')
             if good and days:
-                newest = max(good); age = (today - newest).days
+                newest = max(good); age = max(0, (today.date() - newest.date()).days)
                 if age > days:
                     ok = False; A('FAIL', crit, f'newest timestamp {newest:%Y-%m-%d} is {age} days old (limit {days})', f'update the content itself, then set timestamp to that real date (a fake date fails SPLaSK anyway)')
                 elif newest > today + dt.timedelta(days=1):
                     ok = False; A('WARN', crit, f'timestamp {newest:%Y-%m-%d} is in the future', 'use the real last-updated date')
                 else: fresh[tag] = f'; newest timestamp {newest:%Y-%m-%d}, {age} days old (limit {days})'
-            if good and looks_generated(good, today):
-                A('WARN', crit, f'`{tag}` timestamp is the scan date/time ({max(good):%Y-%m-%d %H:%M}): check it is the real date the content changed, not the time the page was generated',
-                  "take it from the CMS's modified date (e.g. WordPress get_the_modified_date('Y-m-d H:i:s', $id)); never date('Y-m-d H:i:s') or now()")
             elif good:
                 fresh[tag] = f'; newest timestamp {max(good):%Y-%m-%d} (no freshness limit)'
+            if good and looks_generated(good, today):
+                A('WARN', crit, f'`{tag}` timestamp is the scan date/time ({max(good):%Y-%m-%d %H:%M}): check it is the real date the content changed, not the time the page was generated',
+                  "take it from the CMS's modified date (WordPress get_the_modified_date('Y-m-d H:i:s', $id), Joomla HTMLHelper::_('date', $item->modified, 'Y-m-d H:i:s')); never the current time")
         if 'href' in extra and not any(e.attrs.get('href') or any(d.tag == 'a' and d.attrs.get('href') for d in e.descendants()) for e in els):
             ok = False; A('FAIL', crit, f'`{tag}` needs a link with href', fix_missing(tag))
         if 'gamma' in extra and not any('gamma.malaysia.gov.my' in e.attrs.get('href', '') for e in els if e.tag == 'a'):

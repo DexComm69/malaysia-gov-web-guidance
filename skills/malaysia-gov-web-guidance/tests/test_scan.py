@@ -83,6 +83,34 @@ class Timestamps(unittest.TestCase):
         self.assertFalse(find(s.scan_site(SITE, None, TODAY), 'WARN', text='scan date/time'))
 
 
+class Placement(unittest.TestCase):
+    def page(self, body):
+        import tempfile
+        f = os.path.join(tempfile.mkdtemp(), 'index.html')
+        with open(f, 'w', encoding='utf8') as h:
+            h.write('<html lang="ms"><body>' + body + '</body></html>')
+        return s.scan_site(f, None, TODAY)
+
+    def test_freshness_limit_shown(self):
+        r = self.page('<a href="/t" splwpk-about-us="splwpk-about-us" timestamp="2026-11-03 09:00:00">Tentang</a>')
+        self.assertTrue(find(r, 'PASS', 'Updated Content: About Us', text='(limit 30)'))
+        self.assertFalse(find(r, 'PASS', 'Updated Content: About Us', text='no freshness limit'))
+
+    def test_age_never_negative(self):
+        r = self.page('<a href="/b" splwpk-news="splwpk-news" timestamp="2026-11-25 10:42:17">Berita</a>')
+        self.assertTrue(find(r, 'PASS', 'Updated Content: News', text='0 days old'))
+
+    def test_wrapper_div_warns(self):
+        r = self.page('<div splwpk-search-function="splwpk-search-function"><form action="/c"><input name="q"></form></div>')
+        self.assertTrue(find(r, 'WARN', 'Search Function', text='not on the <form> itself'))
+        r = self.page('<form action="/c" splwpk-search-function="splwpk-search-function"><input name="q"></form>')
+        self.assertFalse(find(r, 'WARN', 'Search Function'))
+
+    def test_date_only_timestamp_fails(self):
+        r = self.page('<a href="/h" splwpk-contact-details="splwpk-contact-details" timestamp="2026-11-12">Hubungi</a>')
+        self.assertTrue(find(r, 'FAIL', 'Updated Content: Contact Details', text='not in YYYY-MM-DD HH:MM:SS'))
+
+
 class Links(unittest.TestCase):
     LINKS = os.path.join(HERE, 'fixtures', 'links', 'index.html')
 
